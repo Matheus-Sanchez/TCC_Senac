@@ -1,0 +1,47 @@
+Guia rápido para usar o seu TCC em LaTeX
+
+1) Arquivos principais
+- tcc_matheus.tex -> arquivo principal do trabalho
+- bibliografia_matheus.bib -> referências bibliográficas
+- tcc_matheus.pdf -> PDF compilado
+
+2) O que você normalmente vai editar
+No arquivo tcc_matheus.tex, procure e altere:
+- \orientador{Prof. [Nome do Orientador]}
+- título, se quiser ajustar
+- resumo
+- seções do capítulo 1, 2 e 3
+- cronograma
+
+3) Como citar referências no texto
+- \cite{LeCun2015} -> (LECUN; BENGIO; HINTON, 2015)
+- \citeonline{LeCun2015} -> LeCun, Bengio e Hinton (2015)
+
+4) Como adicionar nova referência
+Abra bibliografia_matheus.bib e adicione um bloco como:
+
+@article{MinhaChave2026,
+  author  = {Nome Sobrenome},
+  title   = {Título do artigo},
+  journal = {Nome da revista},
+  year    = {2026}
+}
+
+Depois cite no texto com:
+\cite{MinhaChave2026}
+
+5) Como compilar no Overleaf
+- Crie um projeto novo
+- Envie tcc_matheus.tex e bibliografia_matheus.bib
+- Defina tcc_matheus.tex como arquivo principal
+- Clique em Recompile
+
+6) Como compilar localmente no Windows
+Se usar MiKTeX ou TeX Live, a ordem clássica é:
+- pdflatex tcc_matheus.tex
+- bibtexu tcc_matheus
+- pdflatex tcc_matheus.tex
+- pdflatex tcc_matheus.tex
+
+7) Sugestão prática para quem está começando
+Use Overleaf. É o jeito mais fácil para editar, compilar e corrigir erros sem precisar configurar muita coisa no PC.

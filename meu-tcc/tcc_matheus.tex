@@ -1,0 +1,329 @@
+% ---------------------------------------------------------------
+% TCC1 - SENAC SANTO AMARO
+% Versão adaptada para o projeto do Matheus
+% Tema: classificação de câncer de mama em mamografias
+% ---------------------------------------------------------------
+
+\documentclass[
+    12pt,
+    openright,
+    oneside,
+    a4paper,
+    english,
+    brazil
+]{abntex2}
+
+% ---------------------------------------------------------------
+% PACOTES
+% ---------------------------------------------------------------
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lastpage}
+\usepackage{indentfirst}
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage{microtype}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfgantt}
+\usepackage[brazilian,hyperpageref]{backref}
+\usepackage[alf]{abntex2cite}
+
+% ---------------------------------------------------------------
+% CONFIGURAÇÕES DO PDF
+% ---------------------------------------------------------------
+\makeatletter
+\hypersetup{
+    pdftitle={\@title},
+    pdfauthor={\@author},
+    pdfsubject={TCC1 - SENAC Santo Amaro},
+    pdfcreator={LaTeX with abnTeX2},
+    pdfkeywords={tcc}{senac}{câncer de mama}{cnn}{computação quântica},
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=blue,
+    filecolor=magenta,
+    urlcolor=blue,
+    bookmarksdepth=4
+}
+\makeatother
+
+\definecolor{blue}{RGB}{41,5,195}
+
+% ---------------------------------------------------------------
+% INFORMAÇÕES DO DOCUMENTO
+% ---------------------------------------------------------------
+\titulo{Classificação de câncer de mama em mamografias: um estudo comparativo entre CNNs clássicas e híbridas quântico-clássicas}
+\autor{Matheus Sanchez Duda}
+\local{São Paulo}
+\data{2026}
+\orientador{Prof. [Nome do Orientador]}
+% \coorientador{Prof. [Nome do Coorientador]}
+
+\instituicao{%
+  SENAC -- Serviço Nacional de Aprendizagem Comercial
+  \par
+  Unidade Santo Amaro
+  \par
+  Curso de Ciência da Computação
+}
+
+\tipotrabalho{Trabalho de Conclusão de Curso I}
+
+\preambulo{Proposta de Trabalho de Conclusão de Curso apresentada ao SENAC Santo Amaro como requisito parcial para aprovação na disciplina de TCC1 do curso de Ciência da Computação.}
+
+\makeindex
+
+\begin{document}
+\selectlanguage{brazil}
+\frenchspacing
+
+% ---------------------------------------------------------------
+% ELEMENTOS PRÉ-TEXTUAIS
+% ---------------------------------------------------------------
+\pretextual
+\imprimircapa
+\imprimirfolhaderosto
+
+\begin{resumo}
+Este documento apresenta a proposta inicial do Trabalho de Conclusão de Curso (TCC1) que dá continuidade a uma iniciação científica voltada à classificação de câncer de mama em imagens de mamografia com técnicas de Inteligência Artificial. O problema de pesquisa consiste em investigar se modelos híbridos quântico-clássicos conseguem apresentar desempenho comparável ou superior ao de redes neurais convolucionais clássicas quando submetidos a condições experimentais equivalentes. A justificativa do estudo decorre da relevância social do diagnóstico precoce do câncer de mama, da importância da mamografia como exame de rastreamento e da necessidade acadêmica de avaliar com rigor o real potencial da computação quântica aplicada a tarefas de visão computacional em saúde \cite{WHO2025BreastCancer,INCA2025Rastreamento}. A revisão bibliográfica abrange os fundamentos de câncer de mama e mamografia, aprendizado profundo com redes neurais convolucionais, computação quântica, aprendizado de máquina quântico e modelos híbridos aplicados à classificação de imagens \cite{LeCun2015,Gupta2025QMLDigitalHealth,Long2025QCQCNN}. Como solução proposta, pretende-se desenvolver um protocolo experimental reprodutível que compare um modelo clássico de CNN e um modelo híbrido quântico-clássico, avaliando acurácia, precisão, recall, F1-score, AUC, estabilidade entre execuções e custo computacional. O trabalho está organizado em três capítulos: introdução, revisão bibliográfica e desenvolvimento, incluindo a solução proposta e o cronograma de trabalho.
+
+\vspace{\onelineskip}
+\noindent
+\textbf{Palavras-chave}: câncer de mama. mamografia. redes neurais convolucionais. computação quântica. aprendizado de máquina quântico.
+\end{resumo}
+
+\pdfbookmark[0]{\contentsname}{toc}
+\tableofcontents*
+\cleardoublepage
+
+% ---------------------------------------------------------------
+% ELEMENTOS TEXTUAIS
+% ---------------------------------------------------------------
+\textual
+
+% ===============================================================
+\chapter{Introdução}
+\label{cap:introducao}
+
+Este trabalho propõe a continuidade e o aprofundamento de uma iniciação científica dedicada à classificação de câncer de mama em imagens de mamografia, com comparação entre modelos de redes neurais convolucionais clássicas e modelos híbridos quântico-clássicos. Nesta proposta inicial, são apresentados o contexto do problema, a justificativa do estudo e os objetivos que orientarão o desenvolvimento do TCC.
+
+\section{Contexto}
+\label{sec:contexto}
+
+O câncer de mama permanece como um dos principais desafios contemporâneos em saúde pública. A Organização Mundial da Saúde destaca que a doença ocorre em todos os países e que a detecção precoce, associada ao tratamento oportuno, é essencial para reduzir a mortalidade e melhorar os desfechos clínicos \cite{WHO2025BreastCancer}. No contexto brasileiro, o Instituto Nacional de Câncer mantém a mamografia como componente central das estratégias de rastreamento populacional, reforçando a importância do exame para identificação de lesões em estágios iniciais \cite{INCA2025Rastreamento}.
+
+Paralelamente, a área de Inteligência Artificial tem ampliado sua presença na análise de imagens médicas, sobretudo com o uso de redes neurais convolucionais, que se destacam na extração automática de padrões visuais complexos \cite{LeCun2015}. Em mamografias, tais modelos vêm sendo estudados para apoio à classificação de exames, triagem de casos suspeitos e redução de variabilidade entre análises. Entretanto, a literatura recente também aponta limitações importantes relacionadas à reprodutibilidade, à generalização e à interpretação clínica desses sistemas \cite{Bhalla2023MammographyReview}.
+
+Nos últimos anos, a computação quântica passou a ser investigada como alternativa complementar para problemas de aprendizado de máquina, originando modelos híbridos que combinam camadas clássicas e quânticas em uma mesma arquitetura. Apesar do interesse crescente, revisões recentes indicam que ainda existem poucas evidências robustas de superioridade prática dos modelos quânticos em cenários realistas de saúde digital, especialmente quando se considera escalabilidade, ruído e custo computacional \cite{Gupta2025QMLDigitalHealth}. Esse cenário delimita o problema deste TCC: compreender, em uma tarefa específica de classificação de mamografias, se arquiteturas híbridas quântico-clássicas oferecem vantagens reais em comparação com CNNs clássicas.
+
+\section{Justificativa}
+\label{sec:justificativa}
+
+A justificativa deste trabalho pode ser compreendida em três dimensões. A primeira é a relevância social do tema. O câncer de mama possui alta incidência e depende fortemente de estratégias de detecção precoce e apoio à decisão clínica, o que torna pertinente investigar métodos computacionais capazes de auxiliar a análise de mamografias \cite{WHO2025BreastCancer}. Ainda que o presente trabalho não tenha objetivo de uso clínico imediato, ele se insere em uma linha de pesquisa com impacto potencial na área de saúde.
+
+A segunda dimensão é a relevância acadêmica. O aprendizado profundo consolidou-se como uma abordagem central em visão computacional, mas a adoção de modelos híbridos quântico-clássicos ainda carece de validação comparativa rigorosa, principalmente em aplicações médicas \cite{LeCun2015,Gupta2025QMLDigitalHealth}. Assim, o TCC contribui ao investigar se a integração de componentes quânticos traz benefícios mensuráveis em um problema concreto e de alta relevância.
+
+A terceira dimensão é a lacuna científica identificada. Estudos sobre deep learning em mamografia apontam desempenho promissor, porém também evidenciam limitações de reprodutibilidade e de avaliação em condições realistas \cite{Bhalla2023MammographyReview}. Na direção quântica, trabalhos recentes mostram resultados competitivos em tarefas de classificação de imagens, mas ainda em cenários restritos, com bases menores, forte dependência de simulação e poucas evidências em contextos próximos do uso aplicado \cite{Long2025QCQCNN}. Dessa forma, este TCC busca preencher uma lacuna ao propor uma comparação experimental controlada, reprodutível e metodologicamente explícita entre abordagens clássicas e híbridas no domínio da mamografia.
+
+\section{Objetivo}
+\label{sec:objetivo}
+
+Os objetivos definem o que o trabalho pretende alcançar e devem estar diretamente alinhados ao problema de pesquisa apresentado.
+
+\subsection{Objetivo principal}
+\label{subsec:objetivo_principal}
+
+Investigar comparativamente o desempenho de CNNs clássicas e modelos híbridos quântico-clássicos na classificação de câncer de mama em imagens de mamografia, considerando métricas de desempenho preditivo, custo computacional, estabilidade experimental e viabilidade prática.
+
+\subsection{Objetivos secundários}
+\label{subsec:objetivos_secundarios}
+
+\begin{enumerate}
+    \item Realizar levantamento bibliográfico sobre classificação de câncer de mama em mamografias com deep learning e aprendizado de máquina quântico;
+    \item Definir uma base de dados pública e um pipeline reprodutível de pré-processamento e particionamento dos dados;
+    \item Implementar ou adaptar ao menos uma arquitetura clássica de CNN para servir como \textit{baseline};
+    \item Implementar ou adaptar ao menos uma arquitetura híbrida quântico-clássica compatível com o problema estudado;
+    \item Estabelecer um protocolo experimental padronizado para treinamento, validação e teste dos modelos;
+    \item Comparar os modelos por meio de métricas como acurácia, precisão, recall, F1-score, AUC e matriz de confusão;
+    \item Avaliar também o custo computacional, o tempo de treinamento, a estabilidade entre execuções e as limitações de escalabilidade;
+    \item Discutir criticamente os resultados obtidos, identificando vantagens, desvantagens e limitações práticas da abordagem híbrida.
+\end{enumerate}
+
+% ===============================================================
+\chapter{Revisão Bibliográfica}
+\label{cap:revisao}
+
+A revisão bibliográfica tem como finalidade sustentar teoricamente a proposta do trabalho e identificar o estado atual da literatura sobre mamografia, deep learning e aprendizado de máquina quântico. Neste TCC, a revisão será organizada por temas, relacionando conceitos fundamentais ao problema investigado.
+
+\section{Referencial teórico}
+\label{sec:referencial}
+
+\subsection{Câncer de mama e mamografia}
+
+O câncer de mama é uma doença caracterizada pelo crescimento descontrolado de células mamárias, podendo evoluir para formas invasivas e metastáticas. A Organização Mundial da Saúde ressalta que a mortalidade pode ser reduzida com diagnóstico e tratamento precoces, sendo a mamografia um dos principais instrumentos de rastreamento em populações assintomáticas \cite{WHO2025BreastCancer}. No Brasil, o INCA mantém orientações específicas para o rastreamento mamográfico, o que reforça a relevância da mamografia no contexto nacional \cite{INCA2025Rastreamento}.
+
+No campo computacional, imagens de mamografia são particularmente desafiadoras por apresentarem ruído, variações de contraste, estruturas anatômicas complexas e, em muitos casos, desbalanceamento entre classes. Tais características tornam necessário o uso de métodos robustos de extração de atributos e classificação.
+
+\subsection{Aprendizado profundo e redes neurais convolucionais}
+
+O avanço recente da visão computacional está fortemente associado ao desenvolvimento do aprendizado profundo, especialmente com o uso de redes neurais convolucionais. Conforme discutido por \citeonline{LeCun2015}, redes profundas aprendem representações hierárquicas diretamente a partir dos dados, dispensando parte da engenharia manual de atributos tradicional.
+
+Em aplicações médicas, CNNs têm sido empregadas para classificação, detecção e segmentação de padrões em exames de imagem. Na área de mamografia, revisões sistemáticas indicam amplo uso dessas arquiteturas, porém alertam para dificuldades de reprodutibilidade, viés de seleção e falta de avaliação em ambientes mais próximos da prática clínica \cite{Bhalla2023MammographyReview}. Esses pontos justificam a adoção de um protocolo experimental rigoroso neste TCC.
+
+\subsection{Computação quântica e modelos híbridos}
+
+A computação quântica explora propriedades como superposição, emaranhamento e interferência para processamento de informação. Em aprendizado de máquina, uma das linhas mais promissoras tem sido a construção de modelos híbridos, nos quais etapas clássicas e quânticas são combinadas para aproveitar, ao menos em tese, diferentes capacidades de representação.
+
+Entretanto, a literatura recente sugere cautela. A revisão sistemática de \citeonline{Gupta2025QMLDigitalHealth} mostra que, em saúde digital, a maioria dos estudos ainda opera com fortes simplificações, pequeno porte de dados e escopo experimental reduzido. Já \citeonline{Long2025QCQCNN} apresenta uma arquitetura híbrida quântico-clássico-quântica com resultados competitivos em bases de imagens e tumores por ressonância magnética, evidenciando potencial, mas também dependência de cenários controlados.
+
+Assim, a comparação entre uma CNN clássica e uma arquitetura híbrida em mamografias torna-se um recorte adequado para investigar, de forma mais controlada, o real benefício dessas abordagens.
+
+\section{Metodologia da pesquisa bibliográfica}
+\label{sec:metodologia_biblio}
+
+A pesquisa bibliográfica será conduzida em bases como Google Scholar, PubMed, IEEE Xplore, ACM Digital Library, Scopus, SciELO e Periódicos CAPES. Serão utilizadas palavras-chave em português e inglês, incluindo expressões como \textit{``câncer de mama''}, \textit{``mamografia''}, \textit{``breast cancer''}, \textit{``mammography''}, \textit{``convolutional neural network''}, \textit{``deep learning''}, \textit{``quantum machine learning''}, \textit{``hybrid quantum-classical neural network''} e combinações derivadas.
+
+Como critérios de inclusão, serão priorizados trabalhos publicados entre 2018 e 2026, em português ou inglês, que abordem diretamente classificação de câncer de mama, mamografia, visão computacional médica ou modelos híbridos quântico-clássicos aplicados à classificação de imagens. Serão excluídos trabalhos sem relação direta com o problema de pesquisa, textos opinativos sem descrição metodológica mínima e estudos sem resultados experimentais suficientemente claros.
+
+A estratégia de revisão buscará não apenas reunir referências, mas identificar convergências, divergências, lacunas e limitações metodológicas relevantes para posicionar adequadamente a proposta deste TCC.
+
+\section{Fundamentos}
+\label{sec:fundamentos}
+
+Do ponto de vista técnico, a solução proposta envolve quatro blocos principais. O primeiro é a preparação dos dados, incluindo padronização das imagens, redimensionamento, normalização e definição dos conjuntos de treino, validação e teste. O segundo é a construção do modelo clássico de referência, provavelmente baseado em uma CNN com número controlado de parâmetros e treinamento supervisionado.
+
+O terceiro bloco consiste na definição do modelo híbrido quântico-clássico. Nessa etapa, serão estudadas alternativas como camadas variacionais quânticas, estratégias de codificação de dados em poucos qubits e integração com camadas convolucionais ou densas clássicas. O objetivo não é propor uma arquitetura clínica final, mas construir um modelo comparável ao \textit{baseline} clássico dentro das restrições de hardware e tempo disponíveis.
+
+O quarto bloco compreende o protocolo de avaliação. Serão empregadas métricas de classificação como acurácia, precisão, recall, F1-score, AUC e matriz de confusão, além de medidas relacionadas a tempo de treinamento, tempo de inferência, estabilidade entre execuções e custo computacional. Também se pretende registrar o ambiente experimental, versões de bibliotecas e sementes aleatórias para favorecer a reprodutibilidade.
+
+\section{Trabalhos relacionados}
+\label{sec:trabalhos_relacionados}
+
+Nesta proposta inicial, os trabalhos relacionados apresentados a seguir são candidatos preliminares à seleção final. A versão consolidada do TCC refinará essa seção com foco ainda mais estrito no problema de classificação de mamografias e na comparação entre abordagens clássicas e híbridas.
+
+\subsection{Trabalho 1: Reproducibility and Explainability of Deep Learning in Mammography: A Systematic Review of Literature}
+
+Bhalla et al. analisam a literatura sobre uso de deep learning em mamografia com foco em reprodutibilidade e melhores práticas de modelagem \cite{Bhalla2023MammographyReview}. O problema tratado é próximo ao deste TCC, pois envolve classificação e detecção em mamografias com arquiteturas profundas. Os autores identificam grande volume de estudos, porém com alto risco de viés e limitações de reprodutibilidade. Esse trabalho é relevante por reforçar a necessidade de protocolos experimentais rigorosos, aspecto que será central na presente proposta.
+
+\subsection{Trabalho 2: A systematic review of quantum machine learning for digital health}
+
+Gupta et al. realizam uma revisão sistemática sobre aprendizado de máquina quântico em saúde digital \cite{Gupta2025QMLDigitalHealth}. Embora o escopo seja mais amplo do que mamografia, o estudo é importante por mostrar que a maioria das evidências ainda é limitada, frequentemente baseada em simulações simplificadas e com pouca avaliação em condições realistas. O presente TCC dialoga diretamente com essa lacuna ao propor uma comparação experimental controlada em um problema de imagem médica específico.
+
+\subsection{Trabalho 3: Hybrid quantum-classical-quantum convolutional neural networks}
+
+Long et al. propõem uma arquitetura híbrida quântico-clássico-quântica para classificação de imagens, combinando filtro quântico, CNN clássica rasa e classificador quântico variacional \cite{Long2025QCQCNN}. Os resultados indicam desempenho competitivo em bases de imagens e em um conjunto de tumores em ressonância magnética, além de discutirem robustez a ruído e profundidade de circuito. Embora não trate especificamente de mamografias, o trabalho é metodologicamente próximo ao presente TCC por explorar uma arquitetura híbrida comparável a um \textit{baseline} clássico.
+
+\begin{table}[H]
+    \centering
+    \caption{Comparação preliminar entre trabalhos relacionados}
+    \label{tab:comparacao_trabalhos}
+    \small
+    \begin{tabular}{p{2.2cm} p{2.5cm} p{2.5cm} p{2.5cm} p{2.7cm}}
+        \toprule
+        \textbf{Critério} & \textbf{Bhalla et al.} & \textbf{Gupta et al.} & \textbf{Long et al.} & \textbf{Este trabalho} \\
+        \midrule
+        Objetivo & Revisar DL em mamografia & Revisar QML em saúde digital & Propor arquitetura híbrida para classificação de imagens & Comparar CNN clássica e híbrida em mamografias \\
+        Tecnologia & CNNs e modelos de DL & QML em diferentes cenários de saúde & Modelo QCQ-CNN & CNN clássica + modelo híbrido \\
+        Validação & Revisão sistemática & Revisão sistemática & Experimentos controlados em imagens & Experimentos controlados em mamografias \\
+        Limitação & Reprodutibilidade limitada na literatura & Poucas evidências robustas em saúde & Não foca em mamografia & Escopo restrito e dependente de recursos computacionais \\
+        \bottomrule
+    \end{tabular}
+    \par\vspace{0.2cm}\small Fonte: Elaborado pelo autor (2026).
+\end{table}
+
+% ===============================================================
+\chapter{Desenvolvimento}
+\label{cap:desenvolvimento}
+
+Neste capítulo, apresenta-se a solução proposta para o problema identificado e o cronograma preliminar de trabalho para o desenvolvimento completo do projeto ao longo do TCC.
+
+\section{Solução proposta}
+\label{sec:solucao}
+
+A solução proposta consiste em um estudo experimental comparativo entre duas abordagens de classificação de imagens de mamografia: uma abordagem clássica, baseada em redes neurais convolucionais, e uma abordagem híbrida quântico-clássica. O objetivo não é construir um produto clínico, mas estabelecer um protocolo reproduzível de comparação entre modelos sob condições equivalentes.
+
+Em termos de arquitetura geral, o projeto deverá contemplar: (i) preparação padronizada dos dados; (ii) implementação do \textit{baseline} clássico; (iii) implementação do modelo híbrido; (iv) treinamento e validação com os mesmos conjuntos de dados; e (v) análise quantitativa e qualitativa dos resultados. Pretende-se utilizar Python como linguagem principal, com bibliotecas clássicas de aprendizado profundo, como TensorFlow ou PyTorch, e bibliotecas de computação quântica e aprendizado híbrido, como PennyLane ou Qiskit.
+
+Do ponto de vista metodológico, a pesquisa será conduzida como estudo experimental com apoio teórico. Essa escolha é adequada porque o objetivo central do TCC é implementar, controlar variáveis, executar experimentos e comparar empiricamente duas classes de modelos. O foco da validação estará em métricas objetivas, múltiplas execuções com diferentes sementes e registro detalhado do ambiente computacional.
+
+A pergunta de pesquisa que orienta a solução pode ser formulada da seguinte forma: \textit{em tarefas de classificação de câncer de mama a partir de imagens de mamografia, modelos híbridos quântico-clássicos apresentam desempenho comparável ou superior ao de CNNs clássicas quando avaliados sob as mesmas condições experimentais?}
+
+A hipótese de trabalho inicial é que modelos híbridos podem apresentar desempenho competitivo em cenários específicos, porém ainda enfrentam limitações práticas relacionadas à escalabilidade, ao custo computacional e à maturidade da tecnologia quântica disponível. Dessa forma, o sucesso da pesquisa não depende necessariamente de superioridade do modelo híbrido, mas da produção de evidências reprodutíveis que permitam comparar as abordagens com rigor metodológico.
+
+\subsection*{Plano de validação}
+
+A validação da proposta será realizada por meio de: separação adequada entre treino, validação e teste; repetição dos experimentos com sementes distintas; comparação direta com \textit{baseline} clássico; uso de métricas de classificação; análise de custo computacional; e discussão crítica das limitações observadas. Sempre que possível, serão adotados testes estatísticos para verificar a significância das diferenças entre os resultados.
+
+\subsection*{Riscos e limitações iniciais}
+
+Entre os riscos identificados estão a limitação de bases públicas, o desbalanceamento entre classes, o alto custo de simulação quântica, incompatibilidades de bibliotecas, restrições de hardware e a possibilidade de escopo excessivamente amplo. Como mitigação, o trabalho será mantido dentro de um recorte claro: classificação supervisionada de mamografias, poucas arquiteturas comparáveis, documentação rigorosa e priorização de experimentos viáveis dentro do tempo do TCC.
+
+\section{Cronograma de trabalho}
+\label{sec:cronograma}
+
+O cronograma a seguir apresenta uma proposta inicial de organização das atividades ao longo de 16 semanas. Ele poderá ser ajustado conforme o calendário acadêmico e as orientações do professor orientador.
+
+\begin{figure}[H]
+    \centering
+    \caption{Cronograma de atividades - Diagrama de Gantt}
+    \label{fig:gantt}
+    \begin{ganttchart}[
+        hgrid,
+        vgrid,
+        x unit=0.72cm,
+        y unit title=0.6cm,
+        y unit chart=0.7cm,
+        title height=1,
+        bar height=0.5,
+        bar label font=\scriptsize,
+        title label font=\small,
+        milestone label font=\scriptsize\itshape,
+        group label font=\scriptsize\bfseries,
+        bar/.append style={fill=blue!40},
+        group/.append style={draw=black, fill=blue!70},
+        milestone/.append style={fill=red!70},
+    ]{1}{16}
+        \gantttitle{Semanas}{16} \\
+        \gantttitlelist{1,...,16}{1} \\
+
+        \ganttgroup{Fase 1: Planejamento e revisão}{1}{4} \\
+        \ganttbar{Revisão bibliográfica inicial}{1}{3} \\
+        \ganttbar{Refino da pergunta e objetivos}{2}{3} \\
+        \ganttbar{Definição da base e do protocolo}{3}{4} \\
+        \ganttmilestone{Entrega do projeto}{4} \\
+
+        \ganttgroup{Fase 2: Implementação experimental}{5}{11} \\
+        \ganttbar{Implementação da CNN clássica}{5}{7} \\
+        \ganttbar{Implementação do modelo híbrido}{7}{9} \\
+        \ganttbar{Treinamento e ajustes}{9}{11} \\
+        \ganttmilestone{Protótipo experimental}{11} \\
+
+        \ganttgroup{Fase 3: Validação e redação}{12}{16} \\
+        \ganttbar{Testes, métricas e análise}{12}{14} \\
+        \ganttbar{Ajustes e consolidação}{14}{15} \\
+        \ganttbar{Redação final do TCC2}{13}{16} \\
+        \ganttmilestone{Entrega final}{16}
+    \end{ganttchart}
+    \par\vspace{0.2cm}\small Fonte: Elaborado pelo autor (2026).
+\end{figure}
+
+\textbf{Observações sobre o cronograma}: 
+\begin{itemize}
+    \item O cronograma é preliminar e deve ser alinhado com o calendário acadêmico oficial;
+    \item As tarefas podem ser redistribuídas conforme a disponibilidade do orientador, do ambiente computacional e dos resultados experimentais;
+    \item A etapa de revisão bibliográfica continuará ao longo do semestre, mesmo após a entrega inicial do projeto;
+    \item A fase de implementação experimental poderá exigir iterações adicionais em função das limitações dos modelos híbridos e do ambiente de simulação.
+\end{itemize}
+
+% ---------------------------------------------------------------
+% ELEMENTOS PÓS-TEXTUAIS
+% ---------------------------------------------------------------
+\postextual
+\bibliography{bibliografia_matheus}
+
+\end{document}
