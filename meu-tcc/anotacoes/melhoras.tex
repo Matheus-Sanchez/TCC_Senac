@@ -179,6 +179,8 @@ Este trabalho tem o objetivo de aprimorar a arquitetura de redes neurais convolu
 % do vetor de características projetado para o circuito quântico, do número de qubits
 % e da profundidade do circuito.
 
+Hipótese: uma arquitetura híbrida quântico-clássica, quando comparada a uma CNN clássica sob o mesmo protocolo experimental, pode apresentar desempenho competitivo em métricas específicas de classificação, mas tende a enfrentar limitações superiores de custo computacional, escalabilidade e estabilidade devido à simulação quântica e às restrições de hardware.
+
 \section{Delimitações do trabalho}
 
 % Explique o que o trabalho não pretende fazer:
@@ -222,19 +224,23 @@ Dessa forma, a pesquisa bibliográfica não terá apenas a finalidade de reunir 
 % o problema computacional.
 
 
-\subsection{Mamografia eanálise de imagens médicas}
+\subsection{Mamografia e análise de imagens médicas}
 
 % Explique os desafios específicos da análise de imagens médicas,
 % como variação de qualidade, artefatos, heterogeneidade dos casos e importância clínica.
+
+
 
 \subsection{Bases de dados em mamografia}
 
 % Apresente bases públicas e benchmarks, como Mammo-Bench, CBIS-DDSM,
 % INbreast ou outras bases relevantes ao trabalho.
 
+A literatura mostra que a qualidade e a escala das bases de dados são determinantes para o desempenho dos modelos de aprendizado profundo em mamografia. Abdelhafiz et al. \cite{abdelhafiz2019} já destacavam a relevância de bases como DDSM, INbreast, MIAS e BCDR, observando que diferenças em resolução, formato, número de imagens e tipo de anotação influenciam diretamente os resultados dos estudos.
 
-\subsection{Mammo-Bench}
-"o dataset Mammo-Bench é um conjunto de datasets publicos com imagens de mamografia de alta qualidade de 26.500 pacientes de 7 paises diferentes"
+Mais recentemente, Bhole, Suba e Parekh \cite{bhole2025} propuseram o Mammo-Bench, uma base unificada composta por 74.436 imagens provenientes de 26.500 pacientes de sete países. O conjunto foi construído a partir da integração de sete bases distintas e passou por uma cadeia de pré processamento para padronização das imagens. Segundo os autores, o treinamento sobre essa base ampla melhora o desempenho da classificação, inclusive nas classes minoritárias, tornando o Mammo-Bench uma referência importante para estudos comparativos e para o desenvolvimento de sistemas mais robustos.
+
+Esse tipo de benchmark é particularmente relevante para pesquisas em mamografia, pois reduz a dependência de conjuntos pequenos, heterogêneos e pouco comparáveis entre si. Além disso, favorece análises mais confiáveis sobre generalização e transferibilidade dos modelos.
 
 na tebela seguinte é mostrado a organização do dataset com a quantidade de imagens que cada subdataset forneceu, todas as imagens sao em formato JPG, com tamanhos diversos e escala de cor cinza apenas. 
 
@@ -255,6 +261,9 @@ na tebela seguinte é mostrado a organização do dataset com a quantidade de im
 \textbf{Total}          & \textbf{71.844} & Versão dos CSVs enviados \\ \hline
 \end{tabular}
 \end{table}
+
+
+\subsection{Mammo-Bench}
 
 com os diversos exames e classes que foram fornecidos, o estudo anterior do autor foi reduzido para apenas 3 classes, junto com uma
 
