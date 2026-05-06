@@ -29,6 +29,7 @@
 \usepackage{multirow}
 \usepackage{longtable}
 \usepackage{amsmath,amssymb}
+\usepackage{braket}
 \usepackage{pgfgantt}
 \usepackage[brazilian,hyperpageref]{backref}
 \usepackage[alf]{abntex2cite}
@@ -336,6 +337,7 @@ Essas características tornam o Mammo-Bench uma base relevante para estudos de c
 
 
 \subsection{Qualidade dos rótulos, desbalanceamento e viés dos dados}
+\label{subsec:qualidade_rotulos_balanceamento_vies}
 
 Em tarefas de classificação supervisionada, o desbalanceamento de classes representa um problema metodológico relevante, pois modelos treinados com distribuições muito assimétricas tendem a favorecer a classe majoritária, reduzindo a capacidade de reconhecimento das classes menos representadas. Em aplicações médicas, esse problema é ainda mais sensível, uma vez que erros em classes minoritárias podem afetar diretamente a interpretação dos resultados e a utilidade clínica do modelo.
 
@@ -359,7 +361,7 @@ A Figura~\ref{fig:imagem_matriz_5x5} apresenta uma representação simplificada 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{figuras/imagem_matriz_5x5.png}
+    \includegraphics[width=\textwidth]{../figuras/imagem_matriz_5x5.png}
     \caption{Representação matemática de uma imagem em escala de cinza como matriz de intensidades.}
     \label{fig:imagem_matriz_5x5}
 \end{figure}
@@ -874,29 +876,345 @@ Em mamografias, mapas Grad-CAM podem ajudar a verificar se o modelo está concen
 
 \section{Computação quântica e aprendizado de máquina quântico}
 
+A computação quântica é um paradigma computacional baseado em princípios da mecânica quântica, como superposição, emaranhamento, interferência e medição probabilística. Diferentemente da computação clássica, que utiliza bits para representar informações nos estados 0 ou 1, a computação quântica utiliza qubits, que podem assumir combinações lineares desses estados. Essa diferença permite representar e manipular informações em espaços vetoriais complexos de alta dimensão, chamados espaços de Hilbert.
+
+O aprendizado de máquina quântico, ou \textit{Quantum Machine Learning} (QML), investiga como recursos da computação quântica podem ser utilizados em tarefas de aprendizado de máquina, como classificação, regressão, agrupamento e redução de dimensionalidade. Em dispositivos quânticos atuais, caracterizados por número limitado de qubits, ruído e restrições de profundidade dos circuitos, uma das abordagens mais estudadas é a construção de modelos híbridos quântico-clássicos. Nesses modelos, parte do processamento é realizada por componentes clássicos e parte por circuitos quânticos parametrizados \cite{biamonte2017qml,preskill2018nisq,cerezo2021variational}.
+
+No contexto deste trabalho, o interesse principal está na aplicação de modelos híbridos à classificação de imagens médicas, especialmente mamografias. Como imagens possuem alta dimensionalidade, a aplicação direta de circuitos quânticos ainda é limitada. Por isso, muitas propostas utilizam redes clássicas para extrair ou reduzir características e, posteriormente, inserem um bloco quântico responsável por transformar essas características em uma representação alternativa.
+
 \subsection{Qubits, superposição, emaranhamento e medição}
+
+O qubit é a unidade básica de informação quântica. Enquanto um bit clássico pode assumir apenas um dos valores 0 ou 1, um qubit pode ser representado como uma combinação linear dos estados base \(\ket{0}\) e \(\ket{1}\):
+
+\[
+\ket{\psi} = \alpha\ket{0} + \beta\ket{1},
+\]
+
+em que \(\alpha\) e \(\beta\) são amplitudes complexas que satisfazem a condição de normalização:
+
+\[
+|\alpha|^2 + |\beta|^2 = 1.
+\]
+
+Os valores \(|\alpha|^2\) e \(|\beta|^2\) representam as probabilidades de observar, após a medição, os estados \(\ket{0}\) e \(\ket{1}\), respectivamente. Assim, antes da medição, o qubit pode estar em superposição; após a medição, o resultado observado será clássico, assumindo um dos estados possíveis.
+
+Para um sistema com \(n\) qubits, o estado quântico pertence a um espaço de dimensão \(2^n\). Por exemplo, dois qubits possuem quatro estados base:
+
+\[
+\ket{00}, \ket{01}, \ket{10}, \ket{11}.
+\]
+
+De forma geral, um estado de dois qubits pode ser representado por:
+
+\[
+\ket{\psi} =
+\alpha_{00}\ket{00}
++
+\alpha_{01}\ket{01}
++
+\alpha_{10}\ket{10}
++
+\alpha_{11}\ket{11},
+\]
+
+com a condição:
+
+\[
+|\alpha_{00}|^2 +
+|\alpha_{01}|^2 +
+|\alpha_{10}|^2 +
+|\alpha_{11}|^2 = 1.
+\]
+
+Esse crescimento exponencial do espaço de estados é uma das razões pelas quais a computação quântica desperta interesse em problemas de alta complexidade. Entretanto, esse mesmo crescimento também torna a simulação clássica de circuitos quânticos rapidamente custosa.
+
+Outro fenômeno importante é o emaranhamento. Um estado é dito emaranhado quando não pode ser decomposto como produto tensorial de estados individuais dos qubits. Um exemplo clássico é o estado de Bell:
+
+\[
+\ket{\Phi^+} =
+\frac{1}{\sqrt{2}}
+(\ket{00} + \ket{11}).
+\]
+
+Nesse caso, os qubits apresentam correlações que não podem ser descritas apenas como estados independentes. A medição de um qubit afeta a descrição do estado global do sistema, produzindo correlações probabilísticas fortes entre os resultados.
+
+A medição é o processo que transforma informação quântica em informação clássica. Em modelos de aprendizado de máquina quântico, as medições são fundamentais, pois as saídas do circuito geralmente são obtidas por probabilidades de medição ou por valores esperados de observáveis. Por exemplo, pode-se medir o valor esperado do operador de Pauli-Z em um qubit:
+
+\[
+\langle Z \rangle =
+\bra{\psi} Z \ket{\psi}.
+\]
+
+Esse valor esperado pode ser utilizado como uma característica numérica de saída do circuito quântico e, posteriormente, alimentar uma camada clássica de classificação.
 
 \subsection{Portas e circuitos quânticos parametrizados}
 
+As portas quânticas são operações matemáticas aplicadas sobre qubits. Diferentemente de muitas operações clássicas, as portas quânticas são representadas por matrizes unitárias, isto é, matrizes \(U\) que satisfazem:
+
+\[
+U^\dagger U = I,
+\]
+
+em que \(U^\dagger\) representa a conjugada transposta de \(U\) e \(I\) é a matriz identidade. Essa propriedade garante que a norma do estado quântico seja preservada durante a evolução do circuito.
+
+Entre as portas quânticas mais comuns estão as portas de Pauli \(X\), \(Y\) e \(Z\), a porta Hadamard \(H\), portas de rotação e portas controladas, como CNOT e CZ. A porta Hadamard, por exemplo, é frequentemente utilizada para criar superposição:
+
+\[
+H\ket{0} =
+\frac{1}{\sqrt{2}}
+(\ket{0} + \ket{1}).
+\]
+
+Portas de rotação são especialmente importantes em modelos variacionais, pois dependem de parâmetros ajustáveis. Uma rotação em torno do eixo \(Y\), por exemplo, pode ser representada por:
+
+\[
+R_Y(\theta) =
+e^{-i\frac{\theta}{2}Y}.
+\]
+
+De modo geral, um circuito quântico parametrizado pode ser representado por uma operação unitária \(U(\theta)\), em que \(\theta\) representa um conjunto de parâmetros treináveis. Um circuito formado por várias camadas pode ser escrito como:
+
+\[
+U(\theta) =
+U_L(\theta_L)
+U_{L-1}(\theta_{L-1})
+\cdots
+U_1(\theta_1).
+\]
+
+Essa estrutura é análoga, em certo sentido, às redes neurais clássicas, nas quais diferentes camadas aplicam transformações sucessivas aos dados. No caso quântico, as transformações são operações unitárias aplicadas sobre estados quânticos.
+
+Em modelos híbridos, os parâmetros do circuito são ajustados por um otimizador clássico. O circuito quântico calcula uma saída, normalmente associada a valores esperados de observáveis, e essa saída é usada para computar uma função de custo. Em seguida, um algoritmo clássico atualiza os parâmetros do circuito. Esse ciclo forma a base dos algoritmos variacionais quânticos \cite{cerezo2021variational}.
+
 \subsection{Codificação de dados clássicos em estados quânticos}
+
+Para que dados clássicos sejam processados por um circuito quântico, é necessário convertê-los em estados quânticos ou em parâmetros de portas quânticas. Esse processo é chamado de codificação, incorporação ou \textit{embedding} dos dados. A escolha da codificação é uma etapa central em QML, pois determina como a informação clássica será representada no espaço quântico.
+
+Uma forma simples de codificação é a codificação por ângulo. Nesse caso, os atributos clássicos de uma entrada \(x = [x_1, x_2, \ldots, x_d]\) são usados como ângulos de rotação em portas quânticas. Por exemplo, pode-se aplicar uma rotação em cada qubit:
+
+\[
+\ket{\psi(x)}
+=
+\prod_{j=1}^{d}
+R_Y(x_j)
+\ket{0}^{\otimes n}.
+\]
+
+Essa estratégia é simples e adequada para circuitos rasos, mas exige que a dimensão dos dados seja compatível com o número de qubits ou com o número de portas utilizadas. Em imagens de alta dimensão, como mamografias, esse ponto se torna crítico, pois a quantidade de pixels é muito maior do que o número de qubits disponível em dispositivos atuais.
+
+Outra abordagem é o uso de \textit{quantum feature maps}. Nesse caso, os dados clássicos são mapeados para estados quânticos por meio de um circuito \(U_{\Phi}(x)\), produzindo:
+
+\[
+\ket{\Phi(x)} =
+U_{\Phi}(x)\ket{0}^{\otimes n}.
+\]
+
+A motivação é que o espaço de Hilbert pode atuar como um espaço de características de alta dimensão. Havlíček et al. propuseram métodos de aprendizado supervisionado com espaços de características quânticos, incluindo classificadores variacionais e estimadores de kernel quântico. A ideia central é mapear os dados clássicos de forma não linear para estados quânticos e explorar produtos internos nesse espaço para realizar classificação \cite{havlicek2019supervised}.
+
+Em métodos baseados em kernel, a similaridade entre duas entradas \(x\) e \(z\) pode ser calculada por:
+
+\[
+K(x,z) =
+|\langle \Phi(x) | \Phi(z) \rangle|^2.
+\]
+
+Essa formulação estabelece uma conexão direta entre QML e métodos clássicos como SVMs, nos quais a escolha do kernel influencia fortemente a capacidade de separação entre classes.
+
+Uma limitação relevante da codificação é que dados clássicos não podem ser simplesmente copiados dentro de um circuito quântico como ocorre em redes neurais clássicas. Para contornar parte dessa limitação, Pérez-Salinas et al. propuseram a técnica de \textit{data re-uploading}, na qual os mesmos dados clássicos são inseridos repetidas vezes ao longo do circuito. Um circuito com reenvio de dados pode ser representado de forma simplificada como:
+
+\[
+U(\theta, x)
+=
+L_N(\theta_N, x)
+\cdots
+L_2(\theta_2, x)
+L_1(\theta_1, x),
+\]
+
+em que cada camada \(L_i\) combina parâmetros treináveis e dados de entrada. Essa técnica aumenta a capacidade expressiva do circuito, permitindo que modelos com poucos qubits representem funções mais complexas \cite{perezsalinas2020data}.
+
+No contexto de imagens médicas, a codificação é um dos maiores desafios para modelos quânticos. Uma mamografia redimensionada para \(1024 \times 1024\) pixels possui mais de um milhão de valores de intensidade, enquanto circuitos quânticos simuláveis geralmente utilizam poucos qubits. Por isso, modelos híbridos normalmente utilizam uma etapa clássica de extração ou compressão de características antes da codificação quântica.
 
 \subsection{Modelos variacionais quânticos}
 
+Modelos variacionais quânticos são uma das principais abordagens para uso de computação quântica em dispositivos NISQ. Esses modelos combinam circuitos quânticos parametrizados com otimizadores clássicos. O circuito quântico é responsável por preparar estados, aplicar transformações e produzir medições; o computador clássico calcula a função de custo e atualiza os parâmetros do circuito.
+
+A estrutura geral de um algoritmo variacional pode ser descrita por três componentes: uma função de custo \(C(\theta)\), um circuito parametrizado, também chamado de \textit{ansatz}, e um otimizador clássico. O objetivo é encontrar os parâmetros:
+
+\[
+\theta^* =
+\arg\min_{\theta}
+C(\theta).
+\]
+
+A função de custo pode depender de medições realizadas no circuito quântico. Em muitos casos, ela pode ser expressa em termos de valores esperados de observáveis:
+
+\[
+C(\theta)
+=
+\sum_k
+f_k
+\left(
+\operatorname{Tr}
+[
+O_k U(\theta)\rho_k U^\dagger(\theta)
+]
+\right),
+\]
+
+em que \(O_k\) representa um observável, \(\rho_k\) representa um estado de entrada e \(U(\theta)\) é o circuito parametrizado. Essa formulação mostra como o circuito quântico e o otimizador clássico atuam em conjunto no processo de aprendizagem \cite{cerezo2021variational}.
+
+Em classificação, o circuito pode receber uma entrada codificada \(x\), aplicar uma transformação variacional e produzir saídas por medição. Por exemplo:
+
+\[
+z_j(x,\theta)
+=
+\langle Z_j \rangle
+=
+\bra{\psi(x,\theta)}
+Z_j
+\ket{\psi(x,\theta)}.
+\]
+
+O vetor \(z(x,\theta)\) pode ser utilizado diretamente para classificação ou enviado a uma camada clássica, como uma camada densa com ativação \textit{softmax}. Assim, o circuito quântico atua como uma camada treinável dentro de um pipeline maior.
+
+A escolha do ansatz é uma decisão importante. Um ansatz muito simples pode não ter capacidade suficiente para representar padrões complexos; por outro lado, um ansatz muito profundo pode ser difícil de treinar e mais sensível a ruído. Essa tensão entre expressividade, profundidade, número de qubits e treinabilidade é uma das principais questões em modelos variacionais quânticos.
+
 \subsection{Limitações de simulação, barren plateaus e escalabilidade}
+
+Apesar do potencial dos modelos quânticos, sua aplicação prática ainda enfrenta limitações importantes. A primeira delas é o custo de simulação. Um sistema com \(n\) qubits possui \(2^n\) amplitudes complexas. Assim, a memória necessária para simular exatamente um estado quântico cresce exponencialmente com o número de qubits. Essa limitação é especialmente relevante em pesquisas executadas em computadores clássicos, nas quais o aumento do número de qubits rapidamente se torna inviável.
+
+Outro desafio é a presença de \textit{barren plateaus}. Esse termo descreve regiões da paisagem de otimização nas quais os gradientes da função de custo se tornam muito pequenos. Quando isso ocorre, o otimizador clássico tem dificuldade para encontrar direções úteis de atualização dos parâmetros. McClean et al. demonstraram que, para certas famílias de circuitos quânticos parametrizados, a variância dos gradientes pode decair exponencialmente com o número de qubits \cite{mcclean2018barren}.
+
+De forma simplificada, se \(E(\theta)\) representa uma função de custo, o treinamento depende de gradientes como:
+
+\[
+\frac{\partial E(\theta)}{\partial \theta_k}.
+\]
+
+Em um \textit{barren plateau}, esses gradientes se aproximam de zero para grande parte do espaço de parâmetros:
+
+\[
+\frac{\partial E(\theta)}{\partial \theta_k}
+\approx 0.
+\]
+
+Isso dificulta o treinamento, pois as atualizações de parâmetros tornam-se pouco informativas. Em contraste com redes neurais clássicas, nas quais o desaparecimento do gradiente costuma estar fortemente associado à profundidade da rede, em circuitos quânticos o problema também pode depender fortemente do número de qubits e da forma do ansatz.
+
+A escalabilidade também é limitada pelo ruído dos dispositivos NISQ. Circuitos mais profundos tendem a acumular mais erros, e circuitos com muitos qubits exigem maior conectividade e controle físico. Por isso, modelos híbridos atuais costumam utilizar poucos qubits e circuitos relativamente rasos. Essa escolha melhora a viabilidade prática, mas também pode limitar a expressividade do componente quântico.
+
+Em imagens médicas de alta dimensão, como mamografias, essas limitações são ainda mais evidentes. A codificação direta de todos os pixels é impraticável nos dispositivos atuais, exigindo redução dimensional, extração de características ou processamento local. Portanto, qualquer comparação entre modelos clássicos e híbridos deve considerar não apenas métricas preditivas, mas também custo computacional, estabilidade do treinamento, uso de memória e viabilidade de simulação.
+
 
 \section{Modelos híbridos quântico-clássicos}
 
+Modelos híbridos quântico-clássicos combinam componentes de aprendizado de máquina clássico com circuitos quânticos parametrizados. Essa abordagem é adequada ao cenário NISQ porque permite utilizar circuitos pequenos, enquanto delega ao computador clássico tarefas como pré-processamento, extração de características, otimização e classificação final.
+
+Em tarefas de classificação de imagens, uma estratégia comum é usar uma rede neural clássica, especialmente uma CNN, para extrair características visuais da imagem. Em seguida, essas características são projetadas para uma dimensão compatível com o número de qubits e codificadas em um circuito quântico. O circuito atua como uma camada variacional ou transformadora, e suas saídas são processadas por camadas clássicas responsáveis pela classificação final.
+
+Essa estrutura permite investigar se o componente quântico contribui para a representação dos dados ou para a separação entre classes. No entanto, a simples inclusão de um circuito quântico não garante ganho de desempenho. A contribuição do bloco quântico precisa ser avaliada de forma controlada, comparando-o com baselines clássicos equivalentes.
+
 \subsection{Modelos híbridos quântico-clássicos para classificação}
 
-Modelos híbridos quântico-clássicos combinam componentes tradicionais de aprendizado de máquina com circuitos quânticos parametrizados. Em tarefas de classificação de imagens, uma estratégia comum é utilizar uma rede clássica para extrair características da imagem e, em seguida, projetar essas características para um espaço de menor dimensão compatível com o número de qubits disponíveis. O circuito quântico atua como uma camada variacional, cujas saídas são posteriormente processadas por camadas clássicas responsáveis pela classificação final.
+Em um modelo híbrido para classificação, o fluxo geral pode ser descrito por quatro etapas. A primeira é o processamento clássico da entrada. Considerando uma imagem \(x\), uma rede clássica \(g_{\phi}\) pode extrair um vetor de características:
 
-Essa abordagem é motivada pela possibilidade de explorar representações não clássicas dos dados, utilizando propriedades como superposição, emaranhamento e interferência. No entanto, a aplicação desse tipo de modelo em imagens médicas de alta dimensão ainda apresenta limitações importantes. O número reduzido de qubits, o custo de simulação, a dificuldade de codificação dos dados e a sensibilidade a hiperparâmetros podem limitar a expressividade do circuito e dificultar o treinamento.
+\[
+v = g_{\phi}(x),
+\]
 
-Assim, modelos híbridos aplicados a mamografias devem ser avaliados com cautela. A simples inclusão de uma camada quântica não garante melhor desempenho. É necessário verificar se o bloco quântico contribui efetivamente para a separação entre as classes ou se apenas adiciona custo computacional ao pipeline. Por isso, comparações com baselines clássicos bem definidos são fundamentais para avaliar a viabilidade prática dessas arquiteturas.
+em que \(\phi\) representa os parâmetros da rede clássica. Em seguida, esse vetor é projetado para uma dimensão menor, compatível com o número de qubits:
+
+\[
+u = Wv + b.
+\]
+
+O vetor \(u\) é então codificado em um circuito quântico por meio de um operador de codificação \(U_{\text{enc}}(u)\), produzindo um estado:
+
+\[
+\ket{\psi(u)}
+=
+U_{\text{enc}}(u)
+\ket{0}^{\otimes n}.
+\]
+
+Depois, aplica-se um circuito variacional \(U(\theta)\), cujos parâmetros são treináveis:
+
+\[
+\ket{\psi(u,\theta)}
+=
+U(\theta)
+U_{\text{enc}}(u)
+\ket{0}^{\otimes n}.
+\]
+
+A saída do circuito pode ser obtida por valores esperados de observáveis, como operadores de Pauli-Z:
+
+\[
+z_j =
+\bra{\psi(u,\theta)}
+Z_j
+\ket{\psi(u,\theta)}.
+\]
+
+Esses valores formam um vetor \(z\), que pode ser enviado a uma camada clássica final:
+
+\[
+\hat{y}
+=
+\operatorname{softmax}(W_c z + b_c).
+\]
+
+Essa formulação mostra que o circuito quântico pode ser interpretado como uma camada intermediária treinável dentro de uma arquitetura maior. Em problemas de classificação, o treinamento busca ajustar tanto parâmetros clássicos quanto parâmetros quânticos, minimizando uma função de perda associada aos rótulos verdadeiros.
+
+Xiang et al. propuseram uma arquitetura híbrida quântico-clássica para diagnóstico de câncer de mama, combinando uma camada convolucional quântica com camadas clássicas totalmente conectadas. No artigo, os autores utilizam bases como GBSG, SEER e WDBC, que são bases diagnósticas/tabulares, e não uma base de mamografias como o Mammo-Bench \cite{xiang2024qccnn}. Ainda assim, o trabalho é relevante por mostrar uma aplicação direta de modelos híbridos no contexto de câncer de mama.
 
 \subsection{Integração entre CNNs e circuitos quânticos}
 
+A integração entre CNNs e circuitos quânticos pode ocorrer de diferentes formas. Uma abordagem é utilizar a CNN como extratora de características e substituir parte das camadas densas finais por uma camada quântica variacional. Nesse caso, a CNN processa a imagem, reduz sua dimensionalidade e envia ao circuito quântico um vetor compacto de características.
+
+Outra abordagem é utilizar camadas quanvolucionais, propostas por Henderson et al. Nessas camadas, regiões locais da imagem são processadas por circuitos quânticos, de forma análoga ao funcionamento de filtros convolucionais clássicos \cite{henderson2020quanvolutional}. Uma região local da imagem, representada por \(u_x\), é codificada em um circuito quântico por uma função \(e\):
+
+\[
+i_x = e(u_x).
+\]
+
+Em seguida, o circuito quântico \(q\) transforma esse estado:
+
+\[
+o_x = q(i_x) = q(e(u_x)).
+\]
+
+Por fim, uma função de decodificação \(d\), baseada em medições, transforma a saída quântica em um valor clássico:
+
+\[
+f_x = d(o_x) = d(q(e(u_x))).
+\]
+
+A transformação completa pode ser representada por:
+
+\[
+f_x = Q(u_x, e, q, d).
+\]
+
+Esse valor \(f_x\) passa a compor um mapa de características, de forma semelhante à saída de um filtro convolucional clássico. A principal diferença é que a transformação local não é uma simples multiplicação por um kernel clássico, mas sim o resultado de uma codificação, uma evolução quântica e uma medição.
+
+Essa ideia é interessante para imagens porque evita a necessidade de codificar a imagem inteira em um único circuito. Em vez disso, pequenas regiões locais são processadas separadamente, reduzindo a quantidade de qubits necessária. Essa característica torna as camadas quanvolucionais mais compatíveis com dispositivos NISQ. Entretanto, essa abordagem também pode ser computacionalmente custosa, pois o circuito precisa ser executado muitas vezes para processar todas as regiões da imagem.
+
+No contexto de mamografias, a integração entre CNNs e circuitos quânticos precisa considerar a alta resolução das imagens e a importância de regiões pequenas. Uma arquitetura híbrida pode utilizar camadas convolucionais clássicas para extrair padrões visuais, como textura, contraste e forma, e depois aplicar um circuito quântico apenas sobre uma representação compacta. Essa estratégia reduz o custo quântico e torna o treinamento mais viável.
+
 \subsection{Limitações práticas em imagens de alta dimensão}
+
+A aplicação de modelos híbridos quântico-clássicos em imagens médicas de alta dimensão apresenta desafios específicos. O primeiro desafio é a diferença entre a dimensão da imagem e a quantidade de qubits disponível. Uma mamografia em escala de cinza com resolução \(1024 \times 1024\) possui \(1.048.576\) pixels. Codificar diretamente todos esses valores em um circuito quântico é impraticável nos dispositivos atuais e também em simuladores clássicos.
+
+Por isso, modelos híbridos dependem de alguma forma de compressão, extração de características ou processamento local. Essa redução dimensional, entretanto, pode causar perda de informações relevantes. Em mamografias, lesões pequenas, microcalcificações e alterações sutis podem ocupar regiões muito pequenas da imagem. Assim, se a compressão remover essas informações, o circuito quântico receberá uma representação insuficiente para a classificação.
+
+Outro desafio é o custo de execução. Mesmo circuitos pequenos podem precisar ser avaliados muitas vezes durante o treinamento. Além disso, medições quânticas são probabilísticas, o que pode exigir múltiplas execuções, chamadas de \textit{shots}, para estimar valores esperados com precisão. Em simuladores, o custo cresce com o número de qubits; em hardware real, o custo envolve ruído, tempo de execução e limitações de acesso ao dispositivo.
+
+Também existe o desafio da treinabilidade. Circuitos muito expressivos ou aleatórios podem sofrer com \textit{barren plateaus}, tornando o treinamento instável. Circuitos muito simples, por outro lado, podem não ter capacidade suficiente para separar classes complexas. Dessa forma, há um equilíbrio delicado entre expressividade e treinabilidade.
+
+A revisão de Yan et al. destaca que algoritmos quânticos e quantum-inspired vêm sendo explorados em tarefas de processamento de imagens médicas, incluindo diagnóstico, classificação, segmentação e segurança de imagens. No entanto, os autores também indicam que esse campo ainda apresenta desafios abertos, especialmente devido às limitações da tecnologia quântica atual e à necessidade de validações mais robustas em aplicações reais \cite{yan2024quantumMedicalImageReview}.
+
+Portanto, em imagens de mamografia, modelos híbridos quântico-clássicos devem ser analisados com cautela. A hipótese de que um componente quântico pode melhorar a representação dos dados é relevante do ponto de vista científico, mas precisa ser avaliada por meio de comparações controladas com modelos clássicos. Uma avaliação adequada deve considerar desempenho preditivo, estabilidade, custo computacional, escalabilidade e interpretabilidade. Assim, a contribuição de uma arquitetura híbrida não deve ser assumida previamente, mas investigada experimentalmente.
 
 \section{Trabalhos correlatos}
 
