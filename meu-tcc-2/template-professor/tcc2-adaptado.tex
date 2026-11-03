@@ -1,7 +1,7 @@
 % ---------------------------------------------------------------
 % TCC2 - SENAC SANTO AMARO
 % Texto do projeto do Matheus adaptado ao template atualizado do professor
-% Tema: classificação de câncer de mama em mamografias
+% Tema: estudo comparativo multi-dataset em visão computacional (9 bases)
 % ---------------------------------------------------------------
 
 \documentclass[
@@ -50,7 +50,7 @@
     pdfauthor={\@author},
     pdfsubject={TCC2 - SENAC Santo Amaro},
     pdfcreator={LaTeX with abnTeX2},
-    pdfkeywords={tcc, senac, câncer de mama, cnn, computação quântica},
+    pdfkeywords={tcc, senac, visão computacional, classificação de imagens, cnn, computação quântica, aprendizado de máquina quântico},
     colorlinks=true,
     linkcolor=blue,
     citecolor=blue,
@@ -87,7 +87,7 @@
 % ---------------------------------------------------------------
 % INFORMAÇÕES DO DOCUMENTO
 % ---------------------------------------------------------------
-\titulo{Classificação de câncer de mama em mamografias: um estudo comparativo entre CNNs clássicas e híbridas quântico-clássicas}
+\titulo{Classificação de imagens em múltiplos benchmarks de visão computacional: um estudo comparativo entre CNNs clássicas e arquiteturas híbridas quântico-clássicas}
 \autor{Matheus Sanchez Duda}
 \local{São Paulo}
 \data{2026}
@@ -120,21 +120,20 @@
 \imprimirfolhaderosto
 
 \begin{resumo}
-%refazer no final
-Este trabalho tem o objetivo de aprimorar a arquitetura de redes neurais convolucionais feita anteriormente, que conseguia classificar imagens de cancer de mama em três classes (normal, benigna, maligna) com uma precisao de cerca de 70 por cento na media para as três classes. Agora deve ser feito a melhoria nos dois tipos de modelos para o classico conseguir clasificar mais exames radiograficos, e do modelo quântico poder ter resultados além do chute aleatório permitindo uma comparação mais robusta entre os dois tipos de modelos. 
+Este trabalho tem como objetivo investigar e comparar de forma sistemática o desempenho de redes neurais convolucionais (CNNs) clássicas e arquiteturas híbridas quântico-clássicas aplicadas à tarefa de classificação supervisionada de imagens em nove conjuntos de dados públicos de visão computacional (MNIST, Fashion-MNIST, KMNIST, EMNIST, CIFAR-10, CIFAR-100, SVHN, GTSRB e FER2013). A pesquisa avalia o comportamento preditivo e a eficiência computacional dos modelos frente a diferentes complexidades visuais, resoluções espaciais, números de canais e distribuições de classes, contemplando ainda análises controladas de funções de ativação, tamanhos de lote (\textit{batch size}), estratégias de quantização e execução multiplataforma. Busca-se aprimorar a capacidade de generalização do modelo clássico de referência e superar as limitações de convergência e estabilidade de modelos quânticos variacionais simulados, viabilizando uma comparação estatística e experimental robusta entre os dois paradigmas.
 
 \vspace{\onelineskip}
 \noindent
-\textbf{Palavras-chave}: redes neurais convolucionais. computação quântica. aprendizado de máquina quântico.
+\textbf{Palavras-chave}: visão computacional. classificação de imagens. redes neurais convolucionais. computação quântica. aprendizado de máquina quântico. modelos híbridos quântico-clássicos.
 \end{resumo}
 
 \begin{resumo}[Abstract]
 \begin{otherlanguage*}{english}
-This work aims to improve the previously developed convolutional neural network architecture, which was able to classify breast cancer images into three classes (normal, benign, and malignant) with an average accuracy of approximately 70 percent across the three classes. Improvements will now be made to both types of models so that the classical model can classify more radiographic examinations and the quantum model can achieve results beyond random guessing, allowing for a more robust comparison between the two types of models.
+This work aims to systematically investigate and compare the performance of classical convolutional neural networks (CNNs) and hybrid quantum-classical architectures applied to supervised image classification across nine public computer vision datasets (MNIST, Fashion-MNIST, KMNIST, EMNIST, CIFAR-10, CIFAR-100, SVHN, GTSRB, and FER2013). The research evaluates the predictive behavior and computational efficiency of the models under different visual complexities, spatial resolutions, channel counts, and class distributions, while also encompassing controlled analyses of activation functions, batch sizes, quantization strategies, and cross-platform execution. It seeks to enhance the generalization capability of the classical baseline model and overcome convergence and stability limitations of simulated variational quantum models, enabling a robust statistical and experimental comparison between both paradigms.
 
 \vspace{\onelineskip}
 \noindent
-\textbf{Keywords}: breast cancer. mammography. convolutional neural networks. quantum computing. quantum machine learning.
+\textbf{Keywords}: computer vision. image classification. convolutional neural networks. quantum computing. quantum machine learning. hybrid quantum-classical models.
 \end{otherlanguage*}
 \end{resumo}
 
@@ -155,11 +154,15 @@ This work aims to improve the previously developed convolutional neural network 
 \toprule
 \textbf{Abreviatura/Sigla} & \textbf{Significado} \\
 \midrule
-AUC & \textit{Area Under the Curve} \\
-BI-RADS & \textit{Breast Imaging Reporting and Data System} \\
-CNN & Rede Neural Convolucional \\
+AUC & \textit{Area Under the Curve} (Área sob a Curva) \\
+CNN & \textit{Convolutional Neural Network} (Rede Neural Convolucional) \\
+GPU & \textit{Graphics Processing Unit} (Unidade de Processamento Gráfico) \\
 NISQ & \textit{Noisy Intermediate-Scale Quantum} \\
-QML & \textit{Quantum Machine Learning} \\
+PQC & \textit{Parameterized Quantum Circuit} (Circuito Quântico Parametrizado) \\
+QML & \textit{Quantum Machine Learning} (Aprendizado de Máquina Quântico) \\
+QPU & \textit{Quantum Processing Unit} (Unidade de Processamento Quântico) \\
+RGB & \textit{Red, Green, Blue} (Vermelho, Verde e Azul) \\
+ROC & \textit{Receiver Operating Characteristic} \\
 TCC & Trabalho de Conclusão de Curso \\
 \bottomrule
 \end{tabular}
@@ -182,11 +185,11 @@ TCC & Trabalho de Conclusão de Curso \\
 
 \chapter{Introdução}
 
-O avanço da Inteligência Artificial e do Aprendizado Profundo (Deep Learning) consolidou novos padrões de desempenho em tarefas complexas de reconhecimento de padrões e visão computacional. Entre essas aplicações, a classificação supervisionada de imagens destaca-se como um problema fundamental, abrangendo desde o reconhecimento de caracteres manuscritos e símbolos tipográficos até a categorização de objetos naturais, sinais de trânsito e expressões faciais em condições variadas de iluminação e resolução.
+O avanço da Inteligência Artificial e do Aprendizado Profundo (\textit{Deep Learning}) consolidou novos padrões de desempenho em tarefas complexas de reconhecimento de padrões e visão computacional. Entre essas aplicações, a classificação supervisionada de imagens destaca-se como um problema fundamental, abrangendo desde o reconhecimento de caracteres manuscritos e símbolos tipográficos até a categorização de objetos naturais, sinais de trânsito e expressões faciais em condições variadas de iluminação e resolução.
 
-As redes neurais convolucionais (CNNs) estabeleceram-se como uma das principais abordagens para tarefas visuais devido à sua capacidade de extrair representações hierárquicas diretamente a partir da estrutura espacial dos pixels. No entanto, o desempenho e o custo operacional dessas arquiteturas permanecem sensíveis a escolhas metodológicas e de engenharia, tais como a função de ativação empregada, o tamanho do lote de treinamento (batch size), o grau de desbalanceamento entre classes, a aplicação de técnicas de quantização e as características de hardware do ambiente de execução.
+As redes neurais convolucionais (CNNs) estabeleceram-se como uma das principais abordagens para tarefas visuais devido à sua capacidade de extrair representações hierárquicas diretamente a partir da estrutura espacial dos pixels. No entanto, o desempenho e o custo operacional dessas arquiteturas permanecem sensíveis a escolhas metodológicas e de engenharia, tais como a função de ativação empregada, o tamanho do lote de treinamento (\textit{batch size}), o grau de desbalanceamento entre classes, a aplicação de técnicas de quantização e as características de hardware do ambiente de execução.
 
-Paralelamente, a computação quântica e o Aprendizado de Máquina Quântico (Quantum Machine Learning - QML) têm despertado crescente interesse científico como paradigmas emergentes de processamento da informação. Modelos híbridos quântico-clássicos propõem a integração entre extratores clássicos de características e circuitos quânticos parametrizados (PQCs), buscando explorar propriedades como superposição e emaranhamento em espaços de Hilbert de alta dimensão. Contudo, sua aplicação prática em problemas de visão computacional ainda enfrenta gargalos severos de simulação clássica, compressão dimensional, estabilidade de gradientes e escalabilidade em múltiplos domínios.
+Paralelamente, a computação quântica e o Aprendizado de Máquina Quântico (\textit{Quantum Machine Learning} -- QML) têm despertado crescente interesse científico como paradigmas emergentes de processamento da informação. Modelos híbridos quântico-clássicos propõem a integração entre extratores clássicos de características e circuitos quânticos parametrizados (PQCs), buscando explorar propriedades como superposição e emaranhamento em espaços de Hilbert de alta dimensão. Contudo, sua aplicação prática em problemas de visão computacional ainda enfrenta gargalos severos de simulação clássica, compressão dimensional, estabilidade de gradientes e escalabilidade em múltiplos domínios.
 
 Diante desse cenário, este trabalho propõe um estudo experimental comparativo entre arquiteturas clássicas baseadas em redes neurais convolucionais e arquiteturas híbridas quântico-clássicas avaliadas sobre nove conjuntos de dados de visão computacional. A pesquisa investiga não apenas o desempenho preditivo global e por classe (Macro-F1, acurácia, precisão, revocação e matrizes de confusão), mas também a telemetria de treinamento, o impacto de hiperparâmetros e a viabilidade prática das abordagens em um protocolo experimental estritamente controlado e reprodutível.
 
@@ -194,30 +197,23 @@ Assim, este capítulo apresenta o contexto da pesquisa, a justificativa, os obje
 
 \section{Contexto}
 
-A classificação automática de imagens é um dos pilares da visão computacional moderna, servindo de base para sistemas autônomos, leitura óptica de documentos, inspeção industrial, segurança viária e interação humano-computador. Ao longo da última década, a disponibilidade de benchmarks públicos padronizados permitiu avaliar a evolução de algoritmos sob diferentes níveis de dificuldade visual.
+A classificação automática de imagens é um dos pilares da visão computacional moderna, servindo de base para sistemas autônomos, leitura óptica de documentos, inspeção industrial, segurança viária e interação humano-computador. Ao longo da última década, a disponibilidade de \textit{benchmarks} públicos padronizados permitiu avaliar a evolução de algoritmos sob diferentes níveis de dificuldade visual.
 
-Conjuntos de dados em escala de cinza centrados em formas estruturadas - como dígitos manuscritos (MNIST), caracteres cursivos japoneses Kuzushiji (KMNIST), letras e dígitos estendidos (EMNIST) e artigos de vestuário (Fashion-MNIST) - oferecem cenários controlados para testar a capacidade de extração de contornos e topologias locais. Por outro lado, bases de imagens naturais e cenários reais - como objetos cotidianos em baixa resolução (CIFAR-10 e CIFAR-100), dígitos em fachadas urbanas (SVHN), placas de trânsito sob variações climáticas e de perspectiva (GTSRB) e expressões faciais humanas (FER2013) - impõem desafios substancialmente maiores, incluindo ruído de fundo, múltiplos canais de cor, variações de contraste e forte desbalanceamento entre categorias.
+Conjuntos de dados em escala de cinza centrados em formas estruturadas --- como dígitos manuscritos (MNIST), caracteres cursivos japoneses Kuzushiji (KMNIST), letras e dígitos estendidos (EMNIST) e artigos de vestuário (Fashion-MNIST) --- oferecem cenários controlados para testar a capacidade de extração de contornos e topologias locais. Por outro lado, bases de imagens naturais e cenários reais --- como objetos cotidianos em baixa resolução (CIFAR-10 e CIFAR-100), dígitos em fachadas urbanas (SVHN), placas de trânsito sob variações climáticas e de perspectiva (GTSRB) e expressões faciais humanas (FER2013) --- impõem desafios substancialmente maiores, incluindo ruído de fundo, múltiplos canais de cor, variações de contraste e forte desbalanceamento entre categorias.
 
 Nesse contexto, as redes neurais convolucionais destacam-se pela eficiência na extração automática de atributos espaciais por meio de filtros treináveis. Todavia, a busca por representações mais compactas e expressivas motivou a investigação de arquiteturas híbridas quântico-clássicas. Nesses modelos, camadas convolucionais clássicas atuam na redução da dimensionalidade espacial da imagem original para um vetor latente compacto, o qual é codificado em estados quânticos e processado por um circuito quântico variacional antes da camada de decisão final.
 
-Entretanto, grande parte da literatura em Aprendizado de Máquina Quântico restringe seus experimentos a um único conjunto de dados simplificado - frequentemente subconjuntos binários do MNIST -, dificultando a compreensão de como essas arquiteturas se comportam quando submetidas a múltiplos domínios visuais, maior número de classes e variações sistemáticas de hiperparâmetros. Este trabalho insere-se exatamente nessa interseção entre visão computacional, engenharia de aprendizado profundo e aprendizado de máquina quântico, propondo um benchmark consolidado em nove bases de dados para avaliar o comportamento real, os limites computacionais e a competitividade prática dos modelos clássicos e híbridos.
+Entretanto, grande parte da literatura em Aprendizado de Máquina Quântico restringe seus experimentos a um único conjunto de dados simplificado --- frequentemente subconjuntos binários do MNIST ---, dificultando a compreensão de como essas arquiteturas se comportam quando submetidas a múltiplos domínios visuais, maior número de classes e variações sistemáticas de hiperparâmetros. Este trabalho insere-se exatamente nessa interseção entre visão computacional, engenharia de aprendizado profundo e aprendizado de máquina quântico, propondo um \textit{benchmark} consolidado em nove bases de dados para avaliar o comportamento real, os limites computacionais e a competitividade prática dos modelos clássicos e híbridos.
 
 \section{Justificativa}
 
-A justificativa deste trabalho pode ser compreendida em três dimensões. A primeira é a relevância social do tema. O câncer de mama possui alta incidência e depende fortemente de estratégias de detecção precoce e apoio à decisão clínica, o que torna pertinente investigar métodos computacionais capazes de auxiliar a análise de mamografias \cite{WHO2026BreastCancer}. Ainda que o presente trabalho não tenha objetivo de uso clínico imediato, ele se insere em uma linha de pesquisa com impacto potencial na área de saúde.
-
-A segunda dimensão é a relevância acadêmica. O aprendizado profundo consolidou-se como uma abordagem central em visão computacional, mas a adoção de modelos híbridos quântico-clássicos ainda carece de validação comparativa rigorosa, principalmente em aplicações médicas \cite{LeCun2015,Gupta2025QMLDigitalHealth}. Assim, o TCC contribui ao investigar se a integração de componentes quânticos traz benefícios mensuráveis em um problema concreto e de alta relevância.
-
-A terceira dimensão é a lacuna científica identificada. Estudos sobre deep learning em mamografia apontam desempenho promissor, porém também evidenciam limitações de reprodutibilidade e de avaliação em condições realistas \cite{Bhalla2023MammographyReview}. Na direção quântica, trabalhos recentes mostram resultados competitivos em tarefas de classificação de imagens, mas ainda em cenários restritos, com bases menores, forte dependência de simulação e poucas evidências em contextos próximos do uso aplicado \cite{long2025qcqcnn}. Dessa forma, este TCC busca preencher uma lacuna ao propor uma comparação experimental controlada, reprodutível e metodologicamente explícita entre abordagens clássicas e híbridas no domínio da mamografia.
- 
--nova versao
 A justificativa deste trabalho estrutura-se em três dimensões complementares: tecnológica, acadêmica e metodológica.
 
-Na dimensão tecnológica e prática, o treinamento e a inferência de modelos de visão computacional exigem um equilíbrio rigoroso entre qualidade preditiva (medida por métricas como Macro-F1) e eficiência computacional (tempo por época, throughput, latência e consumo de memória de vídeo e sistema). Compreender como escolhas de funções de ativação, dimensionamento de lotes (batch sizes), quantização pós-treinamento e arquiteturas de hardware (como estações Windows com GPUs dedicadas e sistemas Apple Silicon com memória unificada) afetam o desempenho em múltiplos domínios visuais fornece subsídios diretos para o projeto de sistemas eficientes de aprendizado de máquina.
+Na dimensão tecnológica e prática, o treinamento e a inferência de modelos de visão computacional exigem um equilíbrio rigoroso entre qualidade preditiva (medida por métricas como Macro-F1) e eficiência computacional (tempo por época, \textit{throughput}, latência e consumo de memória de vídeo e sistema). Compreender como escolhas de funções de ativação, dimensionamento de lotes (\textit{batch sizes}), quantização pós-treinamento e arquiteturas de hardware (como estações Windows com GPUs dedicadas e sistemas Apple Silicon com memória unificada) afetam o desempenho em múltiplos domínios visuais fornece subsídios diretos para o projeto de sistemas eficientes de aprendizado de máquina.
 
-Na dimensão acadêmica, embora o aprendizado profundo clássico esteja amplamente consolidado (LECUN; BENGIO; HINTON, 2015), a integração de circuitos quânticos variacionais em pipelines de visão computacional ainda carece de validação comparativa abrangente (CEREZO et al., 2021; LONG et al., 2025). Investigar se a substituição ou complementação de camadas densas por cabeças híbridas quânticas traz ganhos ou perdas mensuráveis sob condições idênticas de pré-processamento contribui para separar expectativas teóricas da realidade experimental na era NISQ (Noisy Intermediate-Scale Quantum).
+Na dimensão acadêmica, embora o aprendizado profundo clássico esteja amplamente consolidado \cite{LeCun2015}, a integração de circuitos quânticos variacionais em \textit{pipelines} de visão computacional ainda carece de validação comparativa abrangente \cite{cerezo2021variational,long2025qcqcnn}. Investigar se a substituição ou complementação de camadas densas por cabeças híbridas quânticas traz ganhos ou perdas mensuráveis sob condições idênticas de pré-processamento contribui para separar expectativas teóricas da realidade experimental na era NISQ (\textit{Noisy Intermediate-Scale Quantum}).
 
-Por fim, na dimensão metodológica e científica, observa-se uma lacuna importante na reprodutibilidade de estudos comparativos entre modelos clássicos e quânticos. Muitos trabalhos avaliam arquiteturas em cenários isolados, sem controle estrito de sementes aleatórias, sem varredura sistemática de hiperparâmetros e sem análise detalhada de resíduos e telemetria. Ao estabelecer uma campanha experimental padronizada sobre nove datasets distintos, este TCC oferece uma base empírica sólida, auditável e reprodutível para a avaliação de modelos clássicos e híbridos.
+Por fim, na dimensão metodológica e científica, observa-se uma lacuna importante na reprodutibilidade de estudos comparativos entre modelos clássicos e quânticos. Muitos trabalhos avaliam arquiteturas em cenários isolados, sem controle estrito de sementes aleatórias, sem varredura sistemática de hiperparâmetros e sem análise detalhada de resíduos e telemetria. Ao estabelecer uma campanha experimental padronizada sobre nove \textit{datasets} distintos, este TCC oferece uma base empírica sólida, auditável e reprodutível para a avaliação de modelos clássicos e híbridos.
 
 \section{Objetivo geral}
 
@@ -226,43 +222,24 @@ Investigar e comparar sistematicamente o desempenho preditivo, a estabilidade de
 \section{Objetivos específicos}
 
 \begin{enumerate} 
-    \item  Estruturar e inventariar um conjunto padronizado de nove bases de dados públicas de visão computacional (MNIST, Fashion-MNIST, KMNIST, EMNIST, CIFAR-10, CIFAR-100, SVHN, GTSRB e FER2013), caracterizando suas resoluções, canais e distribuições de classes;
-    \item Implementar um pipeline experimental reprodutível de pré-processamento, divisão estratificada de dados, aumento de dados (data augmentation) controlado, treinamento, validação e teste;
-    \item Desenvolver e otimizar uma arquitetura de CNN clássica de referência, avaliando o impacto de diferentes funções de ativação, tamanhos de lote (batch sweep) e estratégias de quantização;
+    \item Estruturar e inventariar um conjunto padronizado de nove bases de dados públicas de visão computacional (MNIST, Fashion-MNIST, KMNIST, EMNIST, CIFAR-10, CIFAR-100, SVHN, GTSRB e FER2013), caracterizando suas resoluções, canais e distribuições de classes;
+    \item Implementar um \textit{pipeline} experimental reprodutível de pré-processamento, divisão estratificada de dados, aumento de dados (\textit{data augmentation}) controlado, treinamento, validação e teste;
+    \item Desenvolver e otimizar uma arquitetura de CNN clássica de referência, avaliando o impacto de diferentes funções de ativação, tamanhos de lote (\textit{batch sweep}) e estratégias de quantização;
     \item Projetar uma arquitetura híbrida quântico-clássica compatível com as restrições atuais de simulação de circuitos quânticos parametrizados;
-    \item Investigar configurações do componente quântico, incluindo número de qubits, estratégia de codificação de atributos (embedding), topologia do ansatz variacional e integração com camadas clássicas;
-    \item Comparar o desempenho dos modelos utilizando métricas globais e por classe, tais como acurácia, precisão, revocação (recall), Macro-F1, curvas de validação e matrizes de confusão;
-    \item Analisar a telemetria de execução, contemplando tempo por época, tempo acumulado de campanha, speedup entre plataformas (Windows e macOS), throughput e latência em cenários quantizados;
+    \item Investigar configurações do componente quântico, incluindo número de qubits, estratégia de codificação de atributos (\textit{embedding}), topologia do \textit{ansatz} variacional e integração com camadas clássicas;
+    \item Comparar o desempenho dos modelos utilizando métricas globais e por classe, tais como acurácia, precisão, revocação (\textit{recall}), Macro-F1, curvas de validação e matrizes de confusão;
+    \item Analisar a telemetria de execução, contemplando tempo por época, tempo acumulado de campanha, \textit{speedup} entre plataformas (Windows e macOS), \textit{throughput} e latência em cenários quantizados;
     \item Discutir criticamente a paridade de resultados, as vantagens, as limitações práticas e as condições de viabilidade das abordagens clássica e híbrida quântico-clássica em múltiplos domínios visuais.
 \end{enumerate}
 
-
-
-% Exemplo:
-% A hipótese deste trabalho é que o desempenho de modelos híbridos quântico-clássicos
-% em mamografias depende fortemente da forma de codificação dos dados, da dimensão
-% do vetor de características projetado para o circuito quântico, do número de qubits
-% e da profundidade do circuito.
 \section{Hipótese}
 
-Parte-se da hipótese de que uma arquitetura híbrida quântico-clássica, utilizando circuitos quânticos simulados como componente treinável complementar às camadas clássicas de uma rede neural, pode apresentar desempenho competitivo em relação a uma CNN clássica na tarefa de classificação de mamografias. Essa comparação será realizada sob um protocolo experimental controlado, utilizando a mesma base de dados, critérios equivalentes de pré-processamento, divisão dos dados, métricas de avaliação e execução no mesmo ambiente computacional.
+Parte-se da hipótese de que uma arquitetura híbrida quântico-clássica, utilizando circuitos quânticos parametrizados simulados como cabeça de classificação acoplada a um extrator convolucional clássico, pode alcançar convergência estável e desempenho competitivo (superior ao acaso e próximo ao \textit{baseline} clássico em bases de menor cardinalidade de classes) quando submetida a um protocolo experimental controlado, mantendo-se constantes as divisões de dados, o pré-processamento e os critérios de otimização.
 
-No entanto, não se pressupõe superioridade geral da abordagem quântica. Considerando as limitações atuais da computação quântica e da simulação de circuitos quânticos, espera-se que a viabilidade prática dos modelos híbridos seja condicionada por fatores como custo computacional, número reduzido de qubits, sensibilidade a hiperparâmetros, estratégia de codificação dos dados clássicos em estados quânticos e restrições típicas de dispositivos NISQ. Assim, a hipótese central do trabalho não é demonstrar vantagem quântica definitiva, mas investigar em quais condições a abordagem híbrida pode ser competitiva, limitada ou inviável em comparação com modelos clássicos de aprendizado profundo.
-
--nova parte
-
-Parte-se da hipótese de que uma arquitetura híbrida quântico-clássica, utilizando circuitos quânticos parametrizados simulados como cabeça de classificação acoplada a um extrator convolucional clássico, pode alcançar convergência estável e desempenho competitivo (superior ao acaso e próximo ao baseline clássico em bases de menor cardinalidade de classes) quando submetida a um protocolo experimental controlado, mantendo-se constantes as divisões de dados, o pré-processamento e os critérios de otimização.
-
-Entretanto, não se pressupõe superioridade irrestrita da abordagem híbrida sobre as CNNs puramente clássicas. Considerando o gargalo de compressão dimensional exigido pelo número reduzido de qubits, o custo exponencial da simulação clássica de estados quânticos e a dificuldade de separação em problemas com dezenas de classes ou alta variabilidade intraclasse (como GTSRB, FER2013 e CIFAR-100), espera-se que a viabilidade prática dos modelos híbridos seja fortemente condicionada pela complexidade do dataset, pelo dimensionamento do lote (batch size) e pela eficiência do acoplamento entre a extração clássica e o circuito variacional.
+Entretanto, não se pressupõe superioridade irrestrita da abordagem híbrida sobre as CNNs puramente clássicas. Considerando o gargalo de compressão dimensional exigido pelo número reduzido de qubits, o custo exponencial da simulação clássica de estados quânticos e a dificuldade de separação em problemas com dezenas de classes ou alta variabilidade intraclasse (como GTSRB, FER2013 e CIFAR-100), espera-se que a viabilidade prática dos modelos híbridos seja fortemente condicionada pela complexidade do \textit{dataset}, pelo dimensionamento do lote (\textit{batch size}) e pela eficiência do acoplamento entre a extração clássica e o circuito variacional.
 
 \section{Delimitações do trabalho}
 
-% Explique o que o trabalho não pretende fazer:
-% não será diagnóstico clínico real;
-% não será validado em hospital;
-% usará simulador quântico;
-% começará com três classes: normal, benigno e maligno;
-% ampliação de classes dependerá dos rótulos disponíveis.
 Este trabalho é delimitado como um estudo experimental comparativo em visão computacional e aprendizado de máquina. A tarefa investigada restringe-se à classificação supervisionada de imagens estáticas bidimensionais distribuídas em nove conjuntos de dados públicos de referência. Os experimentos com circuitos quânticos são conduzidos integralmente via simulação numérica em hardware clássico, não contemplando execução direta em processadores quânticos físicos (QPUs), de modo a isolar o comportamento algorítmico das arquiteturas das imperfeições de ruído físico de hardware externo e garantir total reprodutibilidade dos treinamentos.
 
 % ---------------------------------------------------------------
@@ -272,41 +249,111 @@ Este trabalho é delimitado como um estudo experimental comparativo em visão co
 
 \section{Metodologia da pesquisa bibliográfica}
 
-A pesquisa bibliográfica deste trabalho será conduzida com o objetivo de fundamentar teoricamente e metodologicamente o estudo comparativo entre redes neurais convolucionais clássicas e modelos híbridos quântico-clássicos aplicados à classificação de câncer de mama em imagens de mamografia.
+A pesquisa bibliográfica deste trabalho foi conduzida com o objetivo de fundamentar teórica e metodologicamente o estudo comparativo entre redes neurais convolucionais clássicas e modelos híbridos quântico-clássicos aplicados à classificação de imagens em múltiplos \textit{benchmarks} de visão computacional.
 
-As buscas serão realizadas em bases científicas nacionais e internacionais, incluindo Google Scholar, PubMed, IEEE Xplore, ACM Digital Library, Scopus, SciELO e Periódicos CAPES. A escolha dessas bases se justifica pela abrangência de publicações nas áreas de Ciência da Computação, Inteligência Artificial, visão computacional, imagens médicas, radiologia e computação quântica. Também poderão ser consultados repositórios de pré-publicações, como arXiv, medRxiv e bioRxiv, quando o trabalho apresentar relevância direta para o tema, especialmente em tópicos recentes ainda em consolidação.
+As buscas foram realizadas em bases científicas nacionais e internacionais, incluindo Google Scholar, IEEE Xplore, ACM Digital Library, Scopus, SpringerLink, SciELO e Portal de Periódicos da CAPES, além de repositórios de pré-publicações como o arXiv para acompanhar desenvolvimentos recentes em Aprendizado de Máquina Quântico. A escolha dessas bases justifica-se pela sua abrangência nas áreas de Ciência da Computação, Inteligência Artificial, processamento digital de imagens, redes neurais profundas e computação quântica.
 
-Serão utilizadas palavras-chave em português e inglês, combinadas por meio de operadores booleanos. Entre os principais termos estão: \textit{``câncer de mama''}, \textit{``mamografia''}, \textit{``classificação de imagens médicas''}, \textit{``redes neurais convolucionais''}, \textit{``aprendizado profundo''}, \textit{``computação quântica''}, \textit{``aprendizado de máquina quântico''}, \textit{``modelos híbridos quântico-clássicos''}, \textit{``breast cancer''}, \textit{``mammography''}, \textit{``mammogram''}, \textit{``convolutional neural network''}, \textit{``deep learning''}, \textit{``medical image classification''}, \textit{``quantum machine learning''}, \textit{``quantum neural network''}, \textit{``variational quantum circuit''} e \textit{``hybrid quantum-classical neural network''}.
+Foram utilizadas palavras-chave em português e inglês combinadas por operadores booleanos. Entre os principais termos estão: \textit{``classificação de imagens''}, \textit{``visão computacional''}, \textit{``redes neurais convolucionais''}, \textit{``aprendizado profundo''}, \textit{``benchmarks de imagens''}, \textit{``computação quântica''}, \textit{``aprendizado de máquina quântico''}, \textit{``modelos híbridos quântico-clássicos''}, \textit{``image classification''}, \textit{``computer vision benchmarks''}, \textit{``convolutional neural network''}, \textit{``deep learning''}, \textit{``activation functions''}, \textit{``batch size optimization''}, \textit{``neural network quantization''}, \textit{``quantum machine learning''}, \textit{``variational quantum circuit''} e \textit{``hybrid quantum-classical neural network''}.
 
-As strings de busca serão organizadas em blocos temáticos. O primeiro bloco contemplará estudos sobre classificação de câncer de mama em mamografias com redes neurais convolucionais e aprendizado profundo. O segundo abordará detecção, segmentação, regiões de interesse, microcalcificações e massas mamárias. O terceiro tratará de bases de dados e benchmarks públicos de mamografia, como DDSM, CBIS-DDSM, INbreast, CMMD, VinDr-Mammo, CDD-CESM, DMID, RSNA e Mammo-Bench. O quarto bloco reunirá estudos sobre robustez, validação externa, generalização e reprodutibilidade de modelos de aprendizado profundo em mamografia. O quinto bloco contemplará artigos relacionados à explicabilidade, Grad-CAM, aprendizado baseado em patches, curriculum learning e uso de anotações fracas ou fortes. Por fim, o sexto bloco reunirá trabalhos sobre aprendizado de máquina quântico, redes neurais quânticas, classificadores variacionais, métodos de kernel quântico e arquiteturas híbridas quântico-clássicas.
+As \textit{strings} de busca foram organizadas em cinco blocos temáticos:
+\begin{enumerate}
+    \item Fundamentos de processamento digital de imagens, classificação supervisionada multiclasse e métricas de avaliação em cenários balanceados e desbalanceados;
+    \item Arquiteturas de redes neurais convolucionais (CNNs), funções de ativação, impacto do tamanho de lote (\textit{batch size}), regularização, aumento de dados e quantização de modelos;
+    \item Conjuntos de dados e \textit{benchmarks} clássicos e modernos de visão computacional (MNIST, Fashion-MNIST, KMNIST, EMNIST, CIFAR-10, CIFAR-100, SVHN, GTSRB e FER2013);
+    \item Fundamentos de computação quântica, circuitos quânticos parametrizados, estratégias de codificação de dados (\textit{quantum embeddings}) e limitações de treinabilidade (\textit{barren plateaus});
+    \item Arquiteturas híbridas quântico-clássicas e camadas quanvolucionais aplicadas ao reconhecimento visual.
+\end{enumerate}
 
-Como critérios de inclusão, serão priorizados trabalhos publicados entre 2021 e 2026, em português ou inglês, que abordem diretamente classificação de câncer de mama, mamografia, visão computacional médica, aprendizado profundo aplicado a imagens médicas ou modelos híbridos quântico-clássicos aplicados a tarefas de classificação. Também serão incluídos artigos sobre bases de dados amplas, benchmarks, validação externa, classificação multiclasse e estratégias de generalização, desde que contribuam para o desenvolvimento metodológico do TCC. Além disso, serão considerados artigos seminais anteriores a 2021, quando forem essenciais para a fundamentação teórica, como estudos clássicos sobre redes neurais convolucionais, arquiteturas profundas e aplicações pioneiras de aprendizado profundo em mamografia.
+Como critérios de inclusão, priorizaram-se trabalhos publicados entre 2020 e 2026 que abordam diretamente arquiteturas convolucionais, otimização de treinamento, \textit{benchmarks} multi-dataset e modelos híbridos quântico-clássicos, complementados por obras seminais e livros-texto clássicos essenciais para a formalização matemática dos algoritmos e para a documentação original das bases de dados utilizadas.
 
-A seleção dos artigos será realizada em etapas. Inicialmente, serão analisados título, resumo e palavras-chave para verificar a aderência ao tema. Em seguida, os trabalhos potencialmente relevantes serão avaliados quanto ao objetivo, base de dados utilizada, tipo de imagem, número de classes, arquitetura proposta, métricas de avaliação, estratégia de validação, resultados obtidos e limitações declaradas. Os artigos selecionados serão organizados em uma matriz de revisão bibliográfica, contendo informações como ano, autores, título, base de dados, método, tarefa abordada, métricas, principais contribuições e relação com a proposta do TCC.
+\section{Classificação de imagens e diversidade de domínios em visão computacional}
 
-A análise dos trabalhos buscará identificar convergências e divergências entre os estudos, com atenção especial a aspectos como desempenho preditivo, uso de bases públicas, tratamento de desbalanceamento, validação externa, explicabilidade, custo computacional e limitações de generalização. No caso dos modelos quânticos e híbridos quântico-clássicos, também serão observados aspectos como número de qubits, tipo de codificação dos dados, circuito variacional, simulador ou hardware utilizado, escalabilidade e comparação com modelos clássicos.
+Esta seção apresenta os conceitos fundamentais relacionados aos diferentes domínios visuais abordados em \textit{benchmarks} de visão computacional. O objetivo é contextualizar as propriedades visuais, estruturais e estatísticas que diferenciam tarefas de reconhecimento de caracteres, objetos, sinais de trânsito e expressões faciais.
 
-Dessa forma, a pesquisa bibliográfica não terá apenas a finalidade de reunir referências, mas de posicionar criticamente a proposta deste trabalho. A revisão permitirá justificar a escolha da mamografia como domínio de aplicação, a adoção de CNNs como base clássica de comparação, a investigação de modelos híbridos quântico-clássicos como alternativa experimental e a necessidade de um protocolo controlado, reprodutível e comparativo para avaliar desempenho, custo computacional e viabilidade prática.
+\subsection{Reconhecimento de dígitos, caracteres e símbolos manuscritos}
 
+O reconhecimento óptico de caracteres e dígitos manuscritos constitui uma das aplicações precursoras da visão computacional e do aprendizado profundo \cite{LeCun2015}. Nesse domínio, as imagens são tipicamente adquiridas ou pré-processadas em escala de cinza (\(C=1\)), com o objeto de interesse centralizado sobre um fundo uniforme de baixo ruído. A informação discriminativa concentra-se na topologia dos traços, nas curvaturas, nas extremidades e nas interseções geométricas.
 
+Enquanto dígitos arábicos ocidentais (como no conjunto MNIST) apresentam dez classes bem definidas e baixa ambiguidade estrutural, extensões alfanuméricas (como o EMNIST) e sistemas de escrita historicamente complexos --- a exemplo dos caracteres cursivos japoneses Kuzushiji no KMNIST --- introduzem variações caligráficas acentuadas, maior número de classes ou múltiplas formas visuais para representar um mesmo fonema ou conceito. Em cenários não controlados, como a leitura de números residenciais em cenas urbanas (SVHN), o reconhecimento de dígitos deixa de ocorrer sobre fundo limpo e passa a enfrentar variações severas de iluminação, fontes tipográficas diversas, desfoque de movimento e interferência de dígitos adjacentes.
 
+\subsection{Categorização de artigos de vestuário, objetos naturais e sinalização viária}
 
-\subsection{Qualidade dos rótulos, desbalanceamento e viés dos dados}
+À medida que a visão computacional avança de símbolos gráficos para objetos do mundo físico, a complexidade textural e espacial das imagens aumenta significativamente. No reconhecimento de artigos de vestuário em escala de cinza (como no Fashion-MNIST), embora a resolução espacial reduzida (\(28 \times 28\) pixels) seja idêntica à de bases de dígitos, os objetos apresentam silhuetas preenchidas, texturas internas sutis e forte similaridade interclasse (como entre camisas, camisetas, casacos e pulôveres).
+
+Em imagens naturais coloridas (representadas no espaço RGB com \(C=3\) canais), como nos conjuntos CIFAR-10 e CIFAR-100, os modelos precisam distinguir categorias animais e veículos em resoluções compactas (\(32 \times 32\) pixels), nas quais o objeto de interesse convive com fundos complexos, oclusões parciais e variações de pose e escala. De forma análoga, o reconhecimento de placas de trânsito em ambientes reais (como no \textit{benchmark} GTSRB) exige que o classificador seja robusto a mudanças drásticas de iluminação diurna e noturna, intempéries climáticas, distorções de perspectiva e desbalanceamento acentuado entre categorias de sinalização frequentes e raras.
+
+\subsection{Reconhecimento de expressões faciais e desafios de variabilidade intraclasse}
+
+O reconhecimento automático de expressões faciais (como na base FER2013) representa um domínio particularmente desafiador dentro da classificação supervisionada de imagens. Diferentemente de objetos rígidos ou símbolos gráficos, a face humana sofre deformações não rígidas sutis nos músculos ao redor dos olhos, sobrancelhas e boca para expressar estados emocionais como raiva, desgosto, medo, felicidade, tristeza, surpresa e neutralidade.
+
+Do ponto de vista computacional, esse domínio caracteriza-se por uma elevada variabilidade intraclasse --- pessoas de diferentes idades, etnias, gêneros e condições de iluminação expressam a mesma emoção de maneiras distintas --- combinada a uma baixa separabilidade interclasse, uma vez que expressões como medo e surpresa, ou tristeza e neutralidade, compartilham configurações geométricas muito próximas. Além disso, bases coletadas em condições não controladas (\textit{in-the-wild}) costumam apresentar rótulos ruidosos, oclusões por óculos ou mãos e forte assimetria na quantidade de exemplos por classe, exigindo arquiteturas com alta capacidade de regularização.
+
+\section{Bases de dados e benchmarks utilizados no estudo}
+
+A utilização de múltiplos conjuntos de dados públicos e padronizados é essencial para avaliar a capacidade de generalização, a estabilidade numérica e a escalabilidade de algoritmos de aprendizado de máquina. A adoção de um \textit{benchmark} multi-dataset evita que conclusões arquiteturais fiquem restritas às peculiaridades estatísticas de uma única fonte de dados, permitindo contrastar o desempenho de modelos clássicos e híbridos em diferentes regimes de resolução, dimensionalidade de canais e número de classes.
+
+\subsection{Importância da avaliação multi-dataset em aprendizado profundo e quântico}
+
+Na literatura de visão computacional, arquiteturas que apresentam excelente desempenho em bases simples de dígitos frequentemente sofrem degradação expressiva quando submetidas a imagens com texturas densas, múltiplos canais de cor ou dezenas de classes. No campo do Aprendizado de Máquina Quântico, essa questão é ainda mais crítica: como circuitos quânticos simulados operam com poucos qubits, a redução dimensional imposta pelo extrator clássico pode preservar informações suficientes para separar dez classes simples, mas colapsar representações em domínios mais complexos.
+
+Por esse motivo, o protocolo experimental deste trabalho foi desenhado sobre um conjunto diversificado de nove bases de dados, documentadas e gerenciadas de forma centralizada no repositório do projeto (\path{configs/datasets.yaml} e \path{notebooks/dataset_inventory.ipynb}). Essa seleção abrange desde \textit{benchmarks} canônicos de validação rápida até problemas multiclasse com forte desbalanceamento e ruído visual.
+
+\subsection{Caracterização dos 9 conjuntos de dados do benchmark}
+
+Os nove conjuntos de dados adotados nos experimentos compreendem diferentes domínios de aplicação, resoluções nativas, quantidades de canais e números de classes:
+
+\begin{enumerate}
+    \item \textbf{MNIST} (\textit{Modified National Institute of Standards and Technology}): Base clássica composta por 70.000 imagens em escala de cinza (\(28 \times 28 \times 1\)) de dígitos manuscritos de 0 a 9 (10 classes), dividida originalmente em 60.000 amostras de treino e 10.000 de teste. Atua como linha de base (\textit{sanity check}) fundamental para convergência de arquiteturas clássicas e híbridas.
+    \item \textbf{Fashion-MNIST}: Proposta como substituição direta e mais desafiadora ao MNIST, contém 70.000 imagens em escala de cinza (\(28 \times 28 \times 1\)) distribuídas equilibradamente em 10 classes de artigos de vestuário (camiseta/top, calça, pulôver, vestido, casaco, sandália, camisa, tênis, bolsa e bota).
+    \item \textbf{KMNIST} (\textit{Kuzushiji-MNIST}): Composta por 70.000 imagens em escala de cinza (\(28 \times 28 \times 1\)) distribuídas em 10 classes de caracteres cursivos japoneses (Hiragana clássico), apresentando topologias de traços significativamente mais complexas e maior variação intraclasse do que os dígitos arábicos.
+    \item \textbf{EMNIST} (\textit{Extended MNIST}): Extensão do conjunto NIST original contendo caracteres manuscritos alfanuméricos (letras maiúsculas, minúsculas e dígitos) em imagens de \(28 \times 28 \times 1\) em escala de cinza, ampliando a dificuldade da tarefa pelo aumento substancial do número de classes e pela presença de ambiguidades estruturais entre letras e números (como ``O'' e ``0'', ou ``I'', ``l'' e ``1'').
+    \item \textbf{CIFAR-10}: Conjunto de 60.000 imagens naturais coloridas em formato RGB (\(32 \times 32 \times 3\)), sendo 50.000 para treinamento e 10.000 para teste, divididas igualmente em 10 classes de objetos e animais (avião, automóvel, pássaro, gato, cervo, cachorro, sapo, cavalo, navio e caminhão).
+    \item \textbf{CIFAR-100}: Possui a mesma estrutura física e volume total do CIFAR-10 (60.000 imagens RGB de \(32 \times 32 \times 3\)), mas distribuídas em 100 classes finas agrupadas em 20 superclasses, reduzindo para apenas 600 o número de amostras por classe e elevando drasticamente a exigência de capacidade discriminativa do classificador.
+    \item \textbf{SVHN} (\textit{Street View House Numbers}): Base de imagens reais obtidas a partir de fachadas residenciais no Google Street View, contendo dígitos recortados e centralizados em resolução \(32 \times 32 \times 3\) (RGB) distribuídos em 10 classes (dígitos de 0 a 9, com mais de 73.257 imagens de treino e 26.032 de teste), caracterizada por variações severas de iluminação, contraste e presença de dígitos laterais distratores.
+    \item \textbf{GTSRB} (\textit{German Traffic Sign Recognition Benchmark}): Conjunto composto por mais de 50.000 imagens RGB de placas de trânsito alemãs reais capturadas sob variadas condições de iluminação e distância, redimensionadas para resolução padronizada (como \(32 \times 32 \times 3\)) e distribuídas de forma fortemente desbalanceada ao longo de 43 classes distintas.
+    \item \textbf{FER2013} (\textit{Facial Expression Recognition 2013}): Base composta por 35.887 imagens faciais em escala de cinza (\(48 \times 48 \times 1\)) distribuídas em 7 classes de expressões emocionais básicas (raiva, desgosto, medo, felicidade, tristeza, surpresa e neutro), apresentando forte desbalanceamento (especialmente na classe desgosto) e ruído de rotulagem inerente à coleta automatizada.
+\end{enumerate}
+
+A Tabela~\ref{tab:caracterizacao_9_datasets} sintetiza a caracterização estrutural das nove bases de dados utilizadas na campanha experimental.
+
+\begin{table}[htb]
+\centering
+\caption{Caracterização estrutural dos 9 conjuntos de dados utilizados no \textit{benchmark}.}
+\label{tab:caracterizacao_9_datasets}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llllrrl}
+\toprule
+\textbf{Base} & \textbf{Domínio} & \textbf{Dimensão} & \textbf{Canais} & \textbf{Classes (\(K\))} & \textbf{Volume aprox.} & \textbf{Balanceamento} \\
+\midrule
+MNIST & Dígitos manuscritos & \(28 \times 28 \times 1\) & Cinza (1) & 10 & \(\sim 70.000\) & Quase uniforme \\
+Fashion-MNIST & Artigos de vestuário & \(28 \times 28 \times 1\) & Cinza (1) & 10 & \(\sim 70.000\) & Uniforme (7.000/classe) \\
+KMNIST & Caracteres Kuzushiji & \(28 \times 28 \times 1\) & Cinza (1) & 10 & \(\sim 70.000\) & Uniforme (7.000/classe) \\
+EMNIST & Caracteres alfanuméricos & \(28 \times 28 \times 1\) & Cinza (1) & 26 / 47 / 62* & 145.600 a 814.255* & Balanceado ou variável por \textit{split} \\
+CIFAR-10 & Objetos e animais & \(32 \times 32 \times 3\) & RGB (3) & 10 & \(\sim 60.000\) & Uniforme (6.000/classe) \\
+CIFAR-100 & Objetos granulares & \(32 \times 32 \times 3\) & RGB (3) & 100 & \(\sim 60.000\) & Uniforme (600/classe) \\
+SVHN & Números de fachadas & \(32 \times 32 \times 3\) & RGB (3) & 10 & \(\sim 99.289\) & Desbalanceado (predomínio de ``1'' e ``2'') \\
+GTSRB & Placas de trânsito & \(32 \times 32 \times 3\)** & RGB (3) & 43 & \(\sim 51.839\) & Fortemente desbalanceado \\
+FER2013 & Expressões faciais & \(48 \times 48 \times 1\) & Cinza (1) & 7 & \(\sim 35.887\) & Fortemente desbalanceado \\
+\bottomrule
+\end{tabular}%
+}
+\legend{Fonte: Elaborado pelo autor (2026). *O número exato de classes e amostras do EMNIST depende da partição configurada em \texttt{configs/datasets.yaml}. **As imagens originais do GTSRB variam de \(15 \times 15\) a \(250 \times 250\) pixels e são redimensionadas no \textit{pipeline} de pré-processamento.}
+\end{table}
+
+\subsection{Qualidade dos rótulos, desbalanceamento e heterogeneidade entre domínios}
 \label{subsec:qualidade_rotulos_balanceamento_vies}
 
-Em tarefas de classificação supervisionada, o desbalanceamento de classes representa um problema metodológico relevante, pois modelos treinados com distribuições muito assimétricas tendem a favorecer a classe majoritária, reduzindo a capacidade de reconhecimento das classes menos representadas. Em aplicações médicas, esse problema é ainda mais sensível, uma vez que erros em classes minoritárias podem afetar diretamente a interpretação dos resultados e a utilidade clínica do modelo.
+A análise conjunta das nove bases de dados evidencia desafios metodológicos distintos que justificam um protocolo rigoroso de avaliação. Em tarefas de classificação supervisionada, o desbalanceamento de classes --- fortemente presente em bases reais como SVHN, GTSRB e FER2013 --- tende a enviesar o gradiente de otimização em direção às classes majoritárias, reduzindo a sensibilidade do modelo para categorias minoritárias.
 
-Segundo Silva (2025) \cite{silva2025balanceamento}, técnicas de balanceamento podem ser aplicadas tanto em nível de dados, por meio de estratégias como oversampling, undersampling e SMOTE, quanto em nível de algoritmo, por meio de ajustes na função de perda ou ponderação das classes. No entanto, a escolha da técnica deve ser documentada com cautela, pois o balanceamento altera a distribuição original dos dados e pode produzir impactos sobre o comportamento do modelo. Dessa forma, neste trabalho, o balanceamento das classes é adotado como uma etapa metodológica controlada, com o objetivo de reduzir o viés em direção à classe majoritária e permitir uma comparação mais justa entre os modelos avaliados.
+Segundo \citeonline{silva2025balanceamento}, estratégias de mitigação desse efeito podem atuar tanto em nível de dados (amostragem estratificada, \textit{oversampling}, \textit{undersampling} e aumento de dados direcionado) quanto em nível algorítmico (ponderação na função de perda e uso de métricas insensíveis à prevalência global). Além do desbalanceamento, a heterogeneidade entre domínios --- alternando entre imagens monocromáticas de \(28 \times 28\) ou \(48 \times 48\) pixels e imagens RGB de \(32 \times 32\) pixels --- exige que o \textit{pipeline} de avaliação reporte sistematicamente métricas agregadas de forma igualitária entre classes, como o Macro-F1, acompanhadas das matrizes de confusão e dos resíduos de desempenho por classe, garantindo uma comparação justa entre as arquiteturas clássica e híbrida.
 
 \section{Imagens digitais e classificação computacional}
 
-A classificação computacional de imagens depende da representação de informações visuais em estruturas numéricas manipuláveis por algoritmos. Em processamento digital de imagens, uma imagem pode ser formalmente descrita como uma função bidimensional discreta, composta por elementos finitos denominados pixels, cada um associado a uma posição espacial e a um valor de intensidade \cite{gonzalez2008digital}. No contexto de imagens médicas, especialmente em mamografias, essa representação é fundamental, pois pequenas variações de intensidade, textura e contraste podem indicar estruturas clinicamente relevantes.
-
-As redes neurais convolucionais têm sido amplamente utilizadas em tarefas de análise de mamografias, incluindo classificação, detecção e localização de achados suspeitos \cite{abdelhafiz2019}. Essas redes são adequadas para esse tipo de problema porque exploram a organização espacial das imagens por meio de filtros convolucionais aprendidos durante o treinamento, preservando relações locais entre pixels vizinhos \cite{sundell2022cnn}.
+A classificação computacional de imagens depende da representação de informações visuais em estruturas numéricas manipuláveis por algoritmos. Em processamento digital de imagens, uma imagem pode ser formalmente descrita como uma função bidimensional discreta, composta por elementos finitos denominados pixels, cada um associado a uma posição espacial e a um ou mais valores de intensidade \cite{gonzalez2008digital}. Em \textit{benchmarks} de visão computacional, essa representação é fundamental, pois variações locais de intensidade, bordas, textura e contraste de cor determinam os padrões geométricos que diferenciam as classes de interesse. As redes neurais convolucionais consolidaram-se como a abordagem padrão para esse tipo de problema porque exploram diretamente a organização espacial das imagens por meio de filtros convolucionais aprendidos durante o treinamento, preservando relações de vizinhança entre pixels \cite{LeCun2015}.
 
 \subsection{Representação computacional de imagens digitais}
 
-Uma imagem digital pode ser compreendida matematicamente como uma função bidimensional discreta, geralmente representada por \(I(x,y)\), em que \(x\) e \(y\) indicam as coordenadas espaciais do pixel e \(I(x,y)\) representa o valor de intensidade naquele ponto da imagem. Em uma imagem em escala de cinza, como ocorre frequentemente em mamografias, cada pixel possui apenas um valor numérico associado à luminosidade local. Assim, uma imagem com altura \(H\) e largura \(W\) pode ser representada como uma matriz:
+Uma imagem digital pode ser compreendida matematicamente como uma função bidimensional discreta, geralmente representada por \(I(x,y)\), em que \(x\) e \(y\) indicam as coordenadas espaciais do pixel e \(I(x,y)\) representa o valor de intensidade naquele ponto da imagem. Em uma imagem em escala de cinza, como ocorre em bases monocromáticas de caracteres, artigos de vestuário e faces, cada pixel possui apenas um valor numérico associado à luminosidade local. Assim, uma imagem monocromática com altura \(H\) e largura \(W\) pode ser representada como uma matriz:
 
 \[
 I \in \mathbb{R}^{H \times W}
@@ -319,9 +366,10 @@ A Figura~\ref{fig:imagem_matriz_5x5} apresenta uma representação simplificada 
     \caption{Representação matemática de uma imagem em escala de cinza como matriz de intensidades.}
     \label{fig:imagem_matriz_5x5}
     \includegraphics[width=\textwidth]{imagem_matriz_5x5.png}
+    \legend{Fonte: Elaborado pelo autor (2026).}
 \end{figure}
 
-Em termos matemáticos, cada elemento \(I_{i,j}\) corresponde ao valor de intensidade do pixel localizado na linha \(i\) e na coluna \(j\). Em imagens de 8 bits, por exemplo, esses valores normalmente variam entre 0 e 255, sendo 0 associado ao preto, 255 ao branco e os valores intermediários aos diferentes tons de cinza. Em imagens médicas, essa variação de intensidade não representa apenas informação visual, mas também diferenças físicas e anatômicas, como densidade tecidual, contraste entre estruturas e possíveis regiões de interesse clínico.
+Em termos matemáticos, cada elemento \(I_{i,j}\) corresponde ao valor de intensidade do pixel localizado na linha \(i\) e na coluna \(j\). Em imagens de 8 bits, por exemplo, esses valores normalmente variam entre 0 e 255, sendo 0 associado ao preto, 255 ao branco e os valores intermediários aos diferentes tons de cinza. Em problemas de visão computacional, essa variação espacial de intensidade codifica contornos, gradientes de iluminação, texturas superficiais e estruturas morfológicas essenciais para discriminar o objeto de interesse.
 
 Antes de ser utilizada por um modelo de aprendizado profundo, a imagem costuma passar por uma etapa de normalização. Uma forma simples de normalização consiste em dividir cada valor de pixel por 255, transformando a escala original para o intervalo entre 0 e 1:
 
@@ -329,36 +377,30 @@ Antes de ser utilizada por um modelo de aprendizado profundo, a imagem costuma p
 I'_{i,j} = \frac{I_{i,j}}{255}
 \]
 
-Essa transformação não altera a estrutura espacial da imagem, mas facilita o treinamento da rede neural, pois reduz a variação numérica dos dados de entrada. Em termos computacionais, uma imagem em escala de cinza também pode ser representada como um tensor de três dimensões:
+Essa transformação não altera a estrutura espacial da imagem, mas facilita o treinamento da rede neural, pois reduz a variação numérica dos dados de entrada. Em termos computacionais, uma imagem digital é representada de forma geral como um tensor de três dimensões:
 
 \[
 I \in \mathbb{R}^{H \times W \times C}
 \]
 
-em que \(C\) representa o número de canais. No caso de mamografias em escala de cinza, geralmente \(C = 1\). Portanto, uma mamografia redimensionada para \(1024 \times 1024\) pixels pode ser representada como um tensor \(1024 \times 1024 \times 1\). Quando várias imagens são processadas em conjunto durante o treinamento, utiliza-se um lote de imagens, representado por:
+em que \(H\) representa a altura, \(W\) a largura e \(C\) o número de canais de cor. Em bases monocromáticas (escala de cinza), como MNIST, Fashion-MNIST, KMNIST, EMNIST (\(28 \times 28 \times 1\)) e FER2013 (\(48 \times 48 \times 1\)), tem-se \(C = 1\). Já em bases de imagens coloridas no espaço RGB, como CIFAR-10, CIFAR-100, SVHN e GTSRB (\(32 \times 32 \times 3\)), tem-se \(C = 3\). Quando várias imagens são processadas simultaneamente durante o treinamento ou inferência, organiza-se um lote (\textit{batch}) de imagens representado pelo tensor de quarta ordem:
 
 \[
 X \in \mathbb{R}^{N \times H \times W \times C}
 \]
 
-em que \(N\) indica o número de imagens no lote, \(H\) a altura, \(W\) a largura e \(C\) o número de canais.
+em que \(N\) indica o tamanho do lote (\textit{batch size}, como \(N \in \{32, 64, 128, 256\}\)).
 
-No contexto da classificação de mamografias, cada imagem \(x\) é associada a um rótulo \(y\), que representa a classe clínica da amostra. Em uma tarefa com três classes, por exemplo, pode-se definir:
+No contexto da classificação supervisionada multiclasse, cada imagem \(x\) é associada a um rótulo discreto \(y \in \{0, 1, \dots, K-1\}\), em que \(K\) representa o número total de classes do conjunto de dados (por exemplo, \(K=7\) no FER2013, \(K=10\) no MNIST, Fashion-MNIST, KMNIST, CIFAR-10 e SVHN, \(K=43\) no GTSRB e \(K=100\) no CIFAR-100). O objetivo do modelo computacional é aprender uma função \(f_{\theta}(x)\), parametrizada por pesos treináveis \(\theta\), capaz de receber o tensor da imagem como entrada e produzir uma distribuição de probabilidade sobre as \(K\) classes possíveis:
 
 \[
-y \in \{0, 1, 2\}
+f_{\theta}(x) = [p_0, p_1, \dots, p_{K-1}]
 \]
 
-em que \(0\) representa uma imagem normal, \(1\) uma imagem benigna e \(2\) uma imagem maligna. O objetivo do modelo computacional é aprender uma função \(f_{\theta}(x)\), parametrizada por pesos treináveis \(\theta\), capaz de receber uma imagem como entrada e produzir uma distribuição de probabilidade sobre as classes possíveis:
+sendo a classe final prevista obtida pela regra de decisão de máxima probabilidade a posteriori:
 
 \[
-f_{\theta}(x) = [p_0, p_1, p_2]
-\]
-
-em que \(p_0\), \(p_1\) e \(p_2\) indicam, respectivamente, a probabilidade estimada de a imagem pertencer às classes normal, benigna ou maligna. A classe final prevista pelo modelo é obtida pela escolha da maior probabilidade:
-
-\[
-\hat{y} = \arg\max_{k} p_k
+\hat{y} = \arg\max_{k \in \{0, \dots, K-1\}} p_k
 \]
 
 Essa formulação mostra que a classificação computacional de imagens não ocorre diretamente sobre a imagem visual percebida por um ser humano, mas sobre uma representação numérica estruturada. A imagem é convertida em matriz ou tensor, seus valores são normalizados, os rótulos são codificados numericamente e o modelo aprende padrões estatísticos capazes de relacionar regiões da imagem às classes de interesse.
@@ -369,14 +411,14 @@ Nas redes neurais convolucionais, esse processo é realizado por meio de filtros
 S(i,j) = \sum_{u=0}^{m-1}\sum_{v=0}^{n-1} K(u,v) \cdot I(i+u,j+v)
 \]
 
-Nesse caso, o filtro funciona como uma janela que analisa regiões locais da imagem. Dependendo dos valores aprendidos pelo filtro durante o treinamento, ele pode se tornar sensível a bordas, texturas, variações de contraste, formas ou padrões mais complexos. Em mamografias, essa propriedade é importante porque alterações clinicamente relevantes podem aparecer como pequenas regiões de maior densidade, massas, microcalcificações ou assimetrias discretas. Assim, a preservação da estrutura espacial da imagem é fundamental para que o modelo consiga aprender relações entre pixels vizinhos e regiões anatômicas relevantes.
+Nesse caso, o filtro funciona como uma janela que analisa regiões locais da imagem. Dependendo dos valores aprendidos pelo filtro durante o treinamento, ele pode se tornar sensível a bordas, texturas, variações de contraste, formas ou padrões mais complexos. Em \textit{benchmarks} de visão computacional, essa propriedade é fundamental porque elementos discriminativos --- como traços caligráficos em caracteres, contornos de objetos naturais, pictogramas em placas de trânsito ou curvaturas faciais --- dependem diretamente das relações locais entre pixels vizinhos.
 
-Portanto, a representação computacional de imagens digitais é uma etapa central para a classificação automática de mamografias. Ela estabelece a ponte entre a imagem médica original e o modelo de aprendizado profundo, permitindo que informações visuais sejam transformadas em dados numéricos processáveis. Essa base matemática também justifica o uso de redes convolucionais, pois essas arquiteturas exploram diretamente a organização matricial e espacial das imagens.
+Portanto, a representação computacional de imagens digitais estabelece a ponte entre o sinal visual bruto e os modelos de aprendizado profundo e híbridos quântico-clássicos, permitindo que informações visuais de múltiplos domínios sejam transformadas em tensores numéricos processáveis.
 
 \subsection{Classificação supervisionada de imagens}
 \label{subsec:classificacao_supervisionada_imagens}
 
-A classificação supervisionada de imagens é uma tarefa de aprendizado de máquina na qual um modelo aprende a associar imagens de entrada a rótulos previamente definidos. Diferentemente de abordagens não supervisionadas, nas quais o algoritmo busca padrões sem classes conhecidas, no aprendizado supervisionado cada amostra do conjunto de dados possui uma saída esperada, também chamada de rótulo ou \textit{ground truth}. Em imagens médicas, esses rótulos podem representar categorias diagnósticas, como exame normal, alteração benigna ou alteração maligna.
+A classificação supervisionada de imagens é uma tarefa de aprendizado de máquina na qual um modelo aprende a associar imagens de entrada a rótulos previamente definidos. Diferentemente de abordagens não supervisionadas, nas quais o algoritmo busca padrões sem classes conhecidas, no aprendizado supervisionado cada amostra do conjunto de dados possui uma saída esperada, também chamada de rótulo ou \textit{ground truth}. Em \textit{benchmarks} de visão computacional, esses rótulos representam as categorias semânticas de cada domínio, como dígitos, caracteres, peças de vestuário, objetos naturais, sinais viários ou expressões faciais.
 
 Do ponto de vista matemático, um conjunto de dados supervisionado pode ser representado por:
 
@@ -391,23 +433,23 @@ em que \(x_i\) representa a \(i\)-ésima imagem e \(y_i\) representa seu respect
 y_i \in \{0,1,\ldots,K-1\}.
 \]
 
-Assim, no caso de uma classificação diagnóstica com três classes, pode-se representar os rótulos como \(0\), \(1\) e \(2\), correspondendo, por exemplo, às classes \textit{Normal}, \textit{Benign} e \textit{Malignant}. Essa representação transforma o problema clínico em uma tarefa computacional de classificação multiclasse.
+Assim, a cardinalidade \(K\) adapta-se diretamente à granularidade semântica da base avaliada, abrangendo desde problemas com \(K=7\) ou \(K=10\) categorias até cenários com dezenas ou centenas de classes (\(K=43\) no GTSRB e \(K=100\) no CIFAR-100).
 
-Segundo Deisenroth, Faisal e Ong, a aprendizagem de máquina pode ser compreendida a partir de três componentes principais: dados, modelo e aprendizagem. Os dados precisam ser representados numericamente; o modelo é uma função parametrizada; e a aprendizagem corresponde ao ajuste dos parâmetros desse modelo com base nos exemplos disponíveis \cite{deisenroth2020mathematics}. No caso de imagens digitais, cada imagem pode ser representada como uma matriz ou tensor de valores numéricos. Uma imagem em escala de cinza pode ser descrita como:
+Segundo \citeonline{deisenroth2020mathematics}, a aprendizagem de máquina pode ser compreendida a partir de três componentes principais: dados, modelo e aprendizagem. Os dados precisam ser representados numericamente; o modelo é uma função parametrizada; e a aprendizagem corresponde ao ajuste dos parâmetros desse modelo com base nos exemplos disponíveis. No caso de imagens digitais, cada amostra é descrita como um tensor:
 
 \[
 x_i \in \mathbb{R}^{H \times W \times C},
 \]
 
-em que \(H\) representa a altura, \(W\) representa a largura e \(C\) representa o número de canais. Em mamografias em escala de cinza, normalmente \(C=1\). Dessa forma, a imagem deixa de ser apenas uma informação visual e passa a ser uma estrutura matemática que pode ser processada por algoritmos de aprendizado.
+em que \(H\) representa a altura, \(W\) representa a largura e \(C\) representa o número de canais (\(C=1\) em imagens em escala de cinza e \(C=3\) em imagens coloridas RGB). Dessa forma, a imagem passa a ser uma estrutura matemática processável por algoritmos de otimização.
 
-O objetivo de um modelo supervisionado é aprender uma função parametrizada capaz de mapear a entrada \(x_i\) para uma saída associada às classes possíveis. Essa função pode ser representada por:
+O objetivo de um modelo supervisionado é aprender uma função parametrizada capaz de mapear a entrada \(x_i\) para uma saída associada às \(K\) classes possíveis:
 
 \[
 f_{\theta}: \mathbb{R}^{H \times W \times C} \rightarrow \mathbb{R}^{K},
 \]
 
-em que \(\theta\) representa o conjunto de parâmetros aprendidos pelo modelo e \(K\) representa o número de classes. Em redes neurais, esses parâmetros correspondem aos pesos e vieses das camadas. A saída da rede geralmente é um vetor de escores, que pode ser convertido em probabilidades por meio da função \textit{softmax}:
+em que \(\theta\) representa o conjunto de parâmetros aprendidos pelo modelo. Em redes neurais, esses parâmetros correspondem aos pesos e vieses das camadas (e, em modelos híbridos, incluem os ângulos de rotação das portas quânticas parametrizadas). A saída da rede geralmente é um vetor de escores (\textit{logits}), convertido em probabilidades por meio da função \textit{softmax}:
 
 \[
 p_k =
@@ -422,15 +464,15 @@ em que \(s_k\) é o escore associado à classe \(k\), e \(p_k\) representa a pro
 \arg\max_k p_k.
 \]
 
-Assim, o modelo atribui à imagem a classe que possui maior probabilidade estimada. Por exemplo, se a saída do modelo para uma mamografia for:
+Assim, o modelo atribui à imagem a classe que possui maior probabilidade estimada. Por exemplo, em uma tarefa ilustrativa com três classes, se a saída do modelo para uma amostra for:
 
 \[
 \hat{p} = [0{,}12,\ 0{,}23,\ 0{,}65],
 \]
 
-então a classe prevista será a terceira classe, pois \(0{,}65\) é o maior valor do vetor de probabilidades.
+então a classe prevista será a terceira classe (\(k=2\)), pois \(0{,}65\) é o maior valor do vetor de probabilidades.
 
-Durante o treinamento, a predição do modelo é comparada com o rótulo verdadeiro por meio de uma função de perda. Em problemas multiclasse, uma função frequentemente utilizada é a entropia cruzada categórica:
+Durante o treinamento, a predição do modelo é comparada com o rótulo verdadeiro por meio de uma função de perda. Em problemas multiclasse, uma função amplamente utilizada é a entropia cruzada categórica (\textit{categorical cross-entropy}):
 
 \[
 \mathcal{L}(y,\hat{p}) =
@@ -447,16 +489,14 @@ em que \(y_k\) representa o rótulo verdadeiro em codificação \textit{one-hot}
 
 Portanto, a perda será baixa quando o modelo atribuir alta probabilidade à classe correta e será alta quando o modelo atribuir baixa probabilidade ao rótulo verdadeiro. O treinamento consiste em ajustar os parâmetros \(\theta\) para minimizar essa perda ao longo do conjunto de dados, processo diretamente relacionado à otimização matemática em aprendizado de máquina \cite{deisenroth2020mathematics,goodfellow2016deep}.
 
-Em imagens médicas, a classificação supervisionada exige cuidados adicionais. Os rótulos podem apresentar incertezas, inconsistências ou diferenças entre avaliadores; as classes podem ser desbalanceadas; e imagens provenientes de diferentes equipamentos, instituições ou protocolos de aquisição podem apresentar variações importantes. Abdelhafiz et al. destacam que bases de mamografia são fundamentais para treinamento, teste e avaliação de modelos de aprendizado profundo, mdas também apresentam diferenças em resolução, formato, tipo de imagem, anotações e distribuição entre classes \cite{abdelhafiz2019}. Essas características tornam a classificação supervisionada de mamografias uma tarefa sensível, na qual o desempenho do modelo depende tanto da arquitetura escolhida quanto da qualidade e organização dos dados.
-
-Além disso, a literatura mostra que CNNs têm sido aplicadas em mamografia para diferentes tarefas, como classificação, detecção de lesões, localização, avaliação de risco e recuperação de imagens \cite{abdelhafiz2019}. Isso reforça que a classificação supervisionada de imagens médicas não se limita ao aprendizado de uma relação matemática entre entrada e saída, mas envolve também a definição adequada do problema clínico, dos rótulos utilizados, da divisão dos dados e das métricas de avaliação.
+Em \textit{benchmarks} de visão computacional com diferentes níveis de balanceamento e ruído visual, a classificação supervisionada exige cuidados metodológicos específicos. Bases coletadas em cenários reais (como SVHN, GTSRB e FER2013) apresentam variações acentuadas de iluminação, contraste, resolução nativa e distribuição entre classes, além de possíveis ambiguidades de rotulagem. Essas características tornam indispensável a padronização do pré-processamento, da divisão estratificada dos dados e das métricas de avaliação para assegurar comparações justas entre arquiteturas distintas.
 
 \subsection{Treinamento, validação, teste e generalização}
 \label{subsec:treinamento_validacao_teste_generalizacao}
 
 Em aprendizado supervisionado, a avaliação adequada de um modelo depende da separação do conjunto de dados em subconjuntos com funções distintas. De modo geral, os dados são divididos em treino, validação e teste. O conjunto de treino é utilizado para ajustar os parâmetros do modelo; o conjunto de validação auxilia no acompanhamento do desempenho e na escolha de hiperparâmetros; e o conjunto de teste é reservado para estimar o desempenho final em dados não vistos.
 
-Essa divisão é essencial porque o objetivo de um modelo de aprendizado de máquina não é apenas memorizar os exemplos usados no treinamento, mas generalizar para novas amostras. Deisenroth, Faisal e Ong ressaltam que o aprendizado deve buscar desempenho em dados ainda não observados, e não apenas bom ajuste aos dados disponíveis \cite{deisenroth2020mathematics}. Em imagens médicas, essa questão é especialmente importante, pois um modelo pode obter bons resultados em uma base específica e ainda assim apresentar desempenho inferior quando aplicado a imagens de outra instituição, equipamento ou população.
+Essa divisão é essencial porque o objetivo de um modelo de aprendizado de máquina não é apenas memorizar os exemplos usados no treinamento, mas generalizar para novas amostras. \citeonline{deisenroth2020mathematics} ressaltam que o aprendizado deve buscar desempenho em dados ainda não observados, e não apenas bom ajuste aos dados disponíveis. Em estudos multi-dataset, essa questão é central, pois uma configuração arquitetural ou de hiperparâmetros pode convergir rapidamente em bases canônicas de dígitos e apresentar degradação severa de generalização em imagens naturais ou expressões faciais.
 
 Durante o treinamento, o modelo recebe os exemplos do conjunto de treino e atualiza seus parâmetros com base no erro calculado. Considerando uma função de perda \(\mathcal{L}\), o treinamento pode ser descrito pela minimização do risco empírico:
 
@@ -484,11 +524,11 @@ R_{\text{emp}}(\theta_t),
 
 em que \(\theta_t\) representa os parâmetros na iteração \(t\), \(\eta\) é a taxa de aprendizado e \(\nabla_{\theta}R_{\text{emp}}(\theta_t)\) é o gradiente da função de perda em relação aos parâmetros. Esse processo é repetido ao longo de várias épocas, até que o modelo alcance um desempenho adequado ou até que critérios de parada sejam satisfeitos.
 
-O conjunto de validação é utilizado para acompanhar o comportamento do modelo durante o treinamento. Ele permite verificar se a redução da perda no treino está acompanhada de melhora em dados não utilizados diretamente na atualização dos pesos. Além disso, a validação auxilia na escolha de hiperparâmetros, como taxa de aprendizado, tamanho do lote, número de épocas, profundidade da rede, intensidade de regularização e estratégia de aumento de dados.
+O conjunto de validação é utilizado para acompanhar o comportamento do modelo durante o treinamento. Ele permite verificar se a redução da perda no treino está acompanhada de melhora em dados não utilizados diretamente na atualização dos pesos. Além disso, a validação auxilia na escolha de hiperparâmetros, como taxa de aprendizado, função de ativação, tamanho do lote (\textit{batch size}), número de épocas, intensidade de regularização e estratégia de aumento de dados.
 
-O conjunto de teste, por sua vez, deve ser utilizado somente ao final do processo de desenvolvimento. Sua função é fornecer uma estimativa mais imparcial do desempenho final do modelo. Caso o conjunto de teste seja usado repetidamente para tomar decisões de modelagem, ele deixa de representar uma avaliação independente, pois passa a influenciar indiretamente o ajuste do modelo.
+O conjunto de teste, por sua vez, deve ser utilizado somente ao final do processo de desenvolvimento. Sua função é fornecer uma estimativa imparcial do desempenho final do modelo. Caso o conjunto de teste seja usado repetidamente para tomar decisões de modelagem, ele deixa de representar uma avaliação independente, pois passa a influenciar indiretamente o ajuste do modelo.
 
-A generalização pode ser compreendida como a capacidade do modelo de manter desempenho satisfatório em exemplos que não participaram do treinamento. Quando o modelo apresenta baixo erro no treino, mas erro elevado na validação ou no teste, ocorre o fenômeno conhecido como \textit{overfitting}, ou sobreajuste. Nesse caso, o modelo aprende detalhes específicos do conjunto de treino, como ruídos, artefatos, padrões de aquisição ou características particulares da base, em vez de aprender padrões gerais associados às classes.
+A generalização pode ser compreendida como a capacidade do modelo de manter desempenho satisfatório em exemplos que não participaram do treinamento. Quando o modelo apresenta baixo erro no treino, mas erro elevado na validação ou no teste, ocorre o fenômeno conhecido como \textit{overfitting}, ou sobreajuste. Nesse caso, o modelo aprende detalhes específicos do conjunto de treino, como ruídos de fundo, artefatos de compressão ou particularidades amostrais, em vez de aprender padrões gerais associados às classes.
 
 O comportamento típico do sobreajuste pode ser representado por:
 
@@ -498,54 +538,42 @@ O comportamento típico do sobreajuste pode ser representado por:
 \mathcal{L}_{val} \uparrow,
 \]
 
-ou seja, a perda de treino continua diminuindo enquanto a perda de validação aumenta ou deixa de melhorar. Também pode ocorrer quando a acurácia de treino cresce continuamente, mas a acurácia de validação se estabiliza ou diminui. Goodfellow, Bengio e Courville discutem esse problema como uma das principais limitações de modelos de alta capacidade, especialmente quando a quantidade de dados é limitada em relação ao número de parâmetros treináveis \cite{goodfellow2016deep}.
+ou seja, a perda de treino continua diminuindo enquanto a perda de validação aumenta ou deixa de melhorar. Também pode ocorrer quando a métrica de desempenho no treino cresce continuamente, mas na validação se estabiliza ou diminui. \citeonline{goodfellow2016deep} discutem esse problema como uma das principais limitações de modelos de alta capacidade, especialmente quando a quantidade de exemplos por classe é reduzida (como no CIFAR-100 ou nas classes minoritárias do GTSRB e FER2013).
 
-O fenômeno oposto é o \textit{underfitting}, ou subajuste. Ele ocorre quando o modelo não consegue aprender adequadamente nem mesmo os padrões presentes no conjunto de treino. Nesse caso, tanto o desempenho no treino quanto o desempenho na validação permanecem baixos. O subajuste pode ocorrer quando o modelo é simples demais, quando o treinamento é insuficiente ou quando as características extraídas não são adequadas para a tarefa.
+O fenômeno oposto é o \textit{underfitting}, ou subajuste. Ele ocorre quando o modelo não consegue aprender adequadamente nem mesmo os padrões presentes no conjunto de treino. Nesse caso, tanto o desempenho no treino quanto o desempenho na validação permanecem baixos. O subajuste pode ocorrer quando a arquitetura possui baixa capacidade representacional, quando há compressão excessiva de características (como em gargalos quânticos muito estreitos) ou quando o regime de otimização é insuficiente.
 
-Em mamografias, a generalização é um desafio particular. Abdelhafiz et al. indicam que o treinamento de redes profundas em mamografia é dificultado pela disponibilidade limitada de dados médicos anotados, pela presença de bases com diferentes formatos e resoluções, pela necessidade de pré-processamento e pela possibilidade de desbalanceamento entre classes \cite{abdelhafiz2019}. Os autores também destacam que práticas como aumento de dados, transferência de aprendizado, normalização, \textit{dropout} e escolha adequada da validação são usadas para reduzir sobreajuste e melhorar a capacidade de generalização dos modelos.
-
-Outro ponto importante é a definição da estratégia de validação. Em aprendizado profundo aplicado à mamografia, podem ser utilizadas estratégias como divisão simples em treino e teste, divisão em treino, validação e teste, ou validação cruzada \(k\)-fold. Abdelhafiz et al. descrevem que a validação cruzada é uma técnica estatística utilizada para avaliar modelos preditivos por meio da partição dos dados em subconjuntos, sendo comum em estudos com bases menores de mamografia \cite{abdelhafiz2019}. Em bases maiores, a separação em treino, validação e teste costuma ser uma alternativa prática, desde que realizada de forma estratificada e sem vazamento de dados.
-
-O vazamento de dados, ou \textit{data leakage}, ocorre quando informações do conjunto de validação ou teste aparecem direta ou indiretamente no treinamento. Em imagens médicas, isso pode ocorrer, por exemplo, se imagens da mesma paciente, do mesmo exame ou de exames muito semelhantes forem distribuídas entre subconjuntos diferentes. Nessa situação, o modelo pode apresentar desempenho artificialmente elevado, pois aprende características específicas da paciente ou do exame, e não padrões gerais da doença.
-
-Além disso, em bases desbalanceadas, a divisão dos dados deve preservar a distribuição das classes entre treino, validação e teste. Essa estratégia é conhecida como divisão estratificada. Caso uma classe fique sub-representada em algum subconjunto, a avaliação pode se tornar instável ou pouco representativa. Em mamografias, esse cuidado é relevante porque classes malignas tendem a ser menos frequentes do que exames normais em bases de rastreamento.
-
-O estudo de Sundell et al. ilustra a importância da separação entre dados de treinamento, validação e teste em aplicações de CNNs na mamografia. Os autores utilizaram imagens de controle de qualidade mamográfica para treinar modelos supervisionados, separando dados de treino/validação e avaliando o desempenho em um conjunto de teste independente, composto por imagens de diferentes condições de qualidade e dose \cite{sundell2022cnn}. Além disso, o trabalho evidencia que o aumento da complexidade da rede pode melhorar o desempenho até certo ponto, mas também pode prejudicar a generalização quando há excesso de camadas ou parâmetros.
-
-Portanto, treinamento, validação, teste e generalização são conceitos centrais para a construção de modelos confiáveis em classificação de imagens médicas. O treino ajusta os parâmetros do modelo; a validação orienta decisões de configuração e controle de sobreajuste; e o teste estima o desempenho final em dados não utilizados no desenvolvimento. Em mamografias, essa separação deve ser conduzida com cuidado devido à alta dimensionalidade das imagens, à presença de padrões sutis, ao desbalanceamento das classes, à variabilidade entre bases e ao risco de vazamento de dados.
+Outro cuidado metodológico indispensável é a prevenção de vazamento de dados (\textit{data leakage}) e a adoção de divisão estratificada entre treino, validação e teste. Em bases desbalanceadas, a partição estratificada preserva a proporção original das \(K\) classes em todos os subconjuntos, garantindo que categorias minoritárias estejam adequadamente representadas tanto durante o ajuste dos parâmetros quanto na avaliação final.
 
 \subsection{Métricas de avaliação}
 \label{subsec:metricas_avaliacao}
 
-A avaliação de modelos de classificação em imagens médicas deve ser compreendida a partir da formulação matemática geral do aprendizado supervisionado. Nesse contexto, considera-se um conjunto de dados composto por pares de entrada e rótulo:
+A avaliação de modelos de classificação em visão computacional deve ser compreendida a partir da formulação matemática geral do aprendizado supervisionado. Nesse contexto, considera-se um conjunto de dados composto por pares de entrada e rótulo:
 
 \[
 \mathcal{D} = \{(x_1,y_1),(x_2,y_2),\ldots,(x_N,y_N)\},
 \]
 
-em que \(x_i\) representa uma imagem de entrada e \(y_i\) representa seu rótulo verdadeiro. No caso da classificação de mamografias, \(x_i\) pode corresponder a uma imagem mamográfica representada numericamente, enquanto \(y_i\) pertence ao conjunto de classes diagnósticas possíveis, como \textit{Normal}, \textit{Benign} e \textit{Malignant}.
+em que \(x_i\) representa uma imagem de entrada e \(y_i \in \{0, 1, \dots, K-1\}\) representa seu rótulo verdadeiro entre as \(K\) classes do conjunto de dados avaliado.
 
-Segundo Deisenroth, Faisal e Ong, a aprendizagem de máquina pode ser entendida a partir de três componentes principais: dados, modelo e aprendizagem. Os dados são representados numericamente, frequentemente como vetores ou matrizes; o modelo é uma função parametrizada; e a aprendizagem consiste em ajustar os parâmetros desse modelo a partir dos dados disponíveis, buscando bom desempenho em dados não vistos \cite{deisenroth2020mathematics}. Assim, em uma tarefa de classificação, o modelo pode ser representado por uma função parametrizada:
+Segundo \citeonline{deisenroth2020mathematics}, em uma tarefa de classificação multiclasse, o modelo pode ser representado por uma função parametrizada:
 
 \[
 f_{\theta}: \mathbb{R}^{D} \rightarrow \mathbb{R}^{K},
 \]
 
-em que \(D\) representa a dimensão da entrada após sua representação numérica, \(K\) representa o número de classes e \(\theta\) representa o conjunto de parâmetros do modelo.
-
-Em redes neurais aplicadas à classificação multiclasse, a saída do modelo geralmente é transformada em um vetor de probabilidades por meio da função \textit{softmax}. Para uma imagem \(x_i\), o modelo produz um vetor:
+em que \(D\) representa a dimensão da entrada após sua representação numérica, \(K\) representa o número de classes e \(\theta\) representa o conjunto de parâmetros do modelo. Para uma imagem \(x_i\), o modelo produz um vetor de probabilidades via \textit{softmax}:
 
 \[
 \hat{p}_i = f_{\theta}(x_i) = [p_{i,0}, p_{i,1}, \ldots, p_{i,K-1}],
 \]
 
-em que \(p_{i,k}\) representa a probabilidade estimada de a imagem \(x_i\) pertencer à classe \(k\). A classe prevista pelo modelo é obtida por:
+em que \(p_{i,k}\) representa a probabilidade estimada de a imagem \(x_i\) pertencer à classe \(k\), e a classe prevista é obtida por:
 
 \[
 \hat{y}_i = \arg\max_{k} p_{i,k}.
 \]
 
-Durante o treinamento, o objetivo é minimizar uma função de perda, isto é, uma medida matemática do erro entre a predição do modelo e o rótulo verdadeiro. A formulação de minimização do risco empírico expressa esse processo como a minimização da média das perdas no conjunto de treinamento:
+Durante o treinamento, minimiza-se o risco empírico:
 
 \[
 R_{\text{emp}}(f_{\theta}) =
@@ -554,20 +582,14 @@ R_{\text{emp}}(f_{\theta}) =
 \ell(y_i, f_{\theta}(x_i)),
 \]
 
-em que \(\ell\) representa a função de perda. Para classificação multiclasse, uma função frequentemente utilizada é a entropia cruzada categórica, definida por:
+utilizando-se tipicamente a entropia cruzada categórica:
 
 \[
 \mathcal{L}(y_i, \hat{p}_i) =
 -\sum_{k=0}^{K-1} y_{i,k}\log(p_{i,k}),
 \]
 
-em que \(y_{i,k}\) representa o rótulo verdadeiro em codificação \textit{one-hot}. Quando a classe correta é \(c\), essa expressão se reduz a:
-
-\[
-\mathcal{L}(y_i, \hat{p}_i) = -\log(p_{i,c}).
-\]
-
-Dessa forma, a perda será baixa quando o modelo atribuir alta probabilidade à classe correta e será alta quando o modelo atribuir baixa probabilidade à classe verdadeira. Entretanto, a função de perda utilizada no treinamento não é suficiente para avaliar completamente o desempenho do modelo em um problema médico. Por isso, além da perda, são utilizadas métricas de avaliação calculadas sobre o conjunto de validação ou teste.
+que para a classe verdadeira \(c\) se reduz a \(\mathcal{L}(y_i, \hat{p}_i) = -\log(p_{i,c})\). Entretanto, a função de perda utilizada na otimização contínua não é suficiente para caracterizar de forma completa a qualidade discriminativa do classificador nas \(K\) classes. Por isso, são utilizadas métricas de avaliação discretas e probabilísticas calculadas sobre os conjuntos de validação e teste.
 
 A métrica mais direta é a acurácia, que mede a proporção de classificações corretas em relação ao total de amostras avaliadas:
 
@@ -578,15 +600,15 @@ Accuracy =
 \mathbb{1}(\hat{y}_i = y_i),
 \]
 
-em que \(\mathbb{1}(\hat{y}_i = y_i)\) é uma função indicadora que assume valor 1 quando a predição está correta e 0 caso contrário. Embora seja uma métrica intuitiva, a acurácia pode ser insuficiente em bases desbalanceadas. Por exemplo, se uma base possui muitas imagens normais e poucas imagens malignas, um modelo pode obter acurácia aparentemente alta apenas por favorecer a classe majoritária.
+em que \(\mathbb{1}(\hat{y}_i = y_i)\) é uma função indicadora que assume valor 1 quando a predição está correta e 0 caso contrário. Embora seja uma métrica intuitiva, a acurácia global pode ser enganosa em bases desbalanceadas, nas quais um classificador obtém valores elevados apenas por favorecer as categorias mais frequentes.
 
-Para uma análise mais detalhada, utiliza-se a matriz de confusão. Em um problema com \(K\) classes, a matriz de confusão pode ser representada por:
+Para uma análise detalhada por categoria, utiliza-se a matriz de confusão. Em um problema com \(K\) classes, a matriz de confusão é definida por:
 
 \[
 C \in \mathbb{N}^{K \times K},
 \]
 
-em que cada elemento \(C_{ij}\) indica a quantidade de exemplos cuja classe verdadeira é \(i\) e cuja classe prevista é \(j\). Para três classes, a matriz pode ser representada como:
+em que cada elemento \(C_{ij}\) indica a quantidade de exemplos cuja classe verdadeira é \(i\) e cuja classe prevista é \(j\). De forma ilustrativa, para \(K=3\), tem-se:
 
 \[
 C =
@@ -597,7 +619,7 @@ C_{20} & C_{21} & C_{22}
 \end{bmatrix}.
 \]
 
-Os elementos da diagonal principal representam os acertos do modelo, enquanto os elementos fora da diagonal representam erros de classificação. Por exemplo, considerando as classes \textit{Normal}, \textit{Benign} e \textit{Malignant}, o elemento \(C_{02}\) representa imagens verdadeiramente normais classificadas como malignas, enquanto \(C_{20}\) representa imagens malignas classificadas incorretamente como normais.
+Os elementos da diagonal principal \(C_{kk}\) contabilizam os acertos do modelo para cada classe \(k\), enquanto os elementos fora da diagonal \(C_{ij}\) (\(i \neq j\)) revelam confusões semânticas ou morfológicas específicas de cada base (como a confusão entre camisa e camiseta no Fashion-MNIST, entre expressões faciais próximas no FER2013 ou entre caracteres cursivos semelhantes no KMNIST).
 
 A partir da matriz de confusão, é possível calcular métricas específicas por classe usando a estratégia \textit{one-vs-rest}. Nessa abordagem, para cada classe \(k\), considera-se essa classe como positiva e todas as demais como negativas. Assim, definem-se:
 
@@ -633,16 +655,16 @@ Precision_k =
 \frac{TP_k}{TP_k + FP_k}.
 \]
 
-Essa métrica indica, entre todas as imagens classificadas pelo modelo como pertencentes à classe \(k\), quantas realmente pertencem a essa classe. No contexto de mamografias, uma baixa precisão para a classe \textit{Malignant} indica que muitas imagens classificadas como malignas não eram, de fato, malignas, aumentando a ocorrência de falsos positivos.
+Essa métrica indica, entre todas as imagens classificadas pelo modelo como pertencentes à classe \(k\), quantas realmente pertencem a essa classe. Uma baixa precisão para determinada categoria indica que o modelo atribui excessivamente esse rótulo a amostras de outras classes, elevando a taxa de falsos positivos.
 
-A revocação, também chamada de sensibilidade em contextos médicos, é definida por:
+A revocação (\textit{recall}) ou sensibilidade é definida por:
 
 \[
 Recall_k = Sensitivity_k =
 \frac{TP_k}{TP_k + FN_k}.
 \]
 
-Essa métrica indica a proporção de exemplos reais da classe \(k\) que foram corretamente identificados pelo modelo. Para a classe \textit{Malignant}, a revocação é especialmente importante, pois uma baixa revocação significa que muitos casos malignos foram classificados incorretamente como normais ou benignos, caracterizando falsos negativos.
+Essa métrica indica a proporção de exemplos reais da classe \(k\) que foram corretamente identificados pelo modelo. Em classes minoritárias (como sinais de trânsito raros no GTSRB ou a expressão de desgosto no FER2013), uma baixa revocação evidencia que o modelo falha em detectar aquela categoria, gerando muitos falsos negativos.
 
 A especificidade mede a capacidade do modelo de reconhecer corretamente os exemplos que não pertencem à classe analisada:
 
@@ -650,8 +672,6 @@ A especificidade mede a capacidade do modelo de reconhecer corretamente os exemp
 Specificity_k =
 \frac{TN_k}{TN_k + FP_k}.
 \]
-
-Enquanto a sensibilidade mede a capacidade de detectar corretamente os casos positivos, a especificidade mede a capacidade de evitar falsos alarmes. Em aplicações médicas, essas duas métricas devem ser analisadas em conjunto, pois um modelo pode ser muito sensível, mas pouco específico, ou o contrário.
 
 O F1-score combina precisão e revocação por meio da média harmônica:
 
@@ -662,9 +682,9 @@ F1_k =
 {Precision_k + Recall_k}.
 \]
 
-A média harmônica penaliza situações em que uma das duas métricas é baixa. Portanto, o F1-score só será elevado quando precisão e revocação forem simultaneamente altas. Essa característica torna o F1-score útil em problemas nos quais falsos positivos e falsos negativos são ambos relevantes.
+A média harmônica penaliza situações em que uma das duas métricas é baixa. Portanto, o F1-score só será elevado quando precisão e revocação forem simultaneamente altas.
 
-Em problemas multiclasse, é comum calcular médias das métricas por classe. A média macro considera todas as classes com o mesmo peso:
+Em problemas multiclasse, calculam-se médias das métricas ao longo das \(K\) classes. A média macro considera todas as classes com o mesmo peso:
 
 \[
 Macro\text{-}F1 =
@@ -682,7 +702,7 @@ Weighted\text{-}F1 =
 F1_k,
 \]
 
-em que \(n_k\) é o número de exemplos da classe \(k\) e \(N\) é o número total de exemplos. A média macro é importante quando se deseja avaliar se o modelo apresenta desempenho equilibrado entre as classes, enquanto a média ponderada reflete mais fortemente o desempenho nas classes com maior quantidade de amostras.
+em que \(n_k\) é o número de exemplos da classe \(k\) e \(N\) é o número total de exemplos. A média macro é fundamental quando se deseja avaliar se o modelo apresenta desempenho equilibrado em todas as categorias, independentemente de sua frequência amostral, enquanto a média ponderada reflete mais fortemente o desempenho nas classes majoritárias.
 
 Outra métrica relevante em bases desbalanceadas é a acurácia balanceada, definida como a média das revocações por classe:
 
@@ -693,23 +713,7 @@ Balanced\ Accuracy =
 Recall_k.
 \]
 
-Essa métrica reduz o efeito da classe majoritária, pois cada classe contribui igualmente para o resultado final. Em mamografias, isso é importante porque classes clinicamente relevantes, como \textit{Benign} e \textit{Malignant}, podem ter menos amostras do que a classe \textit{Normal}.
-
-Além dessas métricas, a curva ROC e a AUC são frequentemente utilizadas para avaliar a capacidade discriminativa do modelo. Para cada classe \(k\), considerando a estratégia \textit{one-vs-rest}, define-se a taxa de verdadeiros positivos como:
-
-\[
-TPR_k =
-\frac{TP_k}{TP_k + FN_k},
-\]
-
-e a taxa de falsos positivos como:
-
-\[
-FPR_k =
-\frac{FP_k}{FP_k + TN_k}.
-\]
-
-A curva ROC representa a relação entre \(TPR_k\) e \(FPR_k\) para diferentes limiares de decisão. A área sob essa curva, chamada AUC, pode ser expressa como:
+Além dessas métricas, a curva ROC e a AUC (\textit{Area Under the Curve}) podem ser utilizadas para avaliar a capacidade discriminativa do classificador em diferentes limiares de decisão \cite{fawcett2006roc,hand2001simple}. Para cada classe \(k\) na formulação \textit{one-vs-rest}, definem-se a taxa de verdadeiros positivos (\(TPR_k = \frac{TP_k}{TP_k + FN_k}\)) e a taxa de falsos positivos (\(FPR_k = \frac{FP_k}{FP_k + TN_k}\)), obtendo-se a área sob a curva:
 
 \[
 AUC_k =
@@ -717,20 +721,13 @@ AUC_k =
 TPR_k(FPR_k)\,dFPR_k.
 \]
 
-Em termos práticos, a AUC mede a capacidade do modelo de atribuir pontuações mais altas aos exemplos positivos do que aos negativos. Valores próximos de \(0{,}5\) indicam desempenho semelhante ao acaso, enquanto valores próximos de \(1{,}0\) indicam alta capacidade de separação entre a classe analisada e as demais.
+Portanto, a análise conjunta de acurácia, precisão, revocação, Macro-F1 e matriz de confusão oferece uma caracterização rigorosa da capacidade de generalização dos modelos avaliados \cite{deisenroth2020mathematics}.
 
-Portanto, a avaliação de modelos aplicados à classificação de mamografias não deve depender apenas da acurácia global. A matriz de confusão, a precisão, a revocação, a especificidade, o F1-score, a acurácia balanceada e a AUC fornecem uma análise mais completa do comportamento do modelo. Essa abordagem é coerente com a formulação matemática da aprendizagem de máquina, na qual o objetivo não é apenas minimizar o erro no conjunto de treinamento, mas estimar se o modelo é capaz de generalizar para dados não vistos \cite{deisenroth2020mathematics}. Em imagens médicas, essa análise é essencial porque diferentes tipos de erro possuem diferentes implicações clínicas.
+\subsection{Seleção de métricas em benchmarks multiclasse e desbalanceados}
 
+A avaliação comparativa de modelos ao longo de múltiplos conjuntos de dados exige métricas que sejam simultaneamente sensíveis ao desempenho global e robustas a assimetrias na distribuição de classes. Embora a acurácia global indique a fração total de predições corretas, ela pode mascarar falhas severas em bases fortemente desbalanceadas, como GTSRB, FER2013 e SVHN, nas quais o acerto exclusivo nas classes majoritárias já produz valores elevados de acurácia.
 
-\subsection{Métricas de avaliação em classificação de imagens médicas}
-
-A avaliação de modelos de classificação em imagens médicas deve considerar mais do que a acurácia global. Embora a acurácia indique a proporção de amostras classificadas corretamente, ela pode ser insuficiente em bases desbalanceadas, pois um modelo pode obter desempenho aparentemente elevado apenas favorecendo a classe majoritária.
-
-Por esse motivo, métricas como precisão, revocação, F1-score, matriz de confusão e AUC são importantes para uma análise mais completa. A precisão indica, entre todas as amostras classificadas como pertencentes a uma classe, quantas realmente pertencem a ela. A revocação, também chamada de sensibilidade em contextos médicos, indica a proporção de amostras reais de uma classe que foram corretamente identificadas pelo modelo.
-
-O F1-score combina precisão e revocação por meio da média harmônica, sendo útil quando é necessário equilibrar falsos positivos e falsos negativos. A matriz de confusão permite observar diretamente os padrões de erro do modelo, mostrando quais classes são mais frequentemente confundidas. Já a AUC, associada à curva ROC, avalia a capacidade de separação entre classes em diferentes limiares de decisão.
-
-Em problemas multiclasse, como a classificação de mamografias em categorias diagnósticas, é comum utilizar estratégias como one-vs-rest, nas quais cada classe é avaliada em comparação com todas as demais. Essa abordagem permite analisar a capacidade discriminativa do modelo para cada classe individualmente, o que é especialmente importante quando as classes possuem diferentes graus de relevância clínica.
+Por esse motivo, este trabalho adota o Macro-F1 como métrica primária de comparação entre arquiteturas, funções de ativação e tamanhos de lote. Por calcular a média não ponderada dos F1-scores de todas as \(K\) classes, o Macro-F1 atribui peso idêntico a classes abundantes e raras, penalizando modelos que colapsam suas predições em poucas categorias. Complementarmente, a inspeção das matrizes de confusão e da variação de F1 por classe (\(\Delta\text{F1}\)) permite diagnosticar em quais categorias visuais específicas ocorrem ganhos ou perdas decorrentes da variação de hiperparâmetros ou da introdução de camadas quânticas.
 
 \section{Redes neurais e aprendizado profundo}
 
@@ -740,9 +737,9 @@ As redes neurais artificiais fazem parte do campo do aprendizado de máquina, no
 \mathcal{D} = \{(x_1,y_1),(x_2,y_2),\ldots,(x_N,y_N)\},
 \]
 
-em que \(x_i\) representa uma entrada e \(y_i\) representa o rótulo associado a essa entrada. Em uma tarefa de classificação de mamografias, \(x_i\) corresponde a uma imagem mamográfica representada numericamente, enquanto \(y_i\) pertence ao conjunto de classes diagnósticas consideradas.
+em que \(x_i\) representa uma entrada e \(y_i\) representa o rótulo associado a essa entrada. Em uma tarefa de classificação de imagens nos nove \textit{benchmarks} avaliados, \(x_i\) corresponde ao tensor numérico da imagem, enquanto \(y_i \in \{0, 1, \dots, K-1\}\) pertence ao conjunto das \(K\) classes definidas no domínio correspondente.
 
-Segundo Deisenroth, Faisal e Ong, a aprendizagem de máquina pode ser compreendida a partir de três componentes principais: dados, modelo e aprendizagem. Os dados precisam ser convertidos para uma representação numérica; o modelo descreve uma função parametrizada; e a aprendizagem corresponde ao ajuste desses parâmetros a partir dos dados disponíveis, com o objetivo de obter bom desempenho em exemplos ainda não vistos \cite{deisenroth2020mathematics}.
+Segundo \citeonline{deisenroth2020mathematics}, a aprendizagem de máquina pode ser compreendida a partir de três componentes principais: dados, modelo e aprendizagem. Os dados precisam ser convertidos para uma representação numérica; o modelo descreve uma função parametrizada; e a aprendizagem corresponde ao ajuste desses parâmetros a partir dos dados disponíveis, com o objetivo de obter bom desempenho em exemplos ainda não vistos.
 
 Assim, um modelo de aprendizado profundo pode ser descrito como uma função parametrizada:
 
@@ -750,11 +747,11 @@ Assim, um modelo de aprendizado profundo pode ser descrito como uma função par
 f_{\theta}: \mathbb{R}^{D} \rightarrow \mathbb{R}^{K},
 \]
 
-em que \(D\) representa a dimensão da entrada, \(K\) representa o número de classes e \(\theta\) representa o conjunto de parâmetros aprendidos pelo modelo. No caso de uma classificação em três classes, como \textit{Normal}, \textit{Benign} e \textit{Malignant}, tem-se \(K=3\).
+em que \(D\) representa a dimensão da entrada, \(K\) representa o número de classes (por exemplo, \(K=7\) no FER2013, \(K=10\) no MNIST, Fashion-MNIST, KMNIST, CIFAR-10 e SVHN, \(K=43\) no GTSRB e \(K=100\) no CIFAR-100) e \(\theta\) representa o conjunto de parâmetros aprendidos pelo modelo.
 
-O aprendizado profundo, ou \textit{deep learning}, diferencia-se de métodos tradicionais por utilizar múltiplas camadas de transformação não linear. Essas camadas permitem que o modelo aprenda representações hierárquicas dos dados. Em imagens, camadas iniciais tendem a capturar padrões simples, como bordas, contrastes e texturas, enquanto camadas mais profundas combinam essas informações em estruturas mais abstratas e semanticamente relevantes.
+O aprendizado profundo, ou \textit{deep learning}, diferencia-se de métodos tradicionais por utilizar múltiplas camadas de transformação não linear. Essas camadas permitem que o modelo aprenda representações hierárquicas dos dados. Em imagens, camadas iniciais tendem a capturar padrões simples, como bordas, contrastes e texturas locais, enquanto camadas mais profundas combinam essas informações em estruturas mais abstratas e semanticamente relevantes \cite{LeCun2015,goodfellow2016deep}.
 
-Esse processo é particularmente importante em imagens médicas, pois as características relevantes nem sempre são evidentes visualmente. Em mamografias, por exemplo, regiões pequenas e de baixo contraste podem conter informações importantes para diferenciar padrões normais, benignos e malignos. Por isso, redes profundas tornaram-se uma abordagem importante para tarefas de classificação, detecção e segmentação em imagens médicas.
+Esse processo é essencial quando se avaliam múltiplos domínios visuais sob um mesmo protocolo experimental, pois permite que a mesma estrutura arquitetural adapte seus filtros internos desde contornos geométricos em caracteres manuscritos (\(28 \times 28 \times 1\)) até padrões cromáticos e texturais complexos em cenas urbanas, sinalização viária e objetos naturais (\(32 \times 32 \times 3\)).
 
 \subsection{Redes neurais artificiais}
 
@@ -764,13 +761,13 @@ Uma rede neural artificial é composta por unidades matemáticas chamadas neurô
 z = Wx + b,
 \]
 
-em que \(W \in \mathbb{R}^{M \times D}\) é a matriz de pesos, \(b \in \mathbb{R}^{M}\) é o vetor de vieses e \(z \in \mathbb{R}^{M}\) é o vetor de ativações antes da aplicação da função não linear. Após a função de ativação \(\phi\), obtém-se:
+em que \(W \in \mathbb{R}^{M \times D}\) é a matriz de pesos, \(b \in \mathbb{R}^{M}\) é o vetor de vieses e \(z \in \mathbb{R}^{M}\) é o vetor de pré-ativações antes da aplicação da função não linear. Após a função de ativação \(\phi\), obtém-se:
 
 \[
 h = \phi(z) = \phi(Wx + b).
 \]
 
-A função de ativação é fundamental porque introduz não linearidade ao modelo. Sem ela, a composição de várias camadas lineares poderia ser reduzida a uma única transformação linear. Com funções como ReLU, sigmoid, tanh ou SiLU, a rede passa a representar relações mais complexas entre entrada e saída.
+A função de ativação é fundamental porque introduz não linearidade ao modelo. Sem ela, a composição de várias camadas lineares poderia ser reduzida a uma única transformação linear. Além da clássica função ReLU (\(\phi(z) = \max(0, z)\)), variações modernas como GELU (\textit{Gaussian Error Linear Unit}), SiLU/Swish (\(\phi(z) = z \cdot \sigma(z)\)), ELU (\textit{Exponential Linear Unit}) e LeakyReLU modificam a curvatura e o regime de propagação de gradientes para valores negativos de \(z\). A escolha comparativa entre essas funções de ativação desempenha papel central na campanha experimental deste trabalho, uma vez que impacta diretamente tanto a estabilidade de convergência e o Macro-F1 final quanto o custo aritmético de execução entre plataformas distintas (Windows e macOS).
 
 Em uma rede com múltiplas camadas, a saída de uma camada é utilizada como entrada da camada seguinte. Assim, para uma camada \(l\), tem-se:
 
@@ -829,7 +826,7 @@ O cálculo dos gradientes em redes profundas é realizado por meio da retropropa
 
 As redes neurais convolucionais, ou CNNs (\textit{Convolutional Neural Networks}), são arquiteturas especializadas no processamento de dados com estrutura espacial, como imagens. Diferentemente das redes densas, nas quais todos os neurônios de uma camada se conectam a todos os neurônios da camada seguinte, as CNNs exploram a organização local dos pixels por meio de filtros convolucionais. Essa característica reduz o número de parâmetros, preserva relações espaciais e permite que a rede aprenda padrões visuais relevantes diretamente a partir dos dados.
 
-Em uma imagem digital, pixels vizinhos geralmente possuem relações importantes entre si. Bordas, texturas, contrastes, formas e pequenas estruturas anatômicas não aparecem como valores isolados, mas como padrões distribuídos em regiões locais da imagem. Por esse motivo, as CNNs são especialmente adequadas para tarefas de visão computacional, pois aplicam filtros sobre pequenas janelas da imagem, extraindo informações locais que são combinadas progressivamente ao longo das camadas.
+Em uma imagem digital, pixels vizinhos geralmente possuem relações importantes entre si. Bordas, texturas, contrastes, contornos geométricos e estruturas locais não aparecem como valores isolados, mas como padrões distribuídos em regiões vizinhas da imagem. Por esse motivo, as CNNs são especialmente adequadas para tarefas de visão computacional, pois aplicam filtros sobre pequenas janelas da imagem, extraindo informações locais que são combinadas progressivamente ao longo das camadas.
 
 Matematicamente, uma convolução discreta pode ser entendida como a aplicação de um filtro, ou \textit{kernel}, sobre uma imagem. Considerando uma imagem bidimensional \(I\) e um filtro \(K\) de tamanho \((2a+1) \times (2b+1)\), a saída da convolução em uma posição \((i,j)\) pode ser representada por:
 
@@ -864,7 +861,7 @@ S_r(i,j) =
 K_{r,c}(m,n)\cdot I_c(i+m,j+n) + b_r,
 \]
 
-em que \(C\) é o número de canais de entrada, \(r\) identifica o filtro utilizado, \(K_{r,c}\) representa os pesos do filtro \(r\) aplicados ao canal \(c\), e \(b_r\) é o viés associado ao filtro. Em imagens RGB, por exemplo, \(C=3\). Em mamografias em escala de cinza, geralmente \(C=1\), pois há apenas um canal de intensidade.
+em que \(C\) é o número de canais de entrada, \(r\) identifica o filtro utilizado, \(K_{r,c}\) representa os pesos do filtro \(r\) aplicados ao canal \(c\), e \(b_r\) é o viés associado ao filtro. Em bases coloridas no formato RGB (como CIFAR-10, CIFAR-100, SVHN e GTSRB), tem-se \(C=3\). Já em bases monocromáticas em escala de cinza (como MNIST, Fashion-MNIST, KMNIST, EMNIST e FER2013), tem-se \(C=1\), pois há apenas um canal de intensidade.
 
 Após a convolução, aplica-se normalmente uma função de ativação não linear, como a ReLU (\textit{Rectified Linear Unit}):
 
@@ -882,9 +879,9 @@ P(i,j) =
 S(m,n),
 \]
 
-em que \(R_{ij}\) representa uma região local do mapa de características. Nesse caso, a saída corresponde ao maior valor dentro da janela analisada. Também existe o \textit{average pooling}, que calcula a média dos valores da região. Zhao e Zhang \cite{zhao2024improvedpooling} destacam que o \textit{pooling} é importante para reduzir as dimensões espaciais e o volume de dados, mas também pode causar perda de informações, especialmente quando detalhes pequenos são relevantes.
+em que \(R_{ij}\) representa uma região local do mapa de características. Nesse caso, a saída corresponde ao maior valor dentro da janela analisada. Também existe o \textit{average pooling}, que calcula a média dos valores da região. \citeonline{zhao2024improvedpooling} destacam que o \textit{pooling} é importante para reduzir as dimensões espaciais e o volume de dados, mas também pode causar perda de informações, especialmente quando detalhes finos são relevantes.
 
-Esse ponto é particularmente importante em imagens médicas. Em mamografias, achados como microcalcificações podem ocupar áreas muito pequenas da imagem. Portanto, embora o \textit{pooling} ajude a reduzir o custo computacional, seu uso deve ser cuidadosamente planejado para evitar a perda de detalhes clinicamente relevantes.
+Esse ponto é particularmente importante em \textit{benchmarks} de baixa resolução espacial (\(28 \times 28\) ou \(32 \times 32\) pixels). Reduções espaciais excessivas podem suprimir traços caligráficos sutis no KMNIST e EMNIST, pequenos elementos de sinalização no GTSRB ou microexpressões faciais no FER2013. Portanto, a profundidade e o escalonamento espacial dos blocos convolucionais devem equilibrar compressão e preservação de detalhes discriminativos.
 
 A Figura~\ref{fig:feature_maps} mostra uma visualização de mapas de características produzidos em diferentes blocos convolucionais. Observa-se que as primeiras camadas ainda preservam boa parte da estrutura visual da imagem original, enquanto camadas mais profundas produzem ativações mais abstratas e espacialmente reduzidas. Esse comportamento ilustra a ideia de aprendizado hierárquico em CNNs: padrões simples são aprendidos nas camadas iniciais e combinados em representações mais complexas nas camadas posteriores.
 
@@ -896,39 +893,30 @@ A Figura~\ref{fig:feature_maps} mostra uma visualização de mapas de caracterí
     \legend{Fonte: adaptado de Hesaraki \cite{hesaraki2023featuremap}.}
 \end{figure}
 
-O desenvolvimento das CNNs profundas foi fundamental para o avanço da visão computacional. Arquiteturas como AlexNet, VGG, GoogLeNet/Inception e ResNet demonstraram que redes convolucionais profundas podem aprender representações hierárquicas altamente eficazes para classificação de imagens. Szegedy et al. propuseram a arquitetura GoogLeNet/Inception, mostrando que é possível aumentar profundidade e largura da rede mantendo preocupação com eficiência computacional \cite{szegedy2014going}. Essa preocupação também é relevante em imagens médicas, nas quais a resolução das imagens pode ser alta e o custo de processamento tende a ser elevado.
+O desenvolvimento das CNNs profundas foi fundamental para o avanço da visão computacional. Arquiteturas como AlexNet, VGG, GoogLeNet/Inception e ResNet demonstraram que redes convolucionais profundas podem aprender representações hierárquicas altamente eficazes para classificação de imagens \cite{szegedy2014going,he2016resnet}. \citeonline{szegedy2014going} mostraram que é possível aumentar profundidade e largura da rede mantendo preocupação com eficiência computacional, princípio essencial em campanhas experimentais extensas envolvendo múltiplos conjuntos de dados.
 
-A Figura~\ref{fig:convolucao_2mais1d} apresenta uma decomposição de convolução espaço-temporal em uma convolução espacial e uma convolução temporal. Embora este trabalho utilize mamografias bidimensionais, e não sequências temporais, a imagem é útil para ilustrar que diferentes tipos de convolução podem ser construídos de acordo com a estrutura dos dados. Em imagens 2D, o filtro percorre altura e largura; em dados volumétricos ou sequenciais, a convolução pode considerar também profundidade ou tempo.
+A Figura~\ref{fig:convolucao_2mais1d} apresenta uma decomposição de convolução espaço-temporal em uma convolução espacial e uma convolução temporal. Embora este trabalho utilize imagens estáticas bidimensionais nos nove conjuntos de dados avaliados, e não sequências temporais, a figura ilustra como diferentes operadores convolucionais podem ser estruturados de acordo com a dimensionalidade do sinal. Em imagens 2D, o filtro percorre altura e largura; em dados volumétricos ou sequenciais, a convolução incorpora também profundidade ou tempo.
 
 \begin{figure}[H]
     \centering
-    \caption{Exemplo de decomposição de uma convolução espaço-temporal em convolução espacial e temporal. No contexto deste trabalho, a figura deve ser entendida apenas como ilustração complementar, pois mamografias convencionais são analisadas como imagens bidimensionais.}
+    \caption{Exemplo de decomposição de uma convolução espaço-temporal em convolução espacial e temporal. No contexto deste trabalho, a figura ilustra a generalidade do operador convolucional, sendo os nove \textit{benchmarks} avaliados compostos por imagens estáticas bidimensionais.}
     \label{fig:convolucao_2mais1d}
     \includegraphics[width=0.70\textwidth]{2plus1CNN-converted.png}
+    \legend{Fonte: Elaborado pelo autor (2026).}
 \end{figure}
 
-Em mamografia, CNNs têm sido utilizadas em diversas tarefas, incluindo detecção e localização de lesões, classificação de exames, recuperação de imagens e avaliação de risco. Abdelhafiz et al. revisaram 83 estudos sobre CNNs aplicadas à mamografia e destacaram que técnicas como pré-processamento, uso de múltiplas vistas, transferência de aprendizado, aumento de dados, normalização em lote e \textit{dropout} são frequentemente empregadas para melhorar o desempenho e reduzir o sobreajuste \cite{abdelhafiz2019}.
+Dessa forma, a estrutura canônica de uma CNN combina camadas convolucionais, normalização em lote (\textit{batch normalization}), funções de ativação não lineares, camadas de \textit{pooling}, regularização por \textit{dropout} e uma cabeça de classificação que mapeia as características extraídas para a distribuição de probabilidades entre as \(K\) classes do problema.
 
-Além disso, Abdelhafiz et al. indicam que a estrutura básica de uma CNN envolve a combinação de camadas convolucionais, funções não lineares, camadas de \textit{pooling} e uma etapa final de classificação, frequentemente baseada em \textit{softmax} \cite{abdelhafiz2019}. Essa estrutura permite que a rede receba uma imagem como entrada e produza como saída uma classe ou uma distribuição de probabilidades entre classes, como \textit{Normal}, \textit{Benign} e \textit{Malignant}.
+\subsection{CNNs aplicadas a múltiplos domínios de visão computacional e eficiência de execução}
 
-Um exemplo de aplicação de CNN em mamografia é o estudo de Sundell et al. \cite{sundell2022cnn}, no qual diferentes arquiteturas convolucionais foram avaliadas para pontuação automática de imagens de controle de qualidade em mamografia. Os autores utilizaram blocos compostos por convolução, normalização, ativação ReLU, \textit{max pooling} e \textit{dropout}, demonstrando a aplicação prática desses componentes em uma tarefa relacionada à análise de imagens mamográficas.
+As redes neurais convolucionais consolidaram-se como a arquitetura de referência para classificação de imagens em múltiplos domínios devido ao compartilhamento de pesos e à invariância local a translações. Ao aplicar filtros convolucionais sucessivos seguidos de funções de ativação não lineares e operações de redução espacial (\textit{pooling}), a rede adapta seus mapas de características tanto a traços morfológicos simples em imagens monocromáticas (\(28 \times 28 \times 1\)) quanto a texturas cromáticas complexas em imagens naturais (\(32 \times 32 \times 3\)).
 
-Dessa forma, CNNs são especialmente adequadas para a classificação de mamografias porque combinam extração automática de características, preservação da estrutura espacial e capacidade de aprender representações hierárquicas. Ao mesmo tempo, seu uso exige atenção a desafios como alta resolução das imagens, desbalanceamento de classes, limitação de dados anotados, risco de sobreajuste, perda de detalhes durante operações de redução espacial e necessidade de interpretação clínica dos resultados.
-
-\subsection{CNNs aplicadas à mamografia}
-
-As redes neurais convolucionais tornaram-se uma das principais abordagens para análise computacional de imagens médicas, especialmente em tarefas de classificação, detecção e segmentação. Em mamografias, essas arquiteturas são utilizadas para extrair automaticamente padrões visuais associados a achados como massas, calcificações, assimetrias e distorções arquiteturais, reduzindo a dependência de técnicas manuais de extração de atributos.
-
-A principal característica das CNNs é o uso de camadas convolucionais, que aplicam filtros sobre regiões locais da imagem para identificar padrões espaciais. Nas primeiras camadas, a rede tende a aprender características simples, como bordas, texturas e variações de intensidade. Nas camadas mais profundas, essas informações são combinadas em representações mais abstratas, capazes de auxiliar na distinção entre diferentes classes diagnósticas.
-
-Em mamografias, o uso de CNNs apresenta desafios específicos. As imagens costumam ter alta resolução, baixo contraste em regiões de interesse e grande variabilidade entre pacientes, equipamentos e bases de dados. Além disso, lesões clinicamente relevantes podem ocupar pequenas regiões da imagem, o que exige modelos capazes de preservar informações espaciais importantes ao longo do processo de treinamento.
-
-Por esse motivo, arquiteturas aplicadas à mamografia frequentemente combinam camadas convolucionais com técnicas de regularização, normalização, aumento de dados e estratégias de avaliação por classe. Essas escolhas são importantes para reduzir sobreajuste, melhorar a generalização e tornar o desempenho do modelo mais confiável em cenários com classes desbalanceadas.
+Além da topologia das camadas, o comportamento prático de uma CNN em campanhas extensas de treinamento é fortemente influenciado pelo dimensionamento do lote (\textit{batch size}) e pela precisão numérica dos parâmetros. Lotes menores (como 32 ou 64) introduzem maior variância estocástica na estimativa do gradiente, o que pode atuar como regularizador implícito e favorecer a generalização em determinadas bases, porém reduz o paralelismo de hardware e eleva o tempo por época. Em contrapartida, lotes maiores (como 128 ou 256) maximizam a taxa de processamento (\textit{throughput}) em GPUs, mas podem convergir para mínimos mais agudos caso a taxa de aprendizado não seja devidamente ajustada. De modo complementar, técnicas de quantização de modelos permitem comprimir a representação numérica dos pesos e ativações (por exemplo, de ponto flutuante de 32 bits para inteiros de 8 bits ou ponto flutuante de 16 bits), buscando reduzir a latência de inferência e o uso de memória sem degradação significativa no Macro-F1 \cite{goodfellow2016deep,zandieh2025turboquant}.
 
 \subsection{Aumento de dados, regularização e overfitting}
 \label{subsec:aumento_regularizacao_overfitting}
 
-O treinamento de redes neurais profundas exige cuidado com a capacidade de generalização do modelo. Em aprendizado supervisionado, o objetivo não é apenas reduzir o erro sobre os dados de treinamento, mas obter bom desempenho em exemplos ainda não vistos. Esse princípio é especialmente importante em imagens médicas, pois modelos de alta capacidade podem aprender padrões específicos da base utilizada, como ruídos, artefatos de aquisição, bordas, marcas ou características do equipamento, em vez de aprender padrões clinicamente relevantes.
+O treinamento de redes neurais profundas exige cuidado com a capacidade de generalização do modelo. Em aprendizado supervisionado, o objetivo não é apenas reduzir o erro sobre os dados de treinamento, mas obter bom desempenho em exemplos ainda não vistos. Esse princípio é especialmente relevante quando se avaliam bases com alto número de classes ou forte desbalanceamento, pois modelos de alta capacidade podem memorizar padrões de fundo, artefatos de iluminação ou peculiaridades amostrais do conjunto de treino.
 
 Em termos matemáticos, considera-se um conjunto de treinamento:
 
@@ -958,7 +946,7 @@ J(\theta) =
 \lambda \Omega(\theta),
 \]
 
-em que \(\Omega(\theta)\) é o termo de regularização e \(\lambda\) controla a intensidade da penalização. Quando se utiliza regularização \(L_2\), por exemplo, a penalização pode ser definida como:
+em que \(\Omega(\theta)\) é o termo de regularização e \(\lambda\) controla a intensidade da penalização. Quando se utiliza regularização \(L_2\) (\textit{weight decay}), por exemplo, a penalização é definida como:
 
 \[
 \Omega(\theta) = \|\theta\|_2^2.
@@ -966,7 +954,7 @@ em que \(\Omega(\theta)\) é o termo de regularização e \(\lambda\) controla a
 
 Nesse caso, pesos muito altos são penalizados, incentivando o modelo a encontrar soluções mais suaves e menos dependentes de parâmetros extremos. Essa estratégia pode melhorar a generalização, pois reduz a tendência da rede de memorizar detalhes específicos dos dados de treino \cite{goodfellow2016deep}.
 
-Outra técnica amplamente utilizada é o \textit{dropout}. Durante o treinamento, o dropout desativa aleatoriamente uma proporção dos neurônios de uma camada, forçando a rede a distribuir melhor a informação entre diferentes unidades. Se \(h\) representa o vetor de ativações de uma camada, o dropout pode ser representado de forma simplificada como:
+Outra técnica amplamente utilizada é o \textit{dropout}. Durante o treinamento, o \textit{dropout} desativa aleatoriamente uma proporção dos neurônios de uma camada, forçando a rede a distribuir melhor a informação entre diferentes unidades. Se \(h\) representa o vetor de ativações de uma camada, o \textit{dropout} pode ser representado de forma simplificada como:
 
 \[
 \tilde{h} = m \odot h,
@@ -974,47 +962,39 @@ Outra técnica amplamente utilizada é o \textit{dropout}. Durante o treinamento
 
 em que \(m\) é uma máscara binária aleatória, \(\odot\) representa o produto elemento a elemento e \(\tilde{h}\) corresponde às ativações após a aplicação da máscara. Essa técnica reduz a dependência excessiva de neurônios específicos e contribui para tornar o modelo mais robusto.
 
-Além da regularização dos parâmetros, outra estratégia importante é o aumento de dados, ou \textit{data augmentation}. Essa técnica consiste em gerar variações artificiais das imagens de treinamento por meio de transformações que preservam o rótulo da amostra. Matematicamente, uma imagem \(x_i\) pode ser transformada por uma função \(T\), produzindo uma nova amostra:
+Além da regularização dos parâmetros, outra estratégia essencial é o aumento de dados, ou \textit{data augmentation}. Essa técnica consiste em gerar variações artificiais das imagens de treinamento por meio de transformações que preservam o rótulo da amostra. Matematicamente, uma imagem \(x_i\) pode ser transformada por uma função \(T\), produzindo uma nova amostra:
 
 \[
 x_i' = T(x_i),
 \]
 
-em que \(x_i'\) mantém o mesmo rótulo \(y_i\), desde que a transformação não altere o significado clínico da imagem. Em imagens naturais, são comuns transformações como rotações, translações, espelhamentos, variações de brilho, contraste e recortes. Em mamografias, essas transformações devem ser escolhidas com cuidado, pois alterações inadequadas podem modificar estruturas relevantes ou gerar imagens incompatíveis com a prática clínica.
+em que \(x_i'\) mantém o mesmo rótulo \(y_i\), desde que a transformação respeite a semântica da classe.
 
-No contexto da mamografia, o aumento de dados pode incluir pequenas variações geométricas, ajustes leves de brilho e contraste, ruído controlado e técnicas de recorte ou mascaramento, desde que preservem características diagnósticas importantes. Essas transformações aumentam a diversidade observada pelo modelo durante o treinamento e reduzem a probabilidade de memorização de imagens específicas. Revisões sobre CNNs aplicadas à mamografia destacam que estratégias como pré-processamento, aumento de dados, normalização, dropout e ajuste cuidadoso da arquitetura são frequentemente utilizadas para melhorar desempenho e reduzir sobreajuste \cite{abdelhafiz2019}.
+No contexto de \textit{benchmarks} heterogêneos de visão computacional, a estratégia de aumento de dados (\textit{data augmentation}) deve respeitar as invariâncias semânticas de cada domínio. Enquanto pequenos deslocamentos horizontais/verticais, recortes aleatórios (\textit{random crops}) e rotações leves preservam o rótulo na maioria das bases, espelhamentos horizontais (\textit{horizontal flips}) são válidos para objetos naturais (CIFAR-10/100), artigos de vestuário simétricos e faces (FER2013), mas inválidos para dígitos, caracteres e determinadas placas de trânsito (MNIST, KMNIST, EMNIST, SVHN e GTSRB), pois inverteriam a orientação canônica do símbolo. Assim, o controle experimental entre regimes sem aumento de dados e com aumento controlado é fundamental para isolar o ganho real de regularização em cada arquitetura.
 
-Outra técnica relacionada à regularização é o \textit{early stopping}. Nesse procedimento, o desempenho do modelo é monitorado no conjunto de validação durante o treinamento. Quando a perda de validação deixa de melhorar por um número definido de épocas, o treinamento é interrompido. Essa estratégia evita que o modelo continue reduzindo a perda de treino enquanto piora sua capacidade de generalização. Em termos práticos, o comportamento típico de sobreajuste pode ser observado quando:
+Outra técnica relacionada à regularização é o \textit{early stopping}. Nesse procedimento, o desempenho do modelo é monitorado no conjunto de validação durante o treinamento. Quando a perda de validação (ou o Macro-F1 de validação) deixa de melhorar por um número definido de épocas, o treinamento é interrompido ou o melhor \textit{checkpoint} é restaurado. Essa estratégia evita que o modelo continue reduzindo a perda de treino enquanto degrada sua capacidade de generalização:
 
 \[
 \mathcal{L}_{train} \downarrow
 \quad \text{e} \quad
-\mathcal{L}_{val} \uparrow
+\mathcal{L}_{val} \uparrow.
 \]
 
-ou quando a acurácia de treino continua aumentando enquanto a acurácia de validação se estabiliza ou diminui.
+Portanto, aumento de dados controlado por domínio, regularização \(L_2\), \textit{dropout}, normalização em lote e seleção pelo melhor estado de validação constituem estratégias complementares indispensáveis para garantir estabilidade e reprodutibilidade ao comparar modelos clássicos e híbridos nos nove conjuntos de dados.
 
-Em imagens médicas, o controle do sobreajuste é ainda mais importante devido a fatores como quantidade limitada de dados anotados, desbalanceamento entre classes, alta dimensionalidade das imagens e diferenças entre bases de origem. Em mamografias, pequenas regiões podem conter informações clinicamente relevantes, mas também é possível que o modelo aprenda padrões indesejados, como diferenças de contraste, ruído, marcas laterais ou características específicas de determinado equipamento. Por isso, a avaliação deve considerar não apenas o desempenho no treino, mas também métricas em validação e teste, preferencialmente analisadas por classe.
+\subsection{Explicabilidade e interpretação de representações em CNNs}
 
-Portanto, aumento de dados, regularização, dropout, normalização e early stopping são estratégias complementares para melhorar a generalização de redes neurais profundas. No caso da classificação de mamografias, essas técnicas são fundamentais para reduzir o risco de sobreajuste e tornar a comparação entre modelos mais confiável, especialmente quando se trabalha com bases compostas por diferentes fontes, tamanhos de imagem, distribuições de classe e padrões de aquisição.
+A interpretabilidade das representações internas aprendidas por redes neurais profundas é um aspecto relevante em visão computacional, uma vez que permite auditar se as decisões de um classificador baseiam-se em atributos morfológicos legítimos do objeto ou em correlações espúrias do fundo da imagem. Embora CNNs alcancem elevado desempenho preditivo, suas decisões resultam da composição de múltiplas camadas de transformação não linear.
 
-\subsection{Explicabilidade e Grad-CAM}
-
-A explicabilidade é um aspecto importante em modelos de aprendizado profundo aplicados a imagens médicas, pois decisões automatizadas em contextos clínicos precisam ser interpretáveis e avaliáveis por especialistas. Embora CNNs possam alcançar bom desempenho em tarefas de classificação, elas são frequentemente tratadas como modelos de difícil interpretação, uma vez que suas decisões resultam de múltiplas camadas de transformação não linear.
-
-Uma das técnicas utilizadas para auxiliar a interpretação de CNNs é o Grad-CAM (\textit{Gradient-weighted Class Activation Mapping}). Essa abordagem gera mapas de calor que indicam quais regiões da imagem tiveram maior influência na decisão do modelo para determinada classe. Para isso, são utilizados os gradientes da saída de interesse em relação às ativações de uma camada convolucional profunda, produzindo uma visualização espacial das áreas mais relevantes para a predição.
-
-
-%colocar imagem que eu gerei aqui?
-Em mamografias, mapas Grad-CAM podem ajudar a verificar se o modelo está concentrando sua atenção em regiões anatomicamente plausíveis, como áreas de massa, assimetria ou calcificação. Entretanto, esses mapas não devem ser interpretados como laudos médicos nem como segmentações precisas de lesões. Seu papel é fornecer uma ferramenta complementar de interpretabilidade, permitindo identificar possíveis comportamentos indesejados do modelo, como foco em bordas, artefatos ou regiões externas à mama.
+Uma das técnicas utilizadas para auxiliar a inspeção espacial de CNNs é o Grad-CAM (\textit{Gradient-weighted Class Activation Mapping}) \cite{selvaraju2020gradcam}. Essa abordagem gera mapas de ativação ponderados por gradientes que destacam quais regiões espaciais da imagem exerceram maior influência na predição de determinada classe \(k\). Em \textit{benchmarks} de visão computacional, análises de mapas de características e de atenção espacial complementam a inspeção de matrizes de confusão e de resíduos por classe (\(\Delta\text{F1}\)), auxiliando a compreender como diferentes escolhas arquiteturais e de hiperparâmetros afetam a extração de padrões visuais.
 
 \section{Computação quântica e aprendizado de máquina quântico}
 
-A computação quântica é um paradigma computacional baseado em princípios da mecânica quântica, como superposição, emaranhamento, interferência e medição probabilística. Diferentemente da computação clássica, que utiliza bits para representar informações nos estados 0 ou 1, a computação quântica utiliza qubits, que podem assumir combinações lineares desses estados. Essa diferença permite representar e manipular informações em espaços vetoriais complexos de alta dimensão, chamados espaços de Hilbert.
+A computação quântica é um paradigma computacional baseado em princípios da mecânica quântica, como superposição, emaranhamento, interferência e medição probabilística \cite{nielsen2010quantum}. Diferentemente da computação clássica, que utiliza bits para representar informações nos estados 0 ou 1, a computação quântica utiliza qubits, que podem assumir combinações lineares desses estados. Essa diferença permite representar e manipular informações em espaços vetoriais complexos de alta dimensão, chamados espaços de Hilbert.
 
 O aprendizado de máquina quântico, ou \textit{Quantum Machine Learning} (QML), investiga como recursos da computação quântica podem ser utilizados em tarefas de aprendizado de máquina, como classificação, regressão, agrupamento e redução de dimensionalidade. Em dispositivos quânticos atuais, caracterizados por número limitado de qubits, ruído e restrições de profundidade dos circuitos, uma das abordagens mais estudadas é a construção de modelos híbridos quântico-clássicos. Nesses modelos, parte do processamento é realizada por componentes clássicos e parte por circuitos quânticos parametrizados \cite{biamonte2017qml,preskill2018nisq,cerezo2021variational}.
 
-No contexto deste trabalho, o interesse principal está na aplicação de modelos híbridos à classificação de imagens médicas, especialmente mamografias. Como imagens possuem alta dimensionalidade, a aplicação direta de circuitos quânticos ainda é limitada. Por isso, muitas propostas utilizam redes clássicas para extrair ou reduzir características e, posteriormente, inserem um bloco quântico responsável por transformar essas características em uma representação alternativa.
+No contexto deste trabalho, o interesse principal está na aplicação de modelos híbridos à classificação supervisionada de imagens ao longo de múltiplos \textit{benchmarks} de visão computacional. Como mesmo imagens compactas possuem centenas ou milhares de valores de intensidade, a aplicação direta de circuitos quânticos a todos os pixels ainda é limitada. Por isso, arquiteturas híbridas utilizam camadas convolucionais clássicas para extrair e comprimir características espaciais e, posteriormente, inserem um bloco quântico variacional responsável por processar esse vetor latente antes da camada final de decisão.
 
 \subsection{Qubits, superposição, emaranhamento e medição}
 
@@ -1122,9 +1102,9 @@ Em modelos híbridos, os parâmetros do circuito são ajustados por um otimizado
 
 \subsection{Codificação de dados clássicos em estados quânticos}
 
-Para que dados clássicos sejam processados por um circuito quântico, é necessário convertê-los em estados quânticos ou em parâmetros de portas quânticas. Esse processo é chamado de codificação, incorporação ou \textit{embedding} dos dados. A escolha da codificação é uma etapa central em QML, pois determina como a informação clássica será representada no espaço quântico.
+Para que dados clássicos sejam processados por um circuito quântico, é necessário convertê-los em estados quânticos ou em parâmetros de portas quânticas. Esse processo é chamado de codificação, incorporação ou \textit{embedding} dos dados \cite{schuld2021effect}. A escolha da codificação é uma etapa central em QML, pois determina como a informação clássica será representada no espaço quântico.
 
-Uma forma simples de codificação é a codificação por ângulo. Nesse caso, os atributos clássicos de uma entrada \(x = [x_1, x_2, \ldots, x_d]\) são usados como ângulos de rotação em portas quânticas. Por exemplo, pode-se aplicar uma rotação em cada qubit:
+Uma forma simples de codificação é a codificação por ângulo (\textit{angle embedding}). Nesse caso, os atributos clássicos de uma entrada \(x = [x_1, x_2, \ldots, x_d]\) são usados como ângulos de rotação em portas quânticas. Por exemplo, pode-se aplicar uma rotação em cada qubit:
 
 \[
 \ket{\psi(x)}
@@ -1134,7 +1114,7 @@ R_Y(x_j)
 \ket{0}^{\otimes n}.
 \]
 
-Essa estratégia é simples e adequada para circuitos rasos, mas exige que a dimensão dos dados seja compatível com o número de qubits ou com o número de portas utilizadas. Em imagens de alta dimensão, como mamografias, esse ponto se torna crítico, pois a quantidade de pixels é muito maior do que o número de qubits disponível em dispositivos atuais.
+Essa estratégia é simples e adequada para circuitos rasos, mas exige que a dimensão dos dados seja compatível com o número de qubits ou com o número de portas utilizadas. Em tarefas de visão computacional, esse ponto torna-se determinante, pois até mesmo imagens compactas de \textit{benchmarks} padronizados contêm entre \(784\) e \(3.072\) valores de entrada, número muito superior à quantidade de qubits viável em simuladores atuais.
 
 Outra abordagem é o uso de \textit{quantum feature maps}. Nesse caso, os dados clássicos são mapeados para estados quânticos por meio de um circuito \(U_{\Phi}(x)\), produzindo:
 
@@ -1143,7 +1123,7 @@ Outra abordagem é o uso de \textit{quantum feature maps}. Nesse caso, os dados 
 U_{\Phi}(x)\ket{0}^{\otimes n}.
 \]
 
-A motivação é que o espaço de Hilbert pode atuar como um espaço de características de alta dimensão. Havlíček et al. propuseram métodos de aprendizado supervisionado com espaços de características quânticos, incluindo classificadores variacionais e estimadores de kernel quântico. A ideia central é mapear os dados clássicos de forma não linear para estados quânticos e explorar produtos internos nesse espaço para realizar classificação \cite{havlicek2019supervised}.
+A motivação é que o espaço de Hilbert pode atuar como um espaço de características de alta dimensão. \citeonline{havlicek2019supervised} propuseram métodos de aprendizado supervisionado com espaços de características quânticos, incluindo classificadores variacionais e estimadores de kernel quântico. A ideia central é mapear os dados clássicos de forma não linear para estados quânticos e explorar produtos internos nesse espaço para realizar classificação.
 
 Em métodos baseados em kernel, a similaridade entre duas entradas \(x\) e \(z\) pode ser calculada por:
 
@@ -1154,7 +1134,7 @@ K(x,z) =
 
 Essa formulação estabelece uma conexão direta entre QML e métodos clássicos como SVMs, nos quais a escolha do kernel influencia fortemente a capacidade de separação entre classes.
 
-Uma limitação relevante da codificação é que dados clássicos não podem ser simplesmente copiados dentro de um circuito quântico como ocorre em redes neurais clássicas. Para contornar parte dessa limitação, Pérez-Salinas et al. propuseram a técnica de \textit{data re-uploading}, na qual os mesmos dados clássicos são inseridos repetidas vezes ao longo do circuito. Um circuito com reenvio de dados pode ser representado de forma simplificada como:
+Uma limitação relevante da codificação é que dados clássicos não podem ser simplesmente copiados dentro de um circuito quântico como ocorre em redes neurais clássicas. Para contornar parte dessa limitação, \citeonline{perezsalinas2020data} propuseram a técnica de \textit{data re-uploading}, na qual os mesmos dados clássicos são inseridos repetidas vezes ao longo do circuito. Um circuito com reenvio de dados pode ser representado de forma simplificada como:
 
 \[
 U(\theta, x)
@@ -1165,9 +1145,9 @@ L_2(\theta_2, x)
 L_1(\theta_1, x),
 \]
 
-em que cada camada \(L_i\) combina parâmetros treináveis e dados de entrada. Essa técnica aumenta a capacidade expressiva do circuito, permitindo que modelos com poucos qubits representem funções mais complexas \cite{perezsalinas2020data}.
+em que cada camada \(L_i\) combina parâmetros treináveis e dados de entrada. Essa técnica aumenta a capacidade expressiva do circuito, permitindo que modelos com poucos qubits representem funções mais complexas.
 
-No contexto de imagens médicas, a codificação é um dos maiores desafios para modelos quânticos. Uma mamografia redimensionada para \(1024 \times 1024\) pixels possui mais de um milhão de valores de intensidade, enquanto circuitos quânticos simuláveis geralmente utilizam poucos qubits. Por isso, modelos híbridos normalmente utilizam uma etapa clássica de extração ou compressão de características antes da codificação quântica.
+No contexto de classificação de imagens, como o número de pixels em bases \(28 \times 28 \times 1\) (\(784\) valores), \(48 \times 48 \times 1\) (\(2.304\) valores) ou \(32 \times 32 \times 3\) (\(3.072\) valores) inviabiliza a alocação de um qubit por pixel, modelos híbridos empregam um extrator convolucional clássico para comprimir a imagem em um vetor latente de baixa dimensão antes da etapa de codificação quântica.
 
 \subsection{Modelos variacionais quânticos}
 
@@ -1210,15 +1190,15 @@ Z_j
 \ket{\psi(x,\theta)}.
 \]
 
-O vetor \(z(x,\theta)\) pode ser utilizado diretamente para classificação ou enviado a uma camada clássica, como uma camada densa com ativação \textit{softmax}. Assim, o circuito quântico atua como uma camada treinável dentro de um pipeline maior.
+O vetor \(z(x,\theta)\) pode ser utilizado diretamente para classificação ou enviado a uma camada clássica, como uma camada densa com ativação \textit{softmax}. Assim, o circuito quântico atua como uma camada treinável dentro de um \textit{pipeline} maior.
 
-A escolha do ansatz é uma decisão importante. Um ansatz muito simples pode não ter capacidade suficiente para representar padrões complexos; por outro lado, um ansatz muito profundo pode ser difícil de treinar e mais sensível a ruído. Essa tensão entre expressividade, profundidade, número de qubits e treinabilidade é uma das principais questões em modelos variacionais quânticos.
+A escolha do \textit{ansatz} é uma decisão importante. Um \textit{ansatz} muito simples pode não ter capacidade suficiente para representar padrões complexos; por outro lado, um \textit{ansatz} muito profundo pode ser difícil de treinar e mais sensível a ruído. Essa tensão entre expressividade, profundidade, número de qubits e treinabilidade é uma das principais questões em modelos variacionais quânticos.
 
 \subsection{Limitações de simulação, barren plateaus e escalabilidade}
 
 Apesar do potencial dos modelos quânticos, sua aplicação prática ainda enfrenta limitações importantes. A primeira delas é o custo de simulação. Um sistema com \(n\) qubits possui \(2^n\) amplitudes complexas. Assim, a memória necessária para simular exatamente um estado quântico cresce exponencialmente com o número de qubits. Essa limitação é especialmente relevante em pesquisas executadas em computadores clássicos, nas quais o aumento do número de qubits rapidamente se torna inviável.
 
-Outro desafio é a presença de \textit{barren plateaus}. Esse termo descreve regiões da paisagem de otimização nas quais os gradientes da função de custo se tornam muito pequenos. Quando isso ocorre, o otimizador clássico tem dificuldade para encontrar direções úteis de atualização dos parâmetros. McClean et al. demonstraram que, para certas famílias de circuitos quânticos parametrizados, a variância dos gradientes pode decair exponencialmente com o número de qubits \cite{mcclean2018barren}.
+Outro desafio é a presença de \textit{barren plateaus}. Esse termo descreve regiões da paisagem de otimização nas quais os gradientes da função de custo se tornam muito pequenos. Quando isso ocorre, o otimizador clássico tem dificuldade para encontrar direções úteis de atualização dos parâmetros. \citeonline{mcclean2018barren} demonstraram que, para certas famílias de circuitos quânticos parametrizados, a variância dos gradientes pode decair exponencialmente com o número de qubits.
 
 De forma simplificada, se \(E(\theta)\) representa uma função de custo, o treinamento depende de gradientes como:
 
@@ -1233,11 +1213,11 @@ Em um \textit{barren plateau}, esses gradientes se aproximam de zero para grande
 \approx 0.
 \]
 
-Isso dificulta o treinamento, pois as atualizações de parâmetros tornam-se pouco informativas. Em contraste com redes neurais clássicas, nas quais o desaparecimento do gradiente costuma estar fortemente associado à profundidade da rede, em circuitos quânticos o problema também pode depender fortemente do número de qubits e da forma do ansatz.
+Isso dificulta o treinamento, pois as atualizações de parâmetros tornam-se pouco informativas. Em contraste com redes neurais clássicas, nas quais o desaparecimento do gradiente costuma estar fortemente associado à profundidade da rede, em circuitos quânticos o problema também pode depender fortemente do número de qubits e da forma do \textit{ansatz}.
 
 A escalabilidade também é limitada pelo ruído dos dispositivos NISQ. Circuitos mais profundos tendem a acumular mais erros, e circuitos com muitos qubits exigem maior conectividade e controle físico. Por isso, modelos híbridos atuais costumam utilizar poucos qubits e circuitos relativamente rasos. Essa escolha melhora a viabilidade prática, mas também pode limitar a expressividade do componente quântico.
 
-Em imagens médicas de alta dimensão, como mamografias, essas limitações são ainda mais evidentes. A codificação direta de todos os pixels é impraticável nos dispositivos atuais, exigindo redução dimensional, extração de características ou processamento local. Portanto, qualquer comparação entre modelos clássicos e híbridos deve considerar não apenas métricas preditivas, mas também custo computacional, estabilidade do treinamento, uso de memória e viabilidade de simulação.
+Em problemas de classificação visual multiclasse, essas limitações exigem redução dimensional prévia por camadas clássicas. Portanto, qualquer comparação entre modelos clássicos e híbridos deve considerar não apenas métricas preditivas, mas também telemetria de tempo de treinamento, estabilidade de convergência, uso de memória e viabilidade de simulação.
 
 
 \section{Modelos híbridos quântico-clássicos}
@@ -1246,7 +1226,7 @@ Modelos híbridos quântico-clássicos combinam componentes de aprendizado de m�
 
 Em tarefas de classificação de imagens, uma estratégia comum é usar uma rede neural clássica, especialmente uma CNN, para extrair características visuais da imagem. Em seguida, essas características são projetadas para uma dimensão compatível com o número de qubits e codificadas em um circuito quântico. O circuito atua como uma camada variacional ou transformadora, e suas saídas são processadas por camadas clássicas responsáveis pela classificação final.
 
-Essa estrutura permite investigar se o componente quântico contribui para a representação dos dados ou para a separação entre classes. No entanto, a simples inclusão de um circuito quântico não garante ganho de desempenho. A contribuição do bloco quântico precisa ser avaliada de forma controlada, comparando-o com baselines clássicos equivalentes.
+Essa estrutura permite investigar se o componente quântico contribui para a representação dos dados ou para a separação entre classes. No entanto, a simples inclusão de um circuito quântico não garante ganho de desempenho. A contribuição do bloco quântico precisa ser avaliada de forma controlada, comparando-o com \textit{baselines} clássicos equivalentes.
 
 \subsection{Modelos híbridos quântico-clássicos para classificação}
 
@@ -1298,15 +1278,13 @@ Esses valores formam um vetor \(z\), que pode ser enviado a uma camada clássica
 \operatorname{softmax}(W_c z + b_c).
 \]
 
-Essa formulação mostra que o circuito quântico pode ser interpretado como uma camada intermediária treinável dentro de uma arquitetura maior. Em problemas de classificação, o treinamento busca ajustar tanto parâmetros clássicos quanto parâmetros quânticos, minimizando uma função de perda associada aos rótulos verdadeiros.
-
-Xiang et al. propuseram uma arquitetura híbrida quântico-clássica para diagnóstico de câncer de mama, combinando uma camada convolucional quântica com camadas clássicas totalmente conectadas. No artigo, os autores utilizam bases como GBSG, SEER e WDBC, que são bases diagnósticas/tabulares, e não uma base de mamografias como o Mammo-Bench \cite{xiang2024qccnn}. Ainda assim, o trabalho é relevante por mostrar uma aplicação direta de modelos híbridos no contexto de câncer de mama.
+Essa formulação mostra que o circuito quântico pode ser interpretado como uma camada intermediária treinável dentro de uma arquitetura maior. Em problemas de classificação, o treinamento busca ajustar tanto parâmetros clássicos quanto parâmetros quânticos, minimizando uma função de perda associada aos rótulos verdadeiros \cite{schetakis2022qmlframeworks,long2025qcqcnn,daka2026noqcnn}.
 
 \subsection{Integração entre CNNs e circuitos quânticos}
 
 A integração entre CNNs e circuitos quânticos pode ocorrer de diferentes formas. Uma abordagem é utilizar a CNN como extratora de características e substituir parte das camadas densas finais por uma camada quântica variacional. Nesse caso, a CNN processa a imagem, reduz sua dimensionalidade e envia ao circuito quântico um vetor compacto de características.
 
-Outra abordagem é utilizar camadas quanvolucionais, propostas por Henderson et al. Nessas camadas, regiões locais da imagem são processadas por circuitos quânticos, de forma análoga ao funcionamento de filtros convolucionais clássicos \cite{henderson2020quanvolutional}. Uma região local da imagem, representada por \(u_x\), é codificada em um circuito quântico por uma função \(e\):
+Outra abordagem é utilizar camadas quanvolucionais, propostas por \citeonline{henderson2020quanvolutional}. Nessas camadas, regiões locais da imagem são processadas por circuitos quânticos, de forma análoga ao funcionamento de filtros convolucionais clássicos. Uma região local da imagem, representada por \(u_x\), é codificada em um circuito quântico por uma função \(e\):
 
 \[
 i_x = e(u_x).
@@ -1334,105 +1312,91 @@ Esse valor \(f_x\) passa a compor um mapa de características, de forma semelhan
 
 Essa ideia é interessante para imagens porque evita a necessidade de codificar a imagem inteira em um único circuito. Em vez disso, pequenas regiões locais são processadas separadamente, reduzindo a quantidade de qubits necessária. Essa característica torna as camadas quanvolucionais mais compatíveis com dispositivos NISQ. Entretanto, essa abordagem também pode ser computacionalmente custosa, pois o circuito precisa ser executado muitas vezes para processar todas as regiões da imagem.
 
-No contexto de mamografias, a integração entre CNNs e circuitos quânticos precisa considerar a alta resolução das imagens e a importância de regiões pequenas. Uma arquitetura híbrida pode utilizar camadas convolucionais clássicas para extrair padrões visuais, como textura, contraste e forma, e depois aplicar um circuito quântico apenas sobre uma representação compacta. Essa estratégia reduz o custo quântico e torna o treinamento mais viável.
+Em \textit{benchmarks} variados de visão computacional, o acoplamento em que um extrator convolucional clássico reduz a resolução espacial e entrega um vetor latente compacto a um circuito quântico parametrizado oferece um equilíbrio superior entre expressividade e viabilidade de simulação em lotes.
 
-\subsection{Limitações práticas em imagens de alta dimensão}
+\subsection{Limitações práticas de dimensionalidade e custo de simulação em visão computacional}
 
-A aplicação de modelos híbridos quântico-clássicos em imagens médicas de alta dimensão apresenta desafios específicos. O primeiro desafio é a diferença entre a dimensão da imagem e a quantidade de qubits disponível. Uma mamografia em escala de cinza com resolução \(1024 \times 1024\) possui \(1.048.576\) pixels. Codificar diretamente todos esses valores em um circuito quântico é impraticável nos dispositivos atuais e também em simuladores clássicos.
+A aplicação de modelos híbridos quântico-clássicos em conjuntos de dados de visão computacional apresenta desafios estruturais significativos. O primeiro desafio reside na discrepância entre a dimensão de entrada das imagens e o número de qubits viável em simuladores clássicos e dispositivos NISQ atuais. Mesmo imagens compactas de \textit{benchmarks} padronizados possuem entre \(784\) valores de intensidade (em bases \(28 \times 28 \times 1\), como MNIST, Fashion-MNIST, KMNIST e EMNIST) e \(3.072\) valores (em bases RGB \(32 \times 32 \times 3\), como CIFAR-10, CIFAR-100, SVHN e GTSRB), chegando a \(2.304\) valores no FER2013 (\(48 \times 48 \times 1\)). Codificar diretamente milhares de atributos em amplitudes ou rotações individuais de qubits exige circuitos de largura ou profundidade proibitivas para o treinamento iterativo em lotes \cite{okada2025measurementlimits}.
 
-Por isso, modelos híbridos dependem de alguma forma de compressão, extração de características ou processamento local. Essa redução dimensional, entretanto, pode causar perda de informações relevantes. Em mamografias, lesões pequenas, microcalcificações e alterações sutis podem ocupar regiões muito pequenas da imagem. Assim, se a compressão remover essas informações, o circuito quântico receberá uma representação insuficiente para a classificação.
-
-Outro desafio é o custo de execução. Mesmo circuitos pequenos podem precisar ser avaliados muitas vezes durante o treinamento. Além disso, medições quânticas são probabilísticas, o que pode exigir múltiplas execuções, chamadas de \textit{shots}, para estimar valores esperados com precisão. Em simuladores, o custo cresce com o número de qubits; em hardware real, o custo envolve ruído, tempo de execução e limitações de acesso ao dispositivo.
-
-Também existe o desafio da treinabilidade. Circuitos muito expressivos ou aleatórios podem sofrer com \textit{barren plateaus}, tornando o treinamento instável. Circuitos muito simples, por outro lado, podem não ter capacidade suficiente para separar classes complexas. Dessa forma, há um equilíbrio delicado entre expressividade e treinabilidade.
-
-A revisão de Yan et al. destaca que algoritmos quânticos e quantum-inspired vêm sendo explorados em tarefas de processamento de imagens médicas, incluindo diagnóstico, classificação, segmentação e segurança de imagens. No entanto, os autores também indicam que esse campo ainda apresenta desafios abertos, especialmente devido às limitações da tecnologia quântica atual e à necessidade de validações mais robustas em aplicações reais \cite{yan2024quantumMedicalImageReview}.
-
-Portanto, em imagens de mamografia, modelos híbridos quântico-clássicos devem ser analisados com cautela. A hipótese de que um componente quântico pode melhorar a representação dos dados é relevante do ponto de vista científico, mas precisa ser avaliada por meio de comparações controladas com modelos clássicos. Uma avaliação adequada deve considerar desempenho preditivo, estabilidade, custo computacional, escalabilidade e interpretabilidade. Assim, a contribuição de uma arquitetura híbrida não deve ser assumida previamente, mas investigada experimentalmente.
+Por conseguinte, arquiteturas híbridas viáveis dependem de um extrator convolucional clássico (\textit{backbone}) para comprimir a imagem original em um vetor latente de baixa dimensão compatível com o número de qubits do circuito variacional, seguido de uma camada clássica de projeção para as \(K\) classes do problema. Essa redução dimensional atua como um gargalo de informação (\textit{information bottleneck}): enquanto em problemas de 10 classes estruturadas a representação comprimida pode reter poder discriminativo suficiente, em problemas com alta granularidade de classes (como GTSRB com 43 classes ou CIFAR-100 com 100 classes) ou alta sobreposição visual (como FER2013), o gargalo quântico pode limitar a capacidade de separação do modelo. Além disso, o cálculo de gradientes quânticos (como via regra de deslocamento de parâmetros ou diferenciação adjunta em simuladores de vetor de estado) impõe um custo computacional por época substancialmente superior ao de camadas densas clássicas, tornando indispensável a medição conjunta de métricas preditivas e telemetria de tempo de execução \cite{faj2023warpspeed,chen2024quantumhpcworkflow}.
 
 \section{Trabalhos correlatos}
 
+\subsection{Benchmarks em visão computacional e avaliação multi-dataset}
 
+A consolidação de modelos de aprendizado profundo está intrinsecamente ligada à criação de \textit{benchmarks} padronizados de imagens. Desde a introdução do conjunto MNIST para reconhecimento de dígitos manuscritos \cite{LeCun2015}, a comunidade científica ressaltou a necessidade de avaliar arquiteturas em domínios progressivamente mais complexos, originando substitutos diretos como o Fashion-MNIST (voltado a artigos de vestuário) e o KMNIST (focado em caracteres cursivos japoneses), bem como extensões de maior cardinalidade como o EMNIST.
 
-\subsection{Aprendizado profundo e redes neurais convolucionais}
+Paralelamente, a avaliação em imagens de cenários reais consolidou-se por meio de bases como CIFAR-10 e CIFAR-100 para objetos naturais, SVHN para dígitos urbanos, GTSRB para reconhecimento de sinalização viária e FER2013 para análise de expressões faciais \cite{szeliski2022computer}. Estudos comparativos demonstram que o comportamento de uma arquitetura neural não é uniforme entre esses domínios: escolhas de hiperparâmetros que saturam o desempenho em bases monocromáticas de dígitos podem apresentar instabilidade ou sobreajuste severo em bases RGB ou desbalanceadas, justificando protocolos experimentais baseados em múltiplos \textit{datasets}.
 
-O avanço recente da visão computacional está fortemente associado ao desenvolvimento do aprendizado profundo, especialmente com o uso de redes neurais convolucionais. Conforme discutido por \citeonline{LeCun2015}, redes profundas aprendem representações hierárquicas diretamente a partir dos dados, dispensando parte da engenharia manual de atributos tradicional.
+\subsection{Aprendizado profundo, hiperparâmetros e eficiência computacional}
 
-Em aplicações médicas, CNNs têm sido empregadas para classificação, detecção e segmentação de padrões em exames de imagem. Na área de mamografia, revisões sistemáticas indicam amplo uso dessas arquiteturas, porém alertam para dificuldades de reprodutibilidade, viés de seleção e falta de avaliação em ambientes mais próximos da prática clínica \cite{Bhalla2023MammographyReview}. Esses pontos justificam a adoção de um protocolo experimental rigoroso neste TCC.
+O avanço das redes neurais convolucionais modernas envolve não apenas o desenho de blocos de extração de características \cite{szegedy2014going,he2016resnet,zhao2024improvedpooling}, mas também a compreensão sistemática de fatores de treinamento e implantação, como a escolha da função de ativação, a sensibilidade ao tamanho do lote (\textit{batch size}) e a quantização numérica \cite{goodfellow2016deep,zandieh2025turboquant}. Pesquisas empíricas apontam que a interação entre tamanho de lote, função de ativação e plataforma de hardware impacta diretamente tanto a qualidade final da generalização (Macro-F1) quanto o tempo de convergência e a latência de inferência, exigindo análises pareadas sob controle rigoroso de variáveis.
 
-\subsection{Computação quântica e modelos híbridos}
+\subsection{Computação quântica e modelos híbridos aplicados à classificação de imagens}
 
-A computação quântica explora propriedades como superposição, emaranhamento e interferência para processamento de informação. Em aprendizado de máquina, uma das linhas mais promissoras tem sido a construção de modelos híbridos, nos quais etapas clássicas e quânticas são combinadas para aproveitar, ao menos em tese, diferentes capacidades de representação.
+No campo do Aprendizado de Máquina Quântico, a combinação de redes convolucionais clássicas com circuitos quânticos variacionais ou camadas quanvolucionais tem sido amplamente explorada como alternativa compatível com o regime NISQ \cite{biamonte2017qml,preskill2018nisq,henderson2020quanvolutional,cerezo2021variational}. Trabalhos recentes, como os de \citeonline{long2025qcqcnn} e \citeonline{daka2026noqcnn}, demonstram que arquiteturas híbridas quântico-clássicas podem atingir resultados competitivos em tarefas de classificação visual quando avaliadas em cenários controlados.
 
-Entretanto, a literatura recente sugere cautela. A revisão sistemática de \citeonline{Gupta2025QMLDigitalHealth} mostra que, em saúde digital, a maioria dos estudos ainda opera com fortes simplificações, pequeno porte de dados e escopo experimental reduzido. Já \citeonline{long2025qcqcnn} apresenta uma arquitetura híbrida quântico-clássico-quântica com resultados competitivos em bases de imagens e tumores por ressonância magnética, evidenciando potencial, mas também dependência de cenários controlados.
+Entretanto, revisões críticas da literatura apontam que grande parte dos estudos em QML ainda restringe sua validação a versões reduzidas ou binárias de um único conjunto de dados (tipicamente MNIST ou Fashion-MNIST), sem contrastar o desempenho em múltiplas bases de maior complexidade e sem reportar sistematicamente o \textit{trade-off} entre métricas preditivas, custo de simulação e variações de hiperparâmetros \cite{egginger2024hyperparameter,yan2024quantumMedicalImageReview,Gupta2025QMLDigitalHealth}.
 
-Assim, a comparação entre uma CNN clássica e uma arquitetura híbrida em mamografias torna-se um recorte adequado para investigar, de forma mais controlada, o real benefício dessas abordagens.
+\section{Síntese da lacuna de pesquisa}
 
-% \section{Síntese da lacuna de pesquisa}
-
-% Feche a revisão mostrando a lacuna:
-% CNNs em mamografia já são mais maduras, enquanto modelos híbridos
-% ainda carecem de comparações controladas em bases realistas.
+A análise da literatura revela que, embora existam inúmeros estudos avaliando CNNs clássicas em \textit{benchmarks} isolados e propostas iniciais de modelos híbridos quântico-clássicos em versões simplificadas de dígitos manuscritos, há uma carência de estudos comparativos padronizados, reprodutíveis e multi-dataset que avaliem, sob o mesmo protocolo de engenharia e telemetria, o comportamento de arquiteturas clássicas e híbridas ao longo de múltiplos domínios visuais (abrangendo nove bases com diferentes resoluções, canais e números de classes), cruzando métricas de qualidade preditiva (Macro-F1, paridade e resíduos por classe) com análises sistemáticas de funções de ativação, varredura de tamanho de lote (\textit{batch sweep}), quantização e desempenho multiplataforma (Windows e macOS). Este trabalho preenche diretamente essa lacuna por meio do protocolo metodológico descrito no Capítulo~\ref{cap:desenvolvimento}.
 
 
 % ---------------------------------------------------------------
 % CAPÍTULO 3 - DESENVOLVIMENTO / PROPOSTA METODOLÓGICA
 % ---------------------------------------------------------------
-\chapter{Desenvolvimento: proposta metodológica}
-
 \chapter{Desenvolvimento}
 \label{cap:desenvolvimento}
 
-Neste capítulo, apresenta-se a solução proposta para o problema identificado e o cronograma preliminar de trabalho para o desenvolvimento completo do projeto ao longo do TCC.
+Neste capítulo, apresenta-se a solução metodológica e experimental proposta para o problema identificado e o cronograma de desenvolvimento do projeto ao longo do TCC.
 
 \section{Solução proposta}
 \label{sec:solucao}
 
-A solução proposta consiste em um estudo experimental comparativo entre duas abordagens de classificação de imagens de mamografia: uma abordagem clássica, baseada em redes neurais convolucionais, e uma abordagem híbrida quântico-clássica. O objetivo não é construir um produto clínico, mas estabelecer um protocolo reproduzível de comparação entre modelos sob condições equivalentes.
+A solução proposta consiste em um estudo experimental comparativo entre duas abordagens de classificação supervisionada de imagens avaliadas ao longo de nove conjuntos de dados de visão computacional (MNIST, Fashion-MNIST, KMNIST, EMNIST, CIFAR-10, CIFAR-100, SVHN, GTSRB e FER2013): uma abordagem clássica, baseada em redes neurais convolucionais (CNNs), e uma abordagem híbrida quântico-clássica baseada em circuitos quânticos parametrizados (PQCs) acoplados a um extrator convolucional clássico. O objetivo é estabelecer um protocolo padronizado, auditável e reprodutível de comparação entre modelos clássicos e híbridos sob condições experimentais estritamente equivalentes.
 
-Em termos de arquitetura geral, o projeto deverá contemplar: (i) preparação padronizada dos dados; (ii) implementação do \textit{baseline} clássico; (iii) implementação do modelo híbrido; (iv) treinamento e validação com os mesmos conjuntos de dados; e (v) análise quantitativa e qualitativa dos resultados. Pretende-se utilizar Python como linguagem principal, com bibliotecas clássicas de aprendizado profundo, como TensorFlow ou PyTorch, e bibliotecas de computação quântica e aprendizado híbrido, como PennyLane ou Qiskit.
+Em termos de arquitetura geral, o projeto contempla: (i) inventário e preparação padronizada das nove bases de dados; (ii) implementação e otimização do \textit{baseline} clássico (incluindo estudos de funções de ativação, tamanhos de lote e quantização); (iii) implementação do modelo híbrido quântico-clássico; (iv) treinamento, validação e teste com as mesmas partições estratificadas e sementes aleatórias; e (v) análise quantitativa de desempenho preditivo (Macro-F1, acurácia, precisão, revocação e matrizes de confusão) e de telemetria computacional entre plataformas (Windows e macOS). Utiliza-se Python como linguagem principal, com PyTorch para aprendizado profundo clássico e bibliotecas de simulação de circuitos quânticos parametrizados para a camada híbrida.
 
-Do ponto de vista metodológico, a pesquisa será conduzida como estudo experimental com apoio teórico. Essa escolha é adequada porque o objetivo central do TCC é implementar, controlar variáveis, executar experimentos e comparar empiricamente duas classes de modelos. O foco da validação estará em métricas objetivas, múltiplas execuções com diferentes sementes e registro detalhado do ambiente computacional.
+Do ponto de vista metodológico, a pesquisa é conduzida como um estudo experimental comparativo com suporte teórico. Essa escolha justifica-se porque o objetivo central do TCC é implementar, controlar variáveis, executar campanhas sistemáticas de treinamento e comparar empiricamente os dois paradigmas. O foco da validação reside em métricas objetivas por classe e globais, varredura controlada de hiperparâmetros e registro completo de telemetria e ambiente computacional.
 
-A pergunta de pesquisa que orienta a solução pode ser formulada da seguinte forma: \textit{em tarefas de classificação de câncer de mama a partir de imagens de mamografia, modelos híbridos quântico-clássicos apresentam desempenho comparável ou superior ao de CNNs clássicas quando avaliados sob as mesmas condições experimentais?}
+A pergunta de pesquisa que orienta a solução pode ser formulada da seguinte forma: \textit{em tarefas de classificação supervisionada de imagens ao longo de múltiplos benchmarks de visão computacional com diferentes resoluções, canais e números de classes, arquiteturas híbridas quântico-clássicas apresentam convergência estável e desempenho competitivo em relação a CNNs clássicas quando avaliadas sob o mesmo protocolo experimental, e como escolhas de funções de ativação, tamanho de lote e quantização impactam a eficiência e a qualidade preditiva desses modelos?}
 
-A hipótese de trabalho inicial é que modelos híbridos podem apresentar desempenho competitivo em cenários específicos, porém ainda enfrentam limitações práticas relacionadas à escalabilidade, ao custo computacional e à maturidade da tecnologia quântica disponível. Dessa forma, o sucesso da pesquisa não depende necessariamente de superioridade do modelo híbrido, mas da produção de evidências reprodutíveis que permitam comparar as abordagens com rigor metodológico.
+A hipótese de trabalho é que modelos híbridos podem alcançar convergência estável e desempenho competitivo em relação ao \textit{baseline} clássico especialmente em bases de menor cardinalidade de classes, porém enfrentam limitações práticas decorrentes do gargalo de compressão dimensional para poucos qubits e do elevado custo de simulação quântica à medida que a complexidade visual e o número de classes aumentam. Dessa forma, o sucesso da pesquisa baseia-se na produção de evidências empíricas reprodutíveis que delimitem com rigor as condições de viabilidade, paridade e custo-benefício de cada abordagem.
 
 \subsection*{Plano de validação}
 
-A validação da proposta será realizada por meio de: separação adequada entre treino, validação e teste; repetição dos experimentos com sementes distintas; comparação direta com \textit{baseline} clássico; uso de métricas de classificação; análise de custo computacional; e discussão crítica das limitações observadas. Sempre que possível, serão adotados testes estatísticos para verificar a significância das diferenças entre os resultados.
+A validação da proposta é realizada por meio de: separação estratificada padronizada entre treino, validação e teste nas nove bases; controle estrito de sementes aleatórias; comparação pareada com o \textit{baseline} clássico; avaliação por métricas globais e por classe (com destaque para Macro-F1 e resíduos \(\Delta\text{F1}\)); análise de telemetria de tempo por época, \textit{speedup}, \textit{throughput} e latência; e discussão crítica das limitações observadas.
 
 \subsection*{Riscos e limitações iniciais}
 
-Entre os riscos identificados estão a limitação de bases públicas, o desbalanceamento entre classes, o alto custo de simulação quântica, incompatibilidades de bibliotecas, restrições de hardware e a possibilidade de escopo excessivamente amplo. Como mitigação, o trabalho será mantido dentro de um recorte claro: classificação supervisionada de mamografias, poucas arquiteturas comparáveis, documentação rigorosa e priorização de experimentos viáveis dentro do tempo do TCC.
+Entre os riscos e desafios técnicos estão a heterogeneidade de resoluções e canais entre as nove bases, o forte desbalanceamento em conjuntos de cenários reais (como GTSRB, FER2013 e SVHN), o elevado custo computacional da simulação de circuitos quânticos variacionais e diferenças de desempenho entre plataformas de hardware. Como mitigação, o trabalho adota um \textit{pipeline} unificado de configuração e pré-processamento, arquiteturas modularizadas, registro automatizado de métricas e telemetria e escopo estritamente focado em simulação reprodutível.
 
 \section{Tipo de pesquisa}
 
-% Exemplo:
 % Esta pesquisa é de natureza aplicada, com abordagem quantitativa,
 % experimental e comparativa.
 
 \section{Visão geral da solução proposta}
 
 % Apresente o pipeline geral:
-% base de dados -> pré-processamento -> modelo clássico -> modelo híbrido
-% -> avaliação -> comparação -> análise crítica.
+% 9 bases de dados -> pré-processamento padronizado -> modelo clássico (varredura de ativações, batch size e quantização)
+% -> modelo híbrido quântico-clássico -> avaliação (Macro-F1, matrizes de confusão, telemetria) -> análise crítica.
 
-\section{Base de dados e definição das classes}
+\section{Bases de dados e definição das classes}
 
-% Defina a base principal e as classes:
-% normal, benigno e maligno.
-% Explique se haverá ou não ampliação para mais classes.
+% Detalhe o inventário das 9 bases (MNIST, Fashion-MNIST, KMNIST, EMNIST, CIFAR-10, CIFAR-100, SVHN, GTSRB e FER2013),
+% dimensões de entrada, canais (C=1 e C=3) e distribuição de classes K.
 
 \section{Pré-processamento e preparação dos dados}
 
-% Descreva redimensionamento, normalização, balanceamento,
-% aumento de dados, divisão treino/validação/teste e prevenção de vazamento de dados.
+% Descreva redimensionamento, normalização, divisão estratificada treino/validação/teste,
+% regimes sem aumento de dados e com data augmentation controlado por domínio, e prevenção de data leakage.
 
 \section{Modelo clássico de referência}
 
-% Descreva a CNN clássica usada como baseline.
-% Explique se será uma CNN customizada, ResNet, EfficientNet ou outra arquitetura.
+% Descreva a CNN clássica usada como baseline, os experimentos com funções de ativação,
+% varredura de tamanho de lote (batch sweep: 32, 64, 128, 256) e quantização pós-treinamento.
 
 \section{Modelo híbrido quântico-clássico}
 
@@ -1440,65 +1404,60 @@ Entre os riscos identificados estão a limitação de bases públicas, o desbala
 % extrator clássico de características -> projeção para qubits
 % -> circuito quântico parametrizado -> medição -> classificador final.
 
-\section{Diagnóstico do modelo quântico anterior}
+\section{Diagnóstico e evolução do modelo quântico}
 
-% Explique que experimentos anteriores ficaram próximos do chute aleatório
-% e que o TCC irá investigar possíveis causas:
+% Explique a investigação de causas de instabilidade e melhoria de convergência:
 % feature map, número de qubits, profundidade, codificação dos dados,
-% otimização, barren plateaus e custo de simulação.
+% acoplamento clássico-quântico, otimização, barren plateaus e custo de simulação.
 
 \section{Protocolo experimental}
 
-% Defina como os experimentos serão conduzidos:
-% mesma base, mesmas classes, mesmas divisões, mesmas métricas,
-% número de épocas, early stopping, seeds e registro dos resultados.
+% Defina como os experimentos foram conduzidos:
+% mesmas bases, mesmas classes, mesmas divisões, mesmas métricas,
+% número de épocas, seleção de melhor checkpoint, seeds e registro de telemetria.
 
 \subsection{Configuração dos experimentos}
 \subsection{Controle de variáveis}
-\subsection{Ambiente computacional}
+\subsection{Ambiente computacional (Windows e macOS)}
 \subsection{Reprodutibilidade}
 
 \section{Métricas de avaliação}
 
 % Liste e justifique as métricas:
-% acurácia, precisão, recall, F1-score, AUC, matriz de confusão,
-% tempo de treinamento, uso de memória e estabilidade entre execuções.
+% Macro-F1 (métrica primária), acurácia, precisão, recall, variação de F1 por classe, matriz de confusão,
+% tempo por época, tempo acumulado de campanha, speedup, throughput e latência.
 
 \section{Critérios de validação}
 
 % Explique quando o modelo será considerado viável:
-% superar desempenho aleatório, apresentar estabilidade,
-% alcançar desempenho competitivo e ter custo computacional justificável.
+% superar desempenho aleatório, apresentar convergência estável,
+% alcançar desempenho competitivo e analisar o trade-off de custo computacional.
 
 \section{Riscos e limitações}
 
 % Liste limitações:
-% hardware, custo exponencial da simulação, poucos qubits,
-% ausência de vantagem quântica, qualidade dos rótulos,
-% overfitting, ausência de validação clínica e vazamento por paciente.
+% gargalo dimensional em poucos qubits, custo exponencial da simulação quântica,
+% desbalanceamento severo em bases reais, alta cardinalidade de classes (GTSRB e CIFAR-100)
+% e ausência de execução em hardware quântico físico (QPU).
 
 \section{Cronograma}
 
-% Você pode inserir uma tabela ou um diagrama de Gantt.
-% Exemplo simples de tabela:
-
 \begin{table}[htb]
 \centering
-\caption{Cronograma preliminar de desenvolvimento do TCC}
+\caption{Cronograma de desenvolvimento do TCC.}
 \label{tab:cronograma}
 \begin{tabular}{|p{7cm}|c|c|c|c|}
 \hline
 \textbf{Atividade} & \textbf{Mês 1} & \textbf{Mês 2} & \textbf{Mês 3} & \textbf{Mês 4} \\ \hline
 Revisão e ajuste da fundamentação teórica & X &  &  &  \\ \hline
-Definição da base de dados e das classes & X &  &  &  \\ \hline
-Pré-processamento e organização dos dados & X & X &  &  \\ \hline
-Implementação e ajuste da CNN clássica &  & X &  &  \\ \hline
-Implementação do modelo híbrido quântico-clássico &  & X & X &  \\ \hline
-Execução dos experimentos comparativos &  &  & X &  \\ \hline
-Análise dos resultados e métricas &  &  & X & X \\ \hline
-Redação final e revisão do TCC &  &  &  & X \\ \hline
+Inventário e padronização das 9 bases de dados & X &  &  &  \\ \hline
+Pré-processamento e \textit{pipeline} experimental & X & X &  &  \\ \hline
+Implementação e experimentos da CNN clássica (ativações, \textit{batch} e quantização) &  & X & X &  \\ \hline
+Implementação e treinamento do modelo híbrido quântico-clássico &  & X & X &  \\ \hline
+Consolidação de métricas, paridade e telemetria multiplataforma &  &  & X & X \\ \hline
+Análise crítica dos resultados e redação final do TCC &  &  &  & X \\ \hline
 \end{tabular}
-\fonte{Elaborado pelo autor.}
+\legend{Fonte: Elaborado pelo autor (2026).}
 \end{table}
 
 
