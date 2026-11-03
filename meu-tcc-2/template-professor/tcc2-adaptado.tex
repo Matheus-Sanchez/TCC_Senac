@@ -288,121 +288,6 @@ A análise dos trabalhos buscará identificar convergências e divergências ent
 
 Dessa forma, a pesquisa bibliográfica não terá apenas a finalidade de reunir referências, mas de posicionar criticamente a proposta deste trabalho. A revisão permitirá justificar a escolha da mamografia como domínio de aplicação, a adoção de CNNs como base clássica de comparação, a investigação de modelos híbridos quântico-clássicos como alternativa experimental e a necessidade de um protocolo controlado, reprodutível e comparativo para avaliar desempenho, custo computacional e viabilidade prática.
 
-\section{Câncer de mama, mamografia e classificação diagnóstica}
-
-Esta seção apresenta os conceitos médicos necessários para compreender o problema computacional abordado neste trabalho. O objetivo não é aprofundar a discussão clínica sobre oncologia ou radiologia, mas introduzir os principais elementos relacionados ao câncer de mama, ao exame de mamografia e aos rótulos diagnósticos utilizados em bases de dados de imagens médicas.
-
-\subsection{Câncer de mama e importância do diagnóstico precoce}
-
-O câncer de mama é uma das doenças oncológicas de maior impacto na saúde pública, especialmente devido à sua alta incidência e à necessidade de identificação precoce para ampliar as possibilidades de tratamento. O diagnóstico em estágios iniciais pode favorecer intervenções menos agressivas, melhorar o acompanhamento clínico e aumentar as chances de resposta terapêutica.
-
-Nesse contexto, os exames de rastreamento têm papel fundamental, pois permitem identificar alterações suspeitas antes mesmo do surgimento de sintomas evidentes. Entre esses exames, a mamografia se destaca como uma das principais ferramentas utilizadas na detecção de alterações no tecido mamário. Por esse motivo, bases de imagens mamográficas têm sido amplamente utilizadas em pesquisas envolvendo visão computacional, aprendizado profundo e sistemas de apoio ao diagnóstico.
-
-Do ponto de vista computacional, o câncer de mama pode ser investigado a partir de imagens médicas rotuladas, nas quais cada exame ou imagem recebe uma classificação associada à condição observada. Essa abordagem permite formular o problema como uma tarefa de classificação supervisionada, em que um modelo aprende padrões visuais presentes nas imagens e tenta associá-los a categorias diagnósticas, como exames normais, alterações benignas ou alterações malignas.
-
-\subsection{Mamografia e principais achados radiológicos}
-
-A mamografia é um exame de imagem baseado em raios X utilizado para visualizar a estrutura interna da mama. Durante o exame, a mama é comprimida para reduzir a sobreposição dos tecidos e melhorar a qualidade da imagem obtida. As imagens resultantes permitem que radiologistas avaliem a presença de alterações anatômicas e sinais suspeitos que possam indicar lesões benignas ou malignas.
-
-A aquisição da mamografia normalmente envolve diferentes projeções da mama. As duas vistas mais comuns são a craniocaudal (CC), obtida de cima para baixo, e a mediolateral oblíqua (MLO), obtida em uma posição angulada. Essas projeções fornecem informações complementares sobre o tecido mamário e são frequentemente utilizadas em conjunto na prática clínica. Em muitos conjuntos de dados, cada exame pode conter imagens da mama esquerda e direita nessas duas vistas, formando um conjunto de quatro imagens por paciente.
-
-Entre os principais achados avaliados em mamografias estão massas, calcificações, assimetrias e distorções arquiteturais. Massas podem aparecer como regiões mais densas, com diferentes formatos, margens e tamanhos. Calcificações correspondem a pequenos depósitos de cálcio, que podem apresentar padrões benignos ou suspeitos. 
-
-A análise dessas imagens é uma tarefa complexa porque muitas alterações são sutis, ocupam regiões pequenas da imagem ou apresentam baixo contraste em relação ao tecido ao redor. Além disso, a densidade mamária, a qualidade da aquisição, o equipamento utilizado e as características anatômicas de cada paciente podem dificultar a interpretação. Essas características tornam a mamografia um domínio desafiador tanto para especialistas humanos quanto para modelos computacionais.
-
-\subsection{Classificação diagnóstica e BI-RADS}
-
-Do ponto de vista clínico, a classificação diagnóstica busca organizar os exames de acordo com o grau de suspeita ou com a condição observada. Em bases de dados de mamografia, é comum encontrar rótulos como \textit{Normal}, \textit{Benign}, \textit{Suspicious Malignant} e \textit{Malignant}. A classe \textit{Normal} representa exames sem achados relevantes; \textit{Benign} indica alterações não cancerígenas; \textit{Suspicious Malignant} representa casos suspeitos que exigem investigação adicional; e \textit{Malignant} corresponde a achados associados ao câncer de mama.
-
-Além dessas categorias, muitos conjuntos de dados também utilizam o sistema BI-RADS (\textit{Breast Imaging Reporting and Data System}), uma padronização empregada por radiologistas para classificar achados em exames de mama. Esse sistema varia de 0 a 6, incluindo desde exames inconclusivos, que exigem avaliação complementar, até casos com malignidade comprovada por biópsia.
-
-No contexto computacional, esses rótulos podem ser utilizados como classes em tarefas de aprendizado supervisionado. Assim, uma imagem mamográfica passa a ser associada a uma categoria diagnóstica, e o modelo computacional é treinado para aprender relações entre padrões visuais e os rótulos disponíveis. Essa formulação permite construir modelos de classificação capazes de estimar a classe mais provável de uma nova imagem, desde que o treinamento seja realizado com dados rotulados e adequadamente organizados.
-
-Neste trabalho, a classificação diagnóstica é considerada como base para a formulação do problema computacional. Entretanto, a definição exata das classes utilizadas nos experimentos, bem como o tratamento de rótulos ausentes ou categorias pouco representadas, será detalhada posteriormente na proposta metodológica.
-
-\section{Bases de dados em mamografia}
-
-As bases de dados de mamografia são fundamentais para o desenvolvimento, treinamento e avaliação de modelos computacionais aplicados à classificação, detecção e segmentação de câncer de mama. A disponibilidade de conjuntos públicos permite que diferentes pesquisas comparem métodos sob condições semelhantes, além de favorecer a reprodutibilidade científica e a validação de novas arquiteturas.
-
-\subsection{Bases públicas e benchmarks em mamografia}
-
-Entre as bases públicas mais utilizadas na literatura estão DDSM, CBIS-DDSM, INbreast, MIAS, BCDR, CMMD, CDD-CESM, DMID, KAU-BCMD e RSNA Screening Mammography. Cada uma dessas bases possui características próprias em relação ao número de imagens, origem dos exames, formato dos arquivos, tipo de anotação e distribuição das classes.
-
-\begin{figure}[H]
-    \centering
-    \caption{Distribuição de casos por país e base de origem em parte da composição do Mammo-Bench.}
-    \label{fig:representacao-paises-mammobench}
-    \includegraphics[width=0.85\textwidth]{F3.large.png}
-\end{figure}
-
-A Figura~\ref{fig:representacao-paises-mammobench} apresenta a distribuição de casos por país e por base de origem em parte da composição do Mammo-Bench. Observa-se que a maior contribuição vem dos Estados Unidos, representada pela base DDSM, com 2.620 casos, correspondendo a 41,9\% do total apresentado. Em seguida, aparecem a China, por meio da base CMMD, com 1.775 casos (28,4\%), e a Arábia Saudita, representada pela base KAU-BCMD, com 1.416 casos (22,6\%). As menores contribuições são de Egito, com a base CDD-CESM, totalizando 326 casos (5,2\%), e de Portugal, com a base INbreast, contendo 115 casos (1,8\%).
-
-Essa distribuição evidencia que o benchmark reúne dados provenientes de diferentes países e instituições, o que contribui para maior diversidade dos exames mamográficos. Entretanto, também mostra uma concentração relevante em poucas bases, especialmente DDSM, CMMD e KAU-BCMD. Esse aspecto é importante para experimentos de aprendizado de máquina, pois a predominância de determinadas bases pode influenciar o comportamento dos modelos, favorecendo padrões associados a protocolos de aquisição, populações ou formas de anotação mais frequentes no conjunto de dados.
-
-Algumas bases são compostas por mamografias digitalizadas antigas, enquanto outras utilizam mamografias digitais modernas. Também existem diferenças importantes na granularidade das anotações: determinadas bases fornecem regiões de interesse, máscaras ou marcações locais de lesões, enquanto outras disponibilizam apenas rótulos globais por imagem ou por exame. Além disso, metadados como idade da paciente, densidade mamária, BI-RADS, tipo de anormalidade e subtipo molecular nem sempre estão disponíveis em todas as bases.
-
-Essas diferenças impactam diretamente o uso dos dados em aprendizado de máquina. Bases pequenas podem dificultar o treinamento de modelos profundos; bases muito desbalanceadas podem favorecer a classe majoritária; bases coletadas em uma única instituição podem limitar a generalização dos modelos; e a ausência de anotações locais pode restringir experimentos de detecção e segmentação. Por esse motivo, benchmarks que reúnem, padronizam ou organizam diferentes fontes de dados são relevantes para pesquisas comparativas.
-
-Nesse cenário, o Mammo-Bench surge como uma proposta de benchmark de larga escala para mamografias, reunindo diferentes bases públicas em uma estrutura padronizada. Sua composição, organização e distribuição de classes são apresentadas na subseção seguinte, por se tratar da base adotada neste trabalho.
-
-\subsection{Mammo-Bench}
-
-O Mammo-Bench é um conjunto de dados de larga escala voltado para pesquisas em mamografia e classificação de câncer de mama. Ele foi construído a partir da integração de diferentes bases públicas de mamografias, com o objetivo de reunir imagens provenientes de múltiplas fontes, instituições e populações, reduzindo algumas limitações comuns em bases isoladas, como baixo número de amostras, ausência de padronização, diferenças de formato e desbalanceamento entre classes.
-
-Segundo a descrição original do conjunto, o Mammo-Bench reúne imagens mamográficas de 26.500 pacientes provenientes de sete países diferentes, a partir de bases como DDSM, INbreast, KAU-BCMD, CMMD, CDD-CESM, RSNA Screening Dataset e DMID \cite{Bhole2025MammoBench}. Entretanto, na versão dos arquivos CSV analisados neste trabalho, foram encontradas 71.844 imagens, distribuídas entre sete bases de origem. Essa diferença ocorre porque a versão utilizada contém a base \texttt{mini-ddsm}, uma versão reduzida ou filtrada do DDSM original.
-
-As imagens disponibilizadas na versão analisada estão referenciadas em formato \texttt{JPG}. Por se tratar de mamografias, as imagens são tratadas como imagens em escala de cinza, isto é, com apenas um canal de cor. Além disso, os arquivos CSV não informam diretamente as dimensões originais de cada imagem, pois o tamanho final de entrada é definido durante o pré-processamento experimental. Assim, as imagens podem ser redimensionadas conforme a configuração adotada no pipeline de treinamento.
-
-A Tabela~\ref{tab:distribuicao_bases_mammobench} apresenta a distribuição das imagens por base de origem na versão do Mammo-Bench analisada.
-
-\begin{table}[H]
-\centering
-\caption{Distribuição das imagens por base de origem no CSV do Mammo-Bench}
-\label{tab:distribuicao_bases_mammobench}
-\begin{tabular}{lrl}
-\hline
-\textbf{Base no CSV} & \textbf{Quantidade de imagens} & \textbf{Observação} \\ \hline
-\texttt{rsna-screening} & 54.705 & Maior base do conjunto; muito desbalanceada \\
-\texttt{mini-ddsm}      & 7.808  & Versão reduzida/filtrada do DDSM \\
-\texttt{cmmd}           & 5.202  & Subtipo molecular e anormalidades \\
-\texttt{kau-bcmd}       & 2.206  & Contém BI-RADS e densidade \\
-\texttt{cdd-cesm}       & 1.003  & Mamografia espectral com contraste \\
-\texttt{dmid}           & 510    & Pequena, com BI-RADS, densidade e anormalidades \\
-\texttt{inbreast}       & 410    & Pequena, mas bem anotada \\ \hline
-\textbf{Total}          & \textbf{71.844} & Versão dos CSVs enviados \\ \hline
-\end{tabular}
-\end{table}
-
-Observa-se que a maior parte das imagens é proveniente da base \texttt{rsna-screening}, que representa 54.705 imagens do total analisado. Essa predominância é relevante do ponto de vista metodológico, pois pode introduzir viés de origem no treinamento dos modelos. Em outras palavras, um modelo pode aprender características associadas à base de dados, ao equipamento ou ao processo de aquisição, em vez de aprender exclusivamente padrões relacionados às alterações mamárias.
-
-Além da diferença na quantidade de imagens por base, o Mammo-Bench também apresenta diferentes tipos de anotação. Entre elas, destacam-se as classes diagnósticas gerais, como \textit{Normal}, \textit{Benign}, \textit{Suspicious Malignant} e \textit{Malignant}; classificações BI-RADS; densidade mamária; tipo de anormalidade; e subtipo molecular, quando disponível. No entanto, nem todas as bases fornecem todos esses tipos de anotação.
-
-No CSV principal, a distribuição das classes diagnósticas por base de origem é apresentada na Tabela~\ref{tab:classes_por_base_mammobench}.
-
-
-\begin{table}[H]
-\centering
-\caption{Distribuição das classes por base de origem no CSV principal do Mammo-Bench}
-\label{tab:classes_por_base_mammobench}
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{lrrrrrr}
-\hline
-\textbf{Base} & \textbf{Normal} & \textbf{Benign} & \textbf{Suspicious Malignant} & \textbf{Malignant} & \textbf{Sem classe} & \textbf{Total} \\ \hline
-\texttt{rsna-screening} & 24.021 & 2.265 & 0   & 0     & 28.419 & 54.705 \\
-\texttt{mini-ddsm}      & 2.408  & 2.684 & 0   & 2.716 & 0      & 7.808  \\
-\texttt{cmmd}           & 0      & 1.108 & 0   & 4.094 & 0      & 5.202  \\
-\texttt{kau-bcmd}       & 1.847  & 265   & 72  & 22    & 0      & 2.206  \\
-\texttt{cdd-cesm}       & 341    & 331   & 0   & 331   & 0      & 1.003  \\
-\texttt{dmid}           & 212    & 154   & 120 & 24    & 0      & 510    \\
-\texttt{inbreast}       & 67     & 243   & 43  & 57    & 0      & 410    \\ \hline
-\texttt{total-per-class}& 28.896 & 7.050 & 235 & 7.244 & 28.419 & \\
-\end{tabular}%
-}
-\end{table}
-
-A partir da Tabela~\ref{tab:classes_por_base_mammobench}, observa-se que o Mammo-Bench apresenta forte desbalanceamento entre classes e entre bases de origem. A classe \textit{Normal} possui quantidade significativamente maior de imagens em comparação com as classes \textit{Benign} e \textit{Malignant}. Além disso, a base \texttt{rsna-screening} concentra a maior parte das imagens e também apresenta uma quantidade expressiva de registros sem classe diagnóstica definida no CSV principal.
-
-Essas características tornam o Mammo-Bench uma base relevante para estudos de classificação de mamografias, mas também exigem cuidado metodológico em sua utilização. Questões como rótulos ausentes, distribuição desigual entre classes, predominância de determinadas bases de origem e possível viés de aquisição são discutidas na Subseção~\ref{subsec:qualidade_rotulos_balanceamento_vies}.
 
 
 
@@ -1467,11 +1352,7 @@ Portanto, em imagens de mamografia, modelos híbridos quântico-clássicos devem
 
 \section{Trabalhos correlatos}
 
-\subsection{Câncer de mama e mamografia}
 
-O câncer de mama é uma doença caracterizada pelo crescimento descontrolado de células mamárias, podendo evoluir para formas invasivas e metastáticas. A Organização Mundial da Saúde ressalta que a mortalidade pode ser reduzida com diagnóstico e tratamento precoces, sendo a mamografia um dos principais instrumentos de rastreamento em populações assintomáticas \cite{WHO2026BreastCancer}. No Brasil, o INCA mantém orientações específicas para o rastreamento mamográfico, o que reforça a relevância da mamografia no contexto nacional \cite{INCA2025Rastreamento}.
-
-No campo computacional, imagens de mamografia são particularmente desafiadoras por apresentarem ruído, variações de contraste, estruturas anatômicas complexas e, em muitos casos, desbalanceamento entre classes. Tais características tornam necessário o uso de métodos robustos de extração de atributos e classificação. Além disso, a definição de mais classes diagnósticas aumenta a dificuldade do problema, exigindo maior cuidado na curadoria dos dados e na avaliação do desempenho.
 
 \subsection{Aprendizado profundo e redes neurais convolucionais}
 
