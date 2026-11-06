@@ -120,7 +120,7 @@
 \imprimirfolhaderosto
 
 \begin{resumo}
-Este trabalho tem como objetivo investigar e comparar de forma sistemática o desempenho de redes neurais convolucionais (CNNs) clássicas e arquiteturas híbridas quântico-clássicas aplicadas à tarefa de classificação supervisionada de imagens em nove conjuntos de dados públicos de visão computacional (MNIST, Fashion-MNIST, KMNIST, EMNIST, CIFAR-10, CIFAR-100, SVHN, GTSRB e FER2013). A pesquisa avalia o comportamento preditivo e a eficiência computacional dos modelos frente a diferentes complexidades visuais, resoluções espaciais, números de canais e distribuições de classes, contemplando ainda análises controladas de funções de ativação, tamanhos de lote (\textit{batch size}), estratégias de quantização e execução multiplataforma. Busca-se aprimorar a capacidade de generalização do modelo clássico de referência e superar as limitações de convergência e estabilidade de modelos quânticos variacionais simulados, viabilizando uma comparação estatística e experimental robusta entre os dois paradigmas.
+Este trabalho tem como objetivo investigar e comparar de forma sistemática o desempenho de redes neurais convolucionais (CNNs) clássicas e arquiteturas híbridas quântico-clássicas aplicadas à tarefa de classificação supervisionada de imagens em nove conjuntos de dados públicos de visão computacional (MNIST, Fashion-MNIST, KMNIST, EMNIST Balanced, CIFAR-10, CIFAR-100 Coarse, SVHN, GTSRB e FER2013). A pesquisa combina revisão bibliográfica estruturada por conjunto de dados com uma campanha experimental controlada que avalia o comportamento preditivo e a eficiência computacional dos modelos frente a diferentes complexidades visuais, resoluções espaciais, números de canais e distribuições de classes, contemplando ainda análises de funções de ativação, tamanhos de lote (\textit{batch size}), estratégias de quantização e execução multiplataforma. Busca-se avaliar a capacidade de generalização do modelo clássico de referência, do controle vetorial com gargalo dimensional e da cabeça híbrida quântico-clássica simulada, viabilizando uma comparação empírica e auditável entre os dois paradigmas.
 
 \vspace{\onelineskip}
 \noindent
@@ -129,7 +129,7 @@ Este trabalho tem como objetivo investigar e comparar de forma sistemática o de
 
 \begin{resumo}[Abstract]
 \begin{otherlanguage*}{english}
-This work aims to systematically investigate and compare the performance of classical convolutional neural networks (CNNs) and hybrid quantum-classical architectures applied to supervised image classification across nine public computer vision datasets (MNIST, Fashion-MNIST, KMNIST, EMNIST, CIFAR-10, CIFAR-100, SVHN, GTSRB, and FER2013). The research evaluates the predictive behavior and computational efficiency of the models under different visual complexities, spatial resolutions, channel counts, and class distributions, while also encompassing controlled analyses of activation functions, batch sizes, quantization strategies, and cross-platform execution. It seeks to enhance the generalization capability of the classical baseline model and overcome convergence and stability limitations of simulated variational quantum models, enabling a robust statistical and experimental comparison between both paradigms.
+This work aims to systematically investigate and compare the performance of classical convolutional neural networks (CNNs) and hybrid quantum-classical architectures applied to supervised image classification across nine public computer vision datasets (MNIST, Fashion-MNIST, KMNIST, EMNIST Balanced, CIFAR-10, CIFAR-100 Coarse, SVHN, GTSRB, and FER2013). The research combines a dataset-oriented literature review with a controlled experimental campaign that evaluates the predictive behavior and computational efficiency of the models under different visual complexities, spatial resolutions, channel counts, and class distributions, while also encompassing analyses of activation functions, batch sizes, quantization strategies, and cross-platform execution. It seeks to assess the generalization capability of the classical baseline model, the classical bottleneck control, and the simulated variational quantum head, enabling an auditable empirical comparison between both paradigms.
 
 \vspace{\onelineskip}
 \noindent
@@ -222,7 +222,7 @@ Investigar e comparar sistematicamente o desempenho preditivo, a estabilidade de
 \section{Objetivos específicos}
 
 \begin{enumerate} 
-    \item Estruturar e inventariar um conjunto padronizado de nove bases de dados públicas de visão computacional (MNIST, Fashion-MNIST, KMNIST, EMNIST, CIFAR-10, CIFAR-100, SVHN, GTSRB e FER2013), caracterizando suas resoluções, canais e distribuições de classes;
+    \item Estruturar e inventariar um conjunto padronizado de nove bases de dados públicas de visão computacional (MNIST, Fashion-MNIST, KMNIST, EMNIST Balanced, CIFAR-10, CIFAR-100 Coarse, SVHN, GTSRB e FER2013), caracterizando suas resoluções originais e efetivas, canais, variantes e distribuições de classes;
     \item Implementar um \textit{pipeline} experimental reprodutível de pré-processamento, divisão estratificada de dados, aumento de dados (\textit{data augmentation}) controlado, treinamento, validação e teste;
     \item Desenvolver e otimizar uma arquitetura de CNN clássica de referência, avaliando o impacto de diferentes funções de ativação, tamanhos de lote (\textit{batch sweep}) e estratégias de quantização;
     \item Projetar uma arquitetura híbrida quântico-clássica compatível com as restrições atuais de simulação de circuitos quânticos parametrizados;
@@ -249,46 +249,42 @@ Este trabalho é delimitado como um estudo experimental comparativo em visão co
 
 \section{Metodologia da pesquisa bibliográfica}
 
-A pesquisa bibliográfica deste trabalho foi conduzida com o objetivo de fundamentar teórica e metodologicamente o estudo comparativo entre redes neurais convolucionais clássicas e modelos híbridos quântico-clássicos aplicados à classificação de imagens em múltiplos \textit{benchmarks} de visão computacional.
+A revisão bibliográfica deste trabalho foi estruturada a partir da seguinte pergunta norteadora: \textit{quais arquiteturas clássicas e híbridas quântico-clássicas foram aplicadas à classificação supervisionada de imagens nas nove bases de dados do TCC, sob quais protocolos experimentais e com quais resultados preditivos e custos computacionais relatados?}
 
-As buscas foram realizadas em bases científicas nacionais e internacionais, incluindo Google Scholar, IEEE Xplore, ACM Digital Library, Scopus, SpringerLink, SciELO e Portal de Periódicos da CAPES, além de repositórios de pré-publicações como o arXiv para acompanhar desenvolvimentos recentes em Aprendizado de Máquina Quântico. A escolha dessas bases justifica-se pela sua abrangência nas áreas de Ciência da Computação, Inteligência Artificial, processamento digital de imagens, redes neurais profundas e computação quântica.
-
-Foram utilizadas palavras-chave em português e inglês combinadas por operadores booleanos. Entre os principais termos estão: \textit{``classificação de imagens''}, \textit{``visão computacional''}, \textit{``redes neurais convolucionais''}, \textit{``aprendizado profundo''}, \textit{``benchmarks de imagens''}, \textit{``computação quântica''}, \textit{``aprendizado de máquina quântico''}, \textit{``modelos híbridos quântico-clássicos''}, \textit{``image classification''}, \textit{``computer vision benchmarks''}, \textit{``convolutional neural network''}, \textit{``deep learning''}, \textit{``activation functions''}, \textit{``batch size optimization''}, \textit{``neural network quantization''}, \textit{``quantum machine learning''}, \textit{``variational quantum circuit''} e \textit{``hybrid quantum-classical neural network''}.
-
-As \textit{strings} de busca foram organizadas em cinco blocos temáticos:
+Para responder a essa questão de forma rastreável, a investigação bibliográfica foi organizada em duas frentes complementares:
 \begin{enumerate}
-    \item Fundamentos de processamento digital de imagens, classificação supervisionada multiclasse, tratamento de desbalanceamento e métricas de avaliação em cenários balanceados e desbalanceados;
-    \item Arquiteturas de redes neurais convolucionais (CNNs), funções de ativação, impacto do tamanho de lote (\textit{batch size}), regularização, aumento de dados e quantização de modelos;
-    \item Conjuntos de dados e \textit{benchmarks} clássicos e modernos de visão computacional (MNIST, Fashion-MNIST, KMNIST, EMNIST, CIFAR-10, CIFAR-100, SVHN, GTSRB e FER2013);
-    \item Fundamentos de computação quântica, circuitos quânticos parametrizados, estratégias de codificação de dados (\textit{quantum embeddings}), simulação em Qiskit Aer/cuQuantum e limitações de treinabilidade (\textit{barren plateaus});
-    \item Arquiteturas híbridas quântico-clássicas e camadas quanvolucionais aplicadas ao reconhecimento visual.
+    \item \textbf{Frente de fundamentação teórica e metodológica}: voltada às publicações originais que instituíram os conjuntos de dados do \textit{benchmark} \cite{lecun1998gradient,xiao2017fashionmnist,clanuwat2018kmnist,cohen2017emnist,krizhevsky2009learning,netzer2011svhn,stallkamp2012gtsrb,goodfellow2013fer2013}, aos fundamentos de processamento digital de imagens e aprendizado profundo \cite{gonzalez2008digital,LeCun2015,goodfellow2016deep,szegedy2014going,he2016resnet,huang2017densenet,deisenroth2020mathematics}, à explicabilidade espacial via Grad-CAM \cite{selvaraju2020gradcam}, às métricas de avaliação multiclasse e tratamento de desbalanceamento \cite{hand2001simple,fawcett2006roc,silva2025balanceamento} e às bases conceituais de computação quântica, circuitos variacionais e ferramentas de simulação \cite{nielsen2010quantum,biamonte2017qml,preskill2018nisq,mcclean2018barren,havlicek2019supervised,perezsalinas2020data,schuld2021effect,cerezo2021variational,faj2023warpspeed,bayraktar2023cuquantum,chen2024quantumhpcworkflow}. Nessa frente, admitiram-se obras anteriores ao recorte temporal recente sempre que constituíram fontes originais ou seminais indispensáveis;
+    \item \textbf{Frente de estudos empíricos correlatos por conjunto de dados}: voltada à identificação de publicações que relatam resultados experimentais em pelo menos uma das nove bases selecionadas (MNIST, Fashion-MNIST, KMNIST, EMNIST Balanced, CIFAR-10, CIFAR-100 Coarse, SVHN, GTSRB e FER2013), exigindo descrição identificável da variante do \textit{dataset}, do número de classes, da arquitetura, do protocolo de avaliação e das métricas empregadas, distinguindo-se explicitamente artigos revisados por pares de pré-publicações (\textit{preprints}).
 \end{enumerate}
 
-O recorte temporal principal adotado concentra-se no período de 2020 a 2026, priorizando estudos recentes sobre arquiteturas convolucionais, otimização de treinamento, \textit{benchmarks} multi-dataset, simulação quântica acelerada por GPU e aprendizado de máquina quântico. Entretanto, o critério temporal não foi aplicado de forma rígida quando obras seminais ou estruturantes anteriores foram indispensáveis para a fundamentação matemática e teórica do problema, tais como aprendizado profundo e redes convolucionais \cite{LeCun2015,goodfellow2016deep,szegedy2014going,he2016resnet}, processamento digital de imagens \cite{gonzalez2008digital}, fundamentos matemáticos de aprendizado de máquina \cite{deisenroth2020mathematics}, Grad-CAM \cite{selvaraju2020gradcam}, métricas de classificação multiclasse \cite{fawcett2006roc,hand2001simple} e bases clássicas de computação quântica e algoritmos variacionais \cite{nielsen2010quantum,biamonte2017qml,preskill2018nisq,mcclean2018barren,havlicek2019supervised}. Também foram considerados \textit{preprints} e documentações técnicas oficiais recentes quando apresentaram contribuições diretamente ligadas a ferramentas de simulação, conectores híbridos PyTorch--Qiskit, quantização vetorial e análise de hiperparâmetros \cite{egginger2024hyperparameter,zandieh2025turboquant,ibmQuantumAerSimulation2026,qiskitMachineLearningTorchConnector2026}.
+É importante distinguir os parâmetros adotados nessas duas etapas para preservar a reprodutibilidade do relato. Na revisão narrativa de fundamentação e contextualização tecnológica, foram consultados trabalhos publicados predominantemente entre 2020 e 2026 (além das obras seminais anteriores), em português e inglês, utilizando termos combinados por operadores booleanos sobre visão computacional, redes neurais convolucionais, funções de ativação, dimensionamento de lotes (\textit{batch size}), quantização \cite{zandieh2025turboquant}, aprendizado de máquina quântico e circuitos variacionais \cite{egginger2024hyperparameter,ibmQuantumAerSimulation2026,qiskitMachineLearningTorchConnector2026}. Por sua vez, para o levantamento empírico direcionado aos nove conjuntos de dados do \textit{benchmark}, conduziu-se um mapeamento bibliográfico preliminar automatizado com recorte temporal principal de 2021 a 2026 e publicações em língua inglesa, complementado por verificação manual direta nas fontes primárias. Entre as consultas booleanas estruturadas por domínio e conjunto de dados destacam-se expressões como:
+\begin{itemize}
+    \item \texttt{("MNIST" OR "Fashion-MNIST") AND ("quantum neural network" OR "variational quantum circuit") AND "image classification"};
+    \item \texttt{"CIFAR-100" AND ("coarse" OR "superclass") AND "image classification"};
+    \item \texttt{"GTSRB" AND (CNN OR quantum) AND classification}.
+\end{itemize}
 
-Como critérios de inclusão, foram selecionados trabalhos em português ou inglês que abordam diretamente pelo menos um dos seguintes pontos: classificação supervisionada em \textit{benchmarks} de visão computacional; arquiteturas de CNNs, funções de ativação, dimensionamento de lotes e quantização; métricas para classificação multiclasse e tratamento de desbalanceamento; fundamentos de computação quântica e circuitos variacionais; ou modelos híbridos quântico-clássicos aplicados a tarefas de reconhecimento visual. Foram excluídos materiais duplicados, publicações sem descrição mínima de método ou métrica e estudos cujo foco experimental estivesse desconectado da comparação controlada proposta.
-
-A seleção dos artigos foi realizada por meio de um funil de busca e triagem, conforme apresentado na Figura~\ref{fig:funil_busca_bibliografica}. Inicialmente, foram identificadas publicações nas bases científicas e em repositórios de pré-publicação. Em seguida, foram removidos registros duplicados e materiais fora do escopo. Na etapa de triagem, foram avaliados título, resumo e palavras-chave. Posteriormente, os textos potencialmente relevantes foram analisados quanto ao objetivo, conjuntos de dados utilizados, dimensionalidade das imagens, número de classes, arquitetura proposta, métricas de avaliação, estratégia de validação e limitações declaradas. Por fim, foram mantidos os trabalhos que contribuíram para a fundamentação teórica, a definição metodológica ou a análise crítica da comparação entre CNN clássica, CNN com gargalo clássico e modelo híbrido quântico-clássico.
+No processamento preliminar automatizado das buscas orientadas às bases de dados, foram coletadas \textbf{5.925 ocorrências brutas}, as quais originaram \textbf{3.297 grupos distintos} após o agrupamento e remoção de duplicatas. Nessa etapa automatizada, \textbf{1.025 registros} foram sinalizados preliminarmente como candidatos aderentes e \textbf{2.272 registros} foram excluídos automaticamente. Cumpre ressaltar, como limitação metodológica explícita, que essas contagens refletem um \textbf{mapeamento bibliográfico preliminar}, e não o total imediato de artigos elegíveis: a triagem automatizada depende da disponibilidade de resumos nos metadados exportados (podendo descartar registros sem resumo completo) e não substitui a decisão humana de elegibilidade baseada na leitura integral do protocolo experimental. A partir desse mapeamento e da conferência focalizada por conjunto de dados, consolidou-se uma amostra de 28 registros levantados (19 clássicos e 9 quânticos/híbridos), acrescida de estudos candidatos verificados pontualmente para cobrir lacunas específicas das nove bases, cuja rastreabilidade individual encontra-se documentada no Apêndice~\ref{ap:matriz_revisao}. A Figura~\ref{fig:funil_busca_bibliografica} sintetiza as etapas desse fluxo de identificação, triagem e extração.
 
 \begin{figure}[H]
     \centering
-    \caption{Funil de busca e seleção dos trabalhos da revisão bibliográfica.}
+    \caption{Fluxo de busca, triagem preliminar e extração de dados da revisão bibliográfica.}
     \label{fig:funil_busca_bibliografica}
-    \begin{tabular}{p{0.22\textwidth}p{0.68\textwidth}}
+    \begin{tabular}{p{0.26\textwidth}p{0.64\textwidth}}
         \toprule
-        \textbf{Etapa do funil} & \textbf{Critério aplicado} \\
+        \textbf{Etapa do fluxo} & \textbf{Procedimento e registro documental} \\
         \midrule
-        Identificação & Busca em bases científicas, repositórios de pré-publicação e referências dos artigos selecionados. \\
-        Remoção de duplicatas & Exclusão de registros repetidos, versões redundantes e materiais fora do escopo. \\
-        Triagem inicial & Leitura de título, resumo e palavras-chave para verificar aderência ao tema do TCC. \\
-        Elegibilidade & Leitura do texto completo ou de seções metodológicas, avaliando bases de dados, tarefa, arquitetura, métricas, validação e limitações. \\
-        Inclusão final & Seleção de estudos recentes, trabalhos seminais indispensáveis e \textit{preprints} relevantes para fundamentar e orientar a campanha experimental. \\
+        1. Identificação e coleta & Levantamento de obras de fundamentação (2020--2026 e fontes seminais) e mapeamento preliminar por \textit{dataset} (2021--2026, inglês), totalizando 5.925 ocorrências brutas coletadas no funil automatizado. \\
+        2. Agrupamento e desduplicação & Consolidação de versões redundantes e entradas repetidas entre consultas, resultando em 3.297 grupos únicos no mapeamento preliminar. \\
+        3. Triagem preliminar & Filtragem inicial de título, resumo e palavras-chave (1.025 candidatos sinalizados automaticamente e 2.272 excluídos preliminarmente, sujeita à conferência humana). \\
+        4. Verificação de elegibilidade & Conferência manual da fonte primária quanto à identificação do artigo, variante exata do \textit{dataset}, número de classes, partição avaliada (teste, validação ou treino), arquitetura e métrica reportada. \\
+        5. Extração padronizada & Registro estruturado dos estudos clássicos e quântico-clássicos verificados na seção de trabalhos correlatos (Seção~\ref{sec:trabalhos_correlatos}) e na matriz de rastreabilidade (Apêndice~\ref{ap:matriz_revisao}). \\
         \bottomrule
     \end{tabular}
     \legend{Fonte: Elaborado pelo autor (2026).}
 \end{figure}
 
-Os trabalhos selecionados foram organizados em uma matriz de síntese bibliográfica contendo ano, autores, veículo de publicação, conjuntos de dados avaliados, método, métricas e limitações. Para os estudos de aprendizado profundo em visão computacional, buscou-se identificar o impacto de escolhas arquiteturais, funções de ativação, tamanho de lote, tratamento de desbalanceamento e custo computacional. Para os modelos quânticos e híbridos quântico-clássicos, observaram-se número de qubits, estratégia de codificação (\textit{embedding}), \textit{feature map}, \textit{ansatz}, simulador utilizado, custo de simulação e comparação com \textit{baselines} clássicos. Dessa forma, a revisão bibliográfica posiciona criticamente a proposta deste trabalho e sustenta o protocolo experimental apresentado no Capítulo~\ref{cap:desenvolvimento}.
+Para a síntese comparativa dos estudos empíricos elegíveis, foram extraídos sistematicamente os seguintes campos: autor, ano e identificador digital (DOI); situação de citação e verificação no TCC; conjunto de dados e variante exata; quantidade de classes efetivamente avaliadas (distinguindo tarefas binárias, subconjuntos reduzidos e formulações multiclasse completas); volumes e origem das partições de treino, validação e teste; pré-processamento e aumento de dados; arquitetura neural clássica ou híbrida; otimizador, número de épocas, tamanho de lote (\textit{batch size}) e controle de sementes (\textit{seeds}) quando informados; partição à qual o resultado numérico se refere (teste, validação ou treino); métrica reportada (acurácia, Macro-F1 ou taxa de erro); tempos de execução e ambiente computacional; e limitações metodológicas ou inconsistências internas entre texto e tabelas originais. Especificamente para os modelos quânticos e híbridos, registraram-se ainda o número de qubits \textbf{por circuito}, a quantidade de circuitos acoplados, a estratégia de codificação (\textit{embedding}), a topologia do \textit{ansatz} variacional (ou o uso de filtro quântico fixo não treinável), a presença de modelo de ruído, o número de \textit{shots} e o emprego de simulador numérico ou processador quântico físico. Trabalhos binários, multiclasse e com diferentes divisões foram analisados segundo seus respectivos protocolos, sem presumir equivalência direta entre acurácias publicadas e o Macro-F1 obtido na campanha experimental deste TCC.
 
 \section{Classificação de imagens e diversidade de domínios em visão computacional}
 
@@ -324,45 +320,47 @@ Por esse motivo, o protocolo experimental deste trabalho foi desenhado sobre um 
 
 \subsection{Caracterização dos 9 conjuntos de dados do benchmark}
 
-Os nove conjuntos de dados adotados nos experimentos compreendem diferentes domínios de aplicação, resoluções nativas, quantidades de canais e números de classes:
+Os nove conjuntos de dados adotados nos experimentos compreendem diferentes domínios de aplicação, resoluções nativas, quantidades de canais e números de classes, devendo-se distinguir suas especificações e divisões originais daquelas efetivamente aplicadas na campanha experimental auditada:
 
 \begin{enumerate}
-    \item \textbf{MNIST} (\textit{Modified National Institute of Standards and Technology}): Base clássica composta por 70.000 imagens em escala de cinza (\(28 \times 28 \times 1\)) de dígitos manuscritos de 0 a 9 (10 classes), dividida originalmente em 60.000 amostras de treino e 10.000 de teste. Atua como linha de base (\textit{sanity check}) fundamental para convergência de arquiteturas clássicas e híbridas.
-    \item \textbf{Fashion-MNIST}: Proposta como substituição direta e mais desafiadora ao MNIST, contém 70.000 imagens em escala de cinza (\(28 \times 28 \times 1\)) distribuídas equilibradamente em 10 classes de artigos de vestuário (camiseta/top, calça, pulôver, vestido, casaco, sandália, camisa, tênis, bolsa e bota).
-    \item \textbf{KMNIST} (\textit{Kuzushiji-MNIST}): Composta por 70.000 imagens em escala de cinza (\(28 \times 28 \times 1\)) distribuídas em 10 classes de caracteres cursivos japoneses (Hiragana clássico), apresentando topologias de traços significativamente mais complexas e maior variação intraclasse do que os dígitos arábicos.
-    \item \textbf{EMNIST} (\textit{Extended MNIST}): Extensão do conjunto NIST original contendo caracteres manuscritos alfanuméricos (letras maiúsculas, minúsculas e dígitos) em imagens de \(28 \times 28 \times 1\) em escala de cinza, ampliando a dificuldade da tarefa pelo aumento substancial do número de classes e pela presença de ambiguidades estruturais entre letras e números (como ``O'' e ``0'', ou ``I'', ``l'' e ``1'').
-    \item \textbf{CIFAR-10}: Conjunto de 60.000 imagens naturais coloridas em formato RGB (\(32 \times 32 \times 3\)), sendo 50.000 para treinamento e 10.000 para teste, divididas igualmente em 10 classes de objetos e animais (avião, automóvel, pássaro, gato, cervo, cachorro, sapo, cavalo, navio e caminhão).
-    \item \textbf{CIFAR-100}: Possui a mesma estrutura física e volume total do CIFAR-10 (60.000 imagens RGB de \(32 \times 32 \times 3\)), mas distribuídas em 100 classes finas agrupadas em 20 superclasses, reduzindo para apenas 600 o número de amostras por classe e elevando drasticamente a exigência de capacidade discriminativa do classificador.
-    \item \textbf{SVHN} (\textit{Street View House Numbers}): Base de imagens reais obtidas a partir de fachadas residenciais no Google Street View, contendo dígitos recortados e centralizados em resolução \(32 \times 32 \times 3\) (RGB) distribuídos em 10 classes (dígitos de 0 a 9, com mais de 73.257 imagens de treino e 26.032 de teste), caracterizada por variações severas de iluminação, contraste e presença de dígitos laterais distratores.
-    \item \textbf{GTSRB} (\textit{German Traffic Sign Recognition Benchmark}): Conjunto composto por mais de 50.000 imagens RGB de placas de trânsito alemãs reais capturadas sob variadas condições de iluminação e distância, redimensionadas para resolução padronizada (como \(32 \times 32 \times 3\)) e distribuídas de forma fortemente desbalanceada ao longo de 43 classes distintas.
-    \item \textbf{FER2013} (\textit{Facial Expression Recognition 2013}): Base composta por 35.887 imagens faciais em escala de cinza (\(48 \times 48 \times 1\)) distribuídas em 7 classes de expressões emocionais básicas (raiva, desgosto, medo, felicidade, tristeza, surpresa e neutro), apresentando forte desbalanceamento (especialmente na classe desgosto) e ruído de rotulagem inerente à coleta automatizada.
+    \item \textbf{MNIST} (\textit{Modified National Institute of Standards and Technology}) \cite{lecun1998gradient}: Base clássica composta por 70.000 imagens em escala de cinza (\(28 \times 28 \times 1\)) de dígitos manuscritos de 0 a 9 (10 classes), dividida originalmente em 60.000 amostras de treino e 10.000 de teste. Na campanha experimental auditada, as partições de treino, validação e teste contaram com 48.999, 10.503 e 10.498 amostras, respectivamente.
+    \item \textbf{Fashion-MNIST} \cite{xiao2017fashionmnist}: Proposta como substituição direta e mais desafiadora ao MNIST, contém 70.000 imagens em escala de cinza (\(28 \times 28 \times 1\)) distribuídas equilibradamente em 10 classes de artigos de vestuário (camiseta/top, calça, pulôver, vestido, casaco, sandália, camisa, tênis, bolsa e bota), com 49.000 amostras de treino, 10.500 de validação e 10.500 de teste na campanha auditada.
+    \item \textbf{KMNIST} (\textit{Kuzushiji-MNIST}) \cite{clanuwat2018kmnist}: Composta por 70.000 imagens em escala de cinza (\(28 \times 28 \times 1\)) distribuídas em 10 classes de caracteres cursivos japoneses (Hiragana clássico), apresentando topologias de traços significativamente mais complexas e maior variação intraclasse do que os dígitos arábicos, dividida na campanha auditada em 49.000 imagens de treino, 10.500 de validação e 10.500 de teste.
+    \item \textbf{EMNIST Balanced} (\textit{Extended MNIST -- Balanced}) \cite{cohen2017emnist}: Variante balanceada da extensão alfanumérica do conjunto NIST contendo \textbf{47 classes} de caracteres manuscritos (dígitos e letras maiúsculas/minúsculas com fusão de classes visualmente indistinguíveis) em resolução nativa de \(28 \times 28 \times 1\) em escala de cinza, totalizando 131.600 imagens (divisão original padrão de 112.800 para treino e 18.800 para teste). Na campanha auditada, utilizaram-se 92.120 imagens de treino, 19.740 de validação e 19.740 de teste.
+    \item \textbf{CIFAR-10} \cite{krizhevsky2009learning}: Conjunto de 60.000 imagens naturais coloridas em formato RGB (\(32 \times 32 \times 3\)), sendo originalmente 50.000 para treinamento e 10.000 para teste, divididas igualmente em 10 classes de objetos e animais (avião, automóvel, pássaro, gato, cervo, cachorro, sapo, cavalo, navio e caminhão). Na campanha auditada, a divisão foi de 42.000 amostras de treino, 9.000 de validação e 9.000 de teste.
+    \item \textbf{CIFAR-100 Coarse} \cite{krizhevsky2009learning}: Possui a mesma estrutura física e volume total do CIFAR-10 (60.000 imagens RGB de resolução nativa \(32 \times 32 \times 3\)). Embora o conjunto original forneça também rótulos finos para 100 categorias, o recorte experimental adotado neste trabalho utiliza os rótulos de \textbf{20 superclasses (\textit{coarse})} oficiais, agrupando cinco classes finas em cada superclasse (3.000 imagens por superclasse), com partições auditadas de 42.000 imagens de treino, 9.000 de validação e 9.000 de teste.
+    \item \textbf{SVHN} (\textit{Street View House Numbers}) \cite{netzer2011svhn}: Base de imagens reais obtidas a partir de fachadas residenciais no Google Street View, contendo dígitos recortados e centralizados em resolução nativa \(32 \times 32 \times 3\) (RGB) distribuídos em 10 classes (dígitos de 0 a 9). Suas divisões usuais compreendem 73.257 imagens de treino e 26.032 de teste (além de um conjunto extra separado). Na campanha auditada, foram empregadas 69.502 amostras de treino, 14.894 de validação e 14.893 de teste.
+    \item \textbf{GTSRB} (\textit{German Traffic Sign Recognition Benchmark}) \cite{stallkamp2012gtsrb}: Conjunto composto por imagens RGB de placas de trânsito alemãs reais capturadas sob variadas condições de iluminação e distância, com tamanhos originais variáveis e distribuição fortemente desigual ao longo de 43 classes. Na campanha auditada, foram registradas 27.489 imagens de treino, 5.905 de validação e 5.876 de teste.
+    \item \textbf{FER2013} (\textit{Facial Expression Recognition 2013}) \cite{goodfellow2013fer2013}: Base composta por 35.887 imagens faciais em escala de cinza de resolução nativa \(48 \times 48 \times 1\), distribuídas de maneira desbalanceada em 7 classes de expressões emocionais básicas (raiva, desgosto, medo, felicidade, tristeza, surpresa e neutro), com partições auditadas de 25.121 amostras de treino, 5.384 de validação e 5.382 de teste.
 \end{enumerate}
 
-A Tabela~\ref{tab:caracterizacao_9_datasets} sintetiza a caracterização estrutural das nove bases de dados utilizadas na campanha experimental.
+A Tabela~\ref{tab:caracterizacao_9_datasets} sintetiza as dimensões nativas, o número de classes, o volume original e as divisões de treino, validação e teste efetivamente registradas na campanha experimental auditada em 30/10/2026. Cumpre destacar que, no pré-processamento dessa campanha auditada, as imagens foram redimensionadas tipicamente para \(64 \times 64\) pixels e, no caso do GTSRB, para \(128 \times 128\) pixels, e que as contagens da última coluna correspondem às partições geradas no experimento, não devendo ser confundidas com as divisões oficiais originais de cada \textit{benchmark}.
 
 \begin{table}[htb]
 \centering
-\caption{Caracterização estrutural dos 9 conjuntos de dados utilizados no \textit{benchmark}.}
+\caption{Caracterização estrutural original e partições da campanha auditada para os 9 conjuntos de dados do \textit{benchmark}.}
 \label{tab:caracterizacao_9_datasets}
 \resizebox{\textwidth}{!}{%
-\begin{tabular}{llllrrl}
+\begin{tabular}{p{3.8cm}p{6.5cm}r}
 \toprule
-\textbf{Base} & \textbf{Domínio} & \textbf{Dimensão} & \textbf{Canais} & \textbf{Classes (\(K\))} & \textbf{Volume aprox.} & \textbf{Balanceamento} \\
+\textbf{Dataset e função} & \textbf{Imagens e classes originais} & \textbf{Treino / validação / teste na campanha auditada} \\
 \midrule
-MNIST & Dígitos manuscritos & \(28 \times 28 \times 1\) & Cinza (1) & 10 & \(\sim 70.000\) & Quase uniforme \\
-Fashion-MNIST & Artigos de vestuário & \(28 \times 28 \times 1\) & Cinza (1) & 10 & \(\sim 70.000\) & Uniforme (7.000/classe) \\
-KMNIST & Caracteres Kuzushiji & \(28 \times 28 \times 1\) & Cinza (1) & 10 & \(\sim 70.000\) & Uniforme (7.000/classe) \\
-EMNIST & Caracteres alfanuméricos & \(28 \times 28 \times 1\) & Cinza (1) & 26 / 47 / 62* & 145.600 a 814.255* & Balanceado ou variável por \textit{split} \\
-CIFAR-10 & Objetos e animais & \(32 \times 32 \times 3\) & RGB (3) & 10 & \(\sim 60.000\) & Uniforme (6.000/classe) \\
-CIFAR-100 & Objetos granulares & \(32 \times 32 \times 3\) & RGB (3) & 100 & \(\sim 60.000\) & Uniforme (600/classe) \\
-SVHN & Números de fachadas & \(32 \times 32 \times 3\) & RGB (3) & 10 & \(\sim 99.289\) & Desbalanceado (predomínio de ``1'' e ``2'') \\
-GTSRB & Placas de trânsito & \(32 \times 32 \times 3\)** & RGB (3) & 43 & \(\sim 51.839\) & Fortemente desbalanceado \\
-FER2013 & Expressões faciais & \(48 \times 48 \times 1\) & Cinza (1) & 7 & \(\sim 35.887\) & Fortemente desbalanceado \\
+\textbf{MNIST} \cite{lecun1998gradient} --- dígitos manuscritos & \(28 \times 28\), cinza; 10 classes; 70.000 imagens & 48.999 / 10.503 / 10.498 \\
+\textbf{Fashion-MNIST} \cite{xiao2017fashionmnist} --- categorias de vestuário & \(28 \times 28\), cinza; 10 classes; 70.000 imagens & 49.000 / 10.500 / 10.500 \\
+\textbf{KMNIST} \cite{clanuwat2018kmnist} --- caracteres japoneses Kuzushiji & \(28 \times 28\), cinza; 10 classes; 70.000 imagens & 49.000 / 10.500 / 10.500 \\
+\textbf{EMNIST Balanced} \cite{cohen2017emnist} --- caracteres alfanuméricos & \(28 \times 28\), cinza; \textbf{47 classes}; 131.600 imagens (divisão padrão: 112.800/18.800) & 92.120 / 19.740 / 19.740 \\
+\textbf{CIFAR-10} \cite{krizhevsky2009learning} --- objetos e animais & \(32 \times 32\), RGB; 10 classes; 60.000 imagens & 42.000 / 9.000 / 9.000 \\
+\textbf{CIFAR-100 Coarse} \cite{krizhevsky2009learning} --- superclasses de objetos & \(32 \times 32\), RGB; \textbf{20 superclasses} (5 classes finas em cada uma); 60.000 imagens (fornece também 100 rótulos finos) & 42.000 / 9.000 / 9.000 \\
+\textbf{SVHN} \cite{netzer2011svhn} --- dígitos de fachadas reais & \(32 \times 32\), RGB; 10 classes; divisões usuais de 73.257 treino e 26.032 teste (além de conjunto extra) & 69.502 / 14.894 / 14.893 \\
+\textbf{GTSRB} \cite{stallkamp2012gtsrb} --- placas de trânsito & RGB, tamanhos originais variáveis; 43 classes e distribuição desigual & 27.489 / 5.905 / 5.876 \\
+\textbf{FER2013} \cite{goodfellow2013fer2013} --- expressões faciais & \(48 \times 48\), cinza; 7 classes; 35.887 imagens e desbalanceamento & 25.121 / 5.384 / 5.382 \\
 \bottomrule
 \end{tabular}%
 }
-\legend{Fonte: Elaborado pelo autor (2026). *O número exato de classes e amostras do EMNIST depende da partição configurada em \texttt{configs/datasets.yaml}. **As imagens originais do GTSRB variam de \(15 \times 15\) a \(250 \times 250\) pixels e são redimensionadas no \textit{pipeline} de pré-processamento.}
+\legend{Fonte: Elaborado pelo autor (2026), com base nas fontes originais das bases e no relatório de auditoria experimental de 30/10/2026. Na campanha auditada, aplicou-se redimensionamento para \(64 \times 64\) pixels (e \(128 \times 128\) pixels no GTSRB).}
 \end{table}
+
+\textbf{Ressalva metodológica sobre o particionamento do GTSRB:} a auditoria experimental de 30/10/2026 identificou que, na partição utilizada para o GTSRB, pelo menos 3.990 das 5.876 imagens do subconjunto de teste possuíam outras imagens provenientes da mesma sequência física de captura (\textit{track}) alocadas no conjunto de treinamento. Uma vez que quadros sucessivos de uma mesma placa apresentam forte correlação visual, essa sobreposição entre \textit{tracks} facilita o acerto no subconjunto avaliado e restringe inferências sobre a generalização para sequências inteiramente novas. Por conseguinte, os resultados obtidos nessa base não devem ser denominados como desempenho no conjunto de teste oficial do \textit{benchmark}, registrando-se a separação estrita por sequência (\textit{track-aware split}) como requisito metodológico para novas campanhas de treinamento.
 
 \subsection{Qualidade dos rótulos, desbalanceamento e heterogeneidade entre domínios}
 \label{subsec:qualidade_rotulos_balanceamento_vies}
@@ -460,7 +458,7 @@ X \in \mathbb{R}^{N \times H \times W \times C}
 
 em que \(N\) indica o tamanho do lote (\textit{batch size}, como \(N \in \{32, 64, 128, 256\}\)).
 
-No contexto da classificação supervisionada multiclasse, cada imagem \(x\) é associada a um rótulo discreto \(y \in \{0, 1, \dots, K-1\}\), em que \(K\) representa o número total de classes do conjunto de dados (por exemplo, \(K=7\) no FER2013, \(K=10\) no MNIST, Fashion-MNIST, KMNIST, CIFAR-10 e SVHN, \(K=43\) no GTSRB e \(K=100\) no CIFAR-100). O objetivo do modelo computacional é aprender uma função \(f_{\theta}(x)\), parametrizada por pesos treináveis \(\theta\), capaz de receber o tensor da imagem como entrada e produzir uma distribuição de probabilidade sobre as \(K\) classes possíveis:
+No contexto da classificação supervisionada multiclasse, cada imagem \(x\) é associada a um rótulo discreto \(y \in \{0, 1, \dots, K-1\}\), em que \(K\) representa o número total de classes do conjunto de dados (por exemplo, \(K=7\) no FER2013, \(K=10\) no MNIST, Fashion-MNIST, KMNIST, CIFAR-10 e SVHN, \(K=20\) no CIFAR-100 Coarse, \(K=43\) no GTSRB e \(K=47\) no EMNIST Balanced). O objetivo do modelo computacional é aprender uma função \(f_{\theta}(x)\), parametrizada por pesos treináveis \(\theta\), capaz de receber o tensor da imagem como entrada e produzir uma distribuição de probabilidade sobre as \(K\) classes possíveis:
 
 \[
 f_{\theta}(x) = [p_0, p_1, \dots, p_{K-1}]
@@ -502,7 +500,7 @@ em que \(x_i\) representa a \(i\)-ésima imagem e \(y_i\) representa seu respect
 y_i \in \{0,1,\ldots,K-1\}.
 \]
 
-Assim, a cardinalidade \(K\) adapta-se diretamente à granularidade semântica da base avaliada, abrangendo desde problemas com \(K=7\) ou \(K=10\) categorias até cenários com dezenas ou centenas de classes (\(K=43\) no GTSRB e \(K=100\) no CIFAR-100).
+Assim, a cardinalidade \(K\) adapta-se diretamente à granularidade semântica da base avaliada, abrangendo desde problemas com \(K=7\) ou \(K=10\) categorias até cenários com dezenas de classes (\(K=20\) superclasses no CIFAR-100 Coarse, \(K=43\) no GTSRB e \(K=47\) no EMNIST Balanced).
 
 Segundo \citeonline{deisenroth2020mathematics}, a aprendizagem de máquina pode ser compreendida a partir de três componentes principais: dados, modelo e aprendizagem. Os dados precisam ser representados numericamente; o modelo é uma função parametrizada; e a aprendizagem corresponde ao ajuste dos parâmetros desse modelo com base nos exemplos disponíveis. No caso de imagens digitais, cada amostra é descrita como um tensor:
 
@@ -854,7 +852,7 @@ Assim, um modelo de aprendizado profundo pode ser descrito como uma função par
 f_{\theta}: \mathbb{R}^{D} \rightarrow \mathbb{R}^{K},
 \]
 
-em que \(D\) representa a dimensão da entrada, \(K\) representa o número de classes (por exemplo, \(K=7\) no FER2013, \(K=10\) no MNIST, Fashion-MNIST, KMNIST, CIFAR-10 e SVHN, \(K=43\) no GTSRB e \(K=100\) no CIFAR-100) e \(\theta\) representa o conjunto de parâmetros aprendidos pelo modelo.
+em que \(D\) representa a dimensão da entrada, \(K\) representa o número de classes (por exemplo, \(K=7\) no FER2013, \(K=10\) no MNIST, Fashion-MNIST, KMNIST, CIFAR-10 e SVHN, \(K=20\) no CIFAR-100 Coarse, \(K=43\) no GTSRB e \(K=47\) no EMNIST Balanced) e \(\theta\) representa o conjunto de parâmetros aprendidos pelo modelo.
 
 O aprendizado profundo, ou \textit{deep learning}, diferencia-se de métodos tradicionais por utilizar múltiplas camadas de transformação não linear. Essas camadas permitem que o modelo aprenda representações hierárquicas dos dados. Em imagens, camadas iniciais tendem a capturar padrões simples, como bordas, contrastes e texturas locais, enquanto camadas mais profundas combinam essas informações em estruturas mais abstratas e semanticamente relevantes \cite{LeCun2015,goodfellow2016deep}.
 
@@ -1484,29 +1482,102 @@ Embora as camadas quanvolucionais evitem codificar a imagem inteira em um único
 
 A aplicação de modelos híbridos quântico-clássicos em conjuntos de dados de visão computacional apresenta desafios estruturais significativos. O primeiro desafio reside na discrepância entre a dimensão de entrada das imagens e o número de qubits viável em simuladores clássicos e dispositivos NISQ atuais. Mesmo imagens compactas de \textit{benchmarks} padronizados possuem entre \(784\) valores de intensidade (em bases \(28 \times 28 \times 1\), como MNIST, Fashion-MNIST, KMNIST e EMNIST) e \(3.072\) valores (em bases RGB \(32 \times 32 \times 3\), como CIFAR-10, CIFAR-100, SVHN e GTSRB), chegando a \(2.304\) valores no FER2013 (\(48 \times 48 \times 1\)). Codificar diretamente milhares de atributos em amplitudes ou rotações individuais de qubits exige circuitos de largura ou profundidade proibitivas para o treinamento iterativo em lotes \cite{okada2025measurementlimits}.
 
-Por conseguinte, arquiteturas híbridas viáveis dependem de um extrator convolucional clássico (\textit{backbone}) para comprimir a imagem original em um vetor latente de baixa dimensão compatível com o número de qubits do circuito variacional, seguido de uma camada clássica de projeção para as \(K\) classes do problema. Essa redução dimensional atua como um gargalo de informação (\textit{information bottleneck}): enquanto em problemas de 10 classes estruturadas a representação comprimida pode reter poder discriminativo suficiente, em problemas com alta granularidade de classes (como GTSRB com 43 classes ou CIFAR-100 com 100 classes) ou alta sobreposição visual (como FER2013), o gargalo quântico pode limitar a capacidade de separação do modelo. Além disso, o cálculo de gradientes quânticos (como via regra de deslocamento de parâmetros ou diferenciação adjunta em simuladores de vetor de estado) impõe um custo computacional por época substancialmente superior ao de camadas densas clássicas, tornando indispensável a medição conjunta de métricas preditivas e telemetria de tempo de execução \cite{faj2023warpspeed,chen2024quantumhpcworkflow}.
+Por conseguinte, arquiteturas híbridas viáveis dependem de um extrator convolucional clássico (\textit{backbone}) para comprimir a imagem original em um vetor latente de baixa dimensão compatível com o número de qubits do circuito variacional, seguido de uma camada clássica de projeção para as \(K\) classes do problema. Essa redução dimensional atua como um gargalo de informação (\textit{information bottleneck}): enquanto em problemas de 10 classes estruturadas a representação comprimida pode reter poder discriminativo suficiente, em problemas com maior cardinalidade ou granularidade semântica (como CIFAR-100 Coarse com 20 superclasses heterogêneas, GTSRB com 43 classes ou EMNIST Balanced com 47 classes) ou alta sobreposição visual (como FER2013), o gargalo quântico pode limitar a capacidade de separação do modelo. Além disso, o cálculo de gradientes quânticos (como via regra de deslocamento de parâmetros ou diferenciação adjunta em simuladores de vetor de estado) impõe um custo computacional por época substancialmente superior ao de camadas densas clássicas, tornando indispensável a medição conjunta de métricas preditivas e telemetria de tempo de execução \cite{faj2023warpspeed,chen2024quantumhpcworkflow}.
 
 \section{Trabalhos correlatos}
+\label{sec:trabalhos_correlatos}
 
-\subsection{Benchmarks em visão computacional e avaliação multi-dataset}
+Esta seção apresenta os estudos empíricos correlatos identificados para cada uma das nove bases de dados que compõem o \textit{benchmark} deste TCC. Seguindo a diretriz metodológica estabelecida na Seção~2.1, analisam-se primeiramente os trabalhos baseados em arquiteturas clássicas de redes neurais convolucionais e, em seguida, os estudos que propõem modelos quânticos e híbridos quântico-clássicos. Dentro de cada grupo, a exposição obedece rigorosamente à mesma sequência dos nove conjuntos de dados: MNIST, Fashion-MNIST, KMNIST, EMNIST Balanced, CIFAR-10, CIFAR-100 Coarse, SVHN, GTSRB e FER2013.
 
-A consolidação de modelos de aprendizado profundo está intrinsecamente ligada à criação de \textit{benchmarks} padronizados de imagens. Desde a introdução do conjunto MNIST para reconhecimento de dígitos manuscritos \cite{LeCun2015}, a comunidade científica ressaltou a necessidade de avaliar arquiteturas em domínios progressivamente mais complexos, originando substitutos diretos como o Fashion-MNIST (voltado a artigos de vestuário) e o KMNIST (focado em caracteres cursivos japoneses), bem como extensões de maior cardinalidade como o EMNIST.
+Cumpre destacar que todos os valores numéricos relatados nesta seção pertencem exclusivamente aos autores das respectivas publicações e devem ser interpretados dentro das condições de cada artigo (partição avaliada, número de classes, pré-processamento e métrica adotada). Em particular, acurácias publicadas na literatura não são diretamente equivalentes ao Macro-F1 empregado neste TCC, nem resultados obtidos em recortes binários ou de quatro classes podem ser equiparados, sem qualificação explícita, a tarefas de 10, 20, 43 ou 47 classes. Os resultados próprios obtidos na campanha experimental deste projeto são apresentados separadamente no Capítulo~\ref{cap:resultados}.
 
-Paralelamente, a avaliação em imagens de cenários reais consolidou-se por meio de bases como CIFAR-10 e CIFAR-100 para objetos naturais, SVHN para dígitos urbanos, GTSRB para reconhecimento de sinalização viária e FER2013 para análise de expressões faciais \cite{szeliski2022computer}. Estudos comparativos demonstram que o comportamento de uma arquitetura neural não é uniforme entre esses domínios: escolhas de hiperparâmetros que saturam o desempenho em bases monocromáticas de dígitos podem apresentar instabilidade ou sobreajuste severo em bases RGB ou desbalanceadas, justificando protocolos experimentais baseados em múltiplos \textit{datasets}.
+\subsection{Estudos com arquiteturas clássicas nos nove conjuntos de dados}
+\label{subsec:correlatos_classicos}
 
-\subsection{Aprendizado profundo, hiperparâmetros e eficiência computacional}
+A Tabela~\ref{tab:correlatos_classicos_9_bases} sintetiza as arquiteturas clássicas analisadas ao longo das nove bases de dados, detalhando o método de treinamento, o resultado relatado pelos autores e as condições ou ressalvas de protocolo identificadas na conferência das fontes primárias.
 
-O avanço das redes neurais convolucionais modernas envolve não apenas o desenho de blocos de extração de características \cite{szegedy2014going,he2016resnet,zhao2024improvedpooling}, mas também a compreensão sistemática de fatores de treinamento e implantação, como a escolha da função de ativação, a sensibilidade ao tamanho do lote (\textit{batch size}) e a quantização numérica \cite{goodfellow2016deep,zandieh2025turboquant}. Pesquisas empíricas apontam que a interação entre tamanho de lote, função de ativação e plataforma de hardware impacta diretamente tanto a qualidade final da generalização (Macro-F1) quanto o tempo de convergência e a latência de inferência, exigindo análises pareadas sob controle rigoroso de variáveis.
+\begin{table}[htb]
+\centering
+\caption{Síntese dos estudos correlatos com arquiteturas clássicas nos nove conjuntos de dados do \textit{benchmark}.}
+\label{tab:correlatos_classicos_9_bases}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{p{2.9cm}p{6.8cm}p{8.2cm}}
+\toprule
+\textbf{Dataset} & \textbf{Artigo, arquitetura e método} & \textbf{Resultado relatado pelos autores e condição de protocolo} \\
+\midrule
+\textbf{MNIST} & \citeonline{kabir2023spinalnet} (SpinalNet): VGG-5 com conexões totalmente conectadas graduais (\textit{Spinal FC}); 100 épocas. & 99,69\% de acurácia média de teste (melhor: 99,72\%). A VGG-5 padrão sem \textit{Spinal FC} atingiu os mesmos valores nessa configuração. \\
+\textbf{Fashion-MNIST} & \citeonline{khanday2021filter}: CNN com duas convoluções (32 filtros), comparando \textit{kernels} \(3 \times 3\), \(5 \times 5\) e \(7 \times 7\); otimizador Adam. & Para filtro \(3 \times 3\), a tabela original informa \textbf{92,68\% em teste} e 92,35\% em validação (o resumo cita 93,68\%, divergindo da tabela e da conclusão). \\
+\textbf{KMNIST} & \citeonline{kabir2023spinalnet} (SpinalNet): VGG-5 + \textit{Spinal FC}, 10 classes; treinamento por 200 épocas. & 99,05\% de acurácia média de teste e 99,15\% no melhor resultado (não se deve confundir o máximo com a média). \\
+\textbf{EMNIST Balanced} & \citeonline{kabir2023spinalnet}: VGG-5 + \textit{Spinal FC}, 47 classes, 200 épocas. \citeonline{chen2023handwritten}: compara CNN proposta e LeNet-5. & \citeonline{kabir2023spinalnet}: 90,73\% de acurácia média de teste (melhor: 91,05\%). \citeonline{chen2023handwritten}: 89,36\% em \textbf{validação}, e não em teste. \\
+\textbf{CIFAR-10} & \citeonline{khanday2021filter}: CNN com filtros \(3 \times 3\) e 50 épocas; Adam. & Tabela 1 do artigo: 94,26\% no treino, 72,75\% na validação e \textbf{73,04\% no teste} (há equívoco no texto corrido que menciona 63,5\%). \\
+\textbf{CIFAR-100 Coarse} & \citeonline{guo2018cnnrnn}: arquitetura hierárquica CNN-RNN com \textit{Wider-ResNet}, prevendo simultaneamente 100 classes finas e 20 superclasses; aumento de dados. & \textbf{88,23\%} de acurácia nas 20 superclasses, contra 85,38\% da rede treinada apenas para \textit{coarse}. Tarefa conjunta e capacidade arquitetural diferem do TCC. \\
+\textbf{SVHN} & \citeonline{huang2017densenet} (DenseNet): conexões densas; variante DenseNet de 100 camadas e taxa de crescimento \(k=24\). & 1,59\% de erro de teste na configuração relatada (\(\approx 98{,}41\%\) de acurácia); requer considerar o pré-processamento e o uso do conjunto extra de treino. \\
+\textbf{GTSRB} & \citeonline{an2024lenet5gtsrb}: LeNet-5 modificada, pré-processamento dedicado, alterações de \textit{pooling} e ativação PReLU. & 97,53\% de acurácia relatada (partição de 31.433 treino, 7.776 validação e 12.630 teste); requer atenção ao agrupamento por sequência (\textit{track}). \\
+\textbf{FER2013} & \citeonline{li2021autofernet} (Auto-FERNet): arquitetura leve via busca diferenciável de arquitetura e re-rotulagem (\textit{relabeling}) por similaridade. & 73,78\% de acurácia de teste sem \textit{ensemble} nem dados externos, segundo o resumo dos autores; depende das regras aplicadas no \textit{relabeling}. \\
+\bottomrule
+\end{tabular}%
+}
+\legend{Fonte: Elaborado pelo autor (2026), a partir da auditoria das publicações originais.}
+\end{table}
 
-\subsection{Computação quântica e modelos híbridos aplicados à classificação de imagens}
+Nas bases monocromáticas de \(28 \times 28\) pixels com 10 classes, observa-se elevada maturidade das arquiteturas convolucionais clássicas, mas também diferenças importantes de protocolo. No \textbf{MNIST}, \citeonline{kabir2023spinalnet} propõem a arquitetura SpinalNet, na qual as camadas densas finais recebem entradas de forma gradual e repetida (\textit{Spinal FC}) acopladas a um extrator VGG-5 treinado por 100 épocas. Os autores relatam 99,69\% de acurácia média de teste e 99,72\% na melhor execução; contudo, na tabela comparativa do próprio estudo, o \textit{baseline} VGG-5 padrão sem \textit{Spinal FC} alcança exatamente os mesmos patamares nessa base, evidenciando que a extração convolucional já satura a separabilidade dos dígitos. No \textbf{Fashion-MNIST}, \citeonline{khanday2021filter} avaliam uma CNN rasa composta por duas camadas convolucionais de 32 filtros otimizada com Adam, variando o tamanho dos núcleos (\(3 \times 3\), \(5 \times 5\) e \(7 \times 7\)). Para o filtro \(3 \times 3\), a tabela de resultados do artigo registra 92,68\% de acurácia no conjunto de teste e 92,35\% na validação; registra-se, como cuidado de auditoria bibliográfica, que o resumo daquela publicação menciona 93,68\%, valor em desacordo com a tabela e com a conclusão do próprio texto. Outros trabalhos levantados na amostra para o Fashion-MNIST exploram combinações de múltiplas CNNs \cite{nocentini2022fashionmnist} e revisões de estado da arte com arquiteturas pesadas e aumento intensivo de dados \cite{mukhamediev2024fashionmnist}, cujas configurações extrapolam o regime de controle leve adotado neste TCC.
 
-No campo do Aprendizado de Máquina Quântico, a combinação de redes convolucionais clássicas com circuitos quânticos variacionais ou camadas quanvolucionais tem sido amplamente explorada como alternativa compatível com o regime NISQ \cite{biamonte2017qml,preskill2018nisq,henderson2020quanvolutional,cerezo2021variational}. Trabalhos recentes, como os de \citeonline{long2025qcqcnn} e \citeonline{daka2026noqcnn}, demonstram que arquiteturas híbridas quântico-clássicas podem atingir resultados competitivos em tarefas de classificação visual quando avaliadas em cenários controlados.
+No \textbf{KMNIST}, introduzido por \citeonline{clanuwat2018kmnist} para caracteres cursivos Kuzushiji, \citeonline{kabir2023spinalnet} aplicam o modelo VGG-5 com cabeçalho \textit{Spinal FC} ao longo de 200 épocas, obtendo 99,05\% de acurácia média de teste e 99,15\% no melhor resultado individual --- distinção relevante para evitar a comparação indevida entre valores máximos isolados e médias de execução. Na extensão alfanumérica \textbf{EMNIST Balanced} (47 classes), o mesmo protocolo de \citeonline{kabir2023spinalnet} atinge 90,73\% de acurácia média de teste (melhor resultado de 91,05\%), refletindo o aumento de dificuldade imposto pela multiplicação de categorias e pela ambiguidade visual entre letras e números. Ainda sobre o EMNIST Balanced, \citeonline{chen2023handwritten} compara uma CNN customizada contra a arquitetura clássica LeNet-5 e reporta 89,36\% de acurácia; todavia, a conferência do artigo mostra que esse número corresponde ao conjunto de \textbf{validação}, e não ao conjunto de teste independente. Trabalhos adicionais como o de \citeonline{abosamra2021optimized} empregam blocos residuais concatenados em profundidade para classificação de caracteres manuscritos, reforçando a sensibilidade do domínio ao desenho do extrator espacial.
 
-Entretanto, revisões críticas da literatura apontam que grande parte dos estudos em QML ainda restringe sua validação a versões reduzidas ou binárias de um único conjunto de dados (tipicamente MNIST ou Fashion-MNIST), sem contrastar o desempenho em múltiplas bases de maior complexidade e sem reportar sistematicamente o \textit{trade-off} entre métricas preditivas, custo de simulação e variações de hiperparâmetros \cite{egginger2024hyperparameter,yan2024quantumMedicalImageReview,Gupta2025QMLDigitalHealth}.
+Passando às bases coloridas (RGB) de objetos naturais em resolução \(32 \times 32\), \citeonline{khanday2021filter} avaliam sua CNN de filtros \(3 \times 3\) no \textbf{CIFAR-10} por 50 épocas, reportando na Tabela~1 do artigo 94,26\% de acurácia de treinamento, 72,75\% de validação e 73,04\% de teste (observando-se que um parágrafo do texto original menciona 63,5\% por erro tipográfico ao referir-se ao filtro \(3 \times 3\)). A expressiva diferença entre treino (94,26\%) e teste (73,04\%) em uma CNN simples sem regularização pesada ilustra a tendência ao sobreajuste no CIFAR-10, motivo pelo qual estudos clássicos de alto desempenho recorrem a conexões residuais \cite{he2016resnet}, busca diferenciável de arquitetura como no ajuste fino de DARTS \cite{tanveer2021darts} ou políticas aprendidas de aumento de dados como o AutoAugment \cite{cubuk2019autoaugment}. Já para o \textbf{CIFAR-100 Coarse} (20 superclasses), incluiu-se como referência específica o trabalho de \citeonline{guo2018cnnrnn}, que propõe uma arquitetura hierárquica CNN-RNN baseada em \textit{Wider-ResNet} com aumento de dados para prever conjuntamente os 100 rótulos finos e as 20 superclasses. Nessa configuração multitarefa, os autores relatam 88,23\% de acurácia nas 20 superclasses, superando os 85,38\% obtidos pela mesma rede treinada exclusivamente para o nível \textit{coarse}. Embora anterior ao recorte principal de busca, o estudo de \citeonline{guo2018cnnrnn} justifica-se por reportar explicitamente o desempenho nas 20 superclasses oficiais, devendo-se ressalvar que sua profundidade arquitetural e a supervisão conjunta fina--grossa diferem substancialmente de uma CNN treinada apenas com os rótulos de superclasse.
+
+Nos domínios de cenas reais e forte desbalanceamento, \citeonline{huang2017densenet} estabeleceram uma referência seminal no \textbf{SVHN} por meio das redes densamente conectadas (DenseNet), nas quais cada camada recebe mapas de características de todas as camadas precedentes. Na configuração DenseNet de 100 camadas e fator de crescimento \(k=24\), os autores reportam taxa de erro de teste de 1,59\% (equivalente a aproximadamente 98,41\% de acurácia), protocolo que usualmente incorpora o conjunto extra de treinamento do SVHN (mais de 530 mil imagens adicionais), diferenciando-se de campanhas restritas à partição base. Para o reconhecimento de placas de trânsito no \textbf{GTSRB} (43 classes), \citeonline{an2024lenet5gtsrb} propõem uma versão leve e aprimorada da LeNet-5 combinando pré-processamento de imagem, reformulação das camadas de \textit{pooling} e função de ativação PReLU, relatando 97,53\% de acurácia sobre uma divisão de 31.433 imagens de treino, 7.776 de validação e 12.630 de teste; na mesma linha de redes leves para sinalização viária, \citeonline{wei2024lightweightgtsrb} exploram extração multiescala e mecanismos de atenção. Por fim, no reconhecimento de expressões faciais no \textbf{FER2013} (7 classes), \citeonline{li2021autofernet} apresentam a Auto-FERNet, obtida por busca diferenciável de arquitetura aliada a uma estratégia de re-rotulagem (\textit{relabeling}) baseada em similaridade para mitigar rótulos ruidosos, relatando 73,78\% de acurácia de teste sem uso de \textit{ensembles} ou bases externas.
+
+\subsection{Estudos com arquiteturas quânticas e híbridas nos nove conjuntos de dados}
+\label{subsec:correlatos_quanticos}
+
+Na sequência, a Tabela~\ref{tab:correlatos_quanticos_9_bases} organiza os estudos correlatos que empregam circuitos quânticos variacionais, filtros quanvolucionais ou redes híbridas quântico-clássicas ao longo das mesmas nove bases de dados, destacando os resultados reportados e as restrições metodológicas de cada experimento.
+
+\begin{table}[htb]
+\centering
+\caption{Síntese dos estudos correlatos com arquiteturas quânticas e híbridas nos nove conjuntos de dados do \textit{benchmark}.}
+\label{tab:correlatos_quanticos_9_bases}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{p{2.9cm}p{6.8cm}p{8.2cm}}
+\toprule
+\textbf{Dataset} & \textbf{Artigo, arquitetura e método quântico/híbrido} & \textbf{Resultado relatado pelos autores e restrições de protocolo} \\
+\midrule
+\textbf{MNIST} & \citeonline{riaz2023nnqe} (NNQE): filtro quântico fixo com emaranhamento seguido de camada densa (PennyLane). \citeonline{long2025qcqcnn} (QCQ-CNN): filtro quântico fixo + CNN rasa + classificador variacional de 2 qubits. & \citeonline{riaz2023nnqe} (10 classes): 93,8\% em teste e 95,1\% em treino (vs. 92,0\% e 93,5\% na rede clássica). \citeonline{long2025qcqcnn} (tarefa \textbf{binária} 3 vs. 5): \(98{,}85 \pm 0{,}25\%\) (vs. \(98{,}79 \pm 0{,}13\%\) na CNN), com lotes distintos (1 vs. 4). \\
+\textbf{Fashion-MNIST} & \citeonline{bokhan2022qcnn}: QCNN variacional em Cirq/TFQ (50 épocas). \citeonline{song2024resourceefficient}: filtros quânticos QAOA de 5 qubits. \citeonline{long2025qcqcnn}: QCQ-CNN. & \citeonline{bokhan2022qcnn} (4 classes 0/1/2/3): 85,93\% vs. CNN 89,69\%. \citeonline{song2024resourceefficient} (10 classes): média de 92,59\% em 5 inicializações (verificar partição da curva). \citeonline{long2025qcqcnn} (\textbf{binário} camiseta/calça): \(99{,}41 \pm 0{,}14\%\). \\
+\textbf{KMNIST} & \citeonline{dong2025weightremapping}: CNN híbrida baseada em remapeamento de pesos (\textit{weight remapping}). & O resumo confirma experimento \textbf{binário} em KMNIST; o valor numérico exato e o protocolo integral dependem de verificação no texto completo. \\
+\textbf{EMNIST} & \citeonline{riaz2026emnist}: filtro quântico fixo de 4 qubits com rotações e duas portas CNOT antes de rede totalmente conectada. & 75,9\% em teste vs. 68,9\% sem filtro quântico, em 47 classes. O texto mistura os nomes \textit{Balanced} e \textit{ByMerge}, embora use as contagens 112.800/18.800 de \textit{Balanced}. \\
+\textbf{CIFAR-10} & \citeonline{riaz2023nnqe} (NNQE). \citeonline{kong2026cqnas} (CQNAS): CNN combinada à busca de arquitetura de circuitos variacionais. & \citeonline{riaz2023nnqe}: 36,0\% em teste e 42,0\% em treino (vs. 30,5\% e 34,1\% na rede clássica simples). \citeonline{kong2026cqnas}: divulga 95,44\% de acurácia (requer conferência de partição e \textit{backbone} no texto integral). \\
+\textbf{CIFAR-100 Coarse} & Não foi identificado estudo quântico/híbrido confirmado para as \textbf{20 superclasses oficiais} (\textit{coarse}). & Estudos em CIFAR-100 com 100 classes, recortes binários ou agrupamentos próprios dos autores não equivalem ao protocolo de 20 superclasses; mantido como lacuna aberta. \\
+\textbf{SVHN} & \citeonline{kong2026cqnas} (CQNAS): rede convolucional acoplada a circuitos variacionais com busca de arquitetura. & O resumo confirma a avaliação na base SVHN, mas o resultado específico e o protocolo de particionamento exigem extração do texto integral. \\
+\textbf{GTSRB} & \citeonline{riaz2023nnqe} (NNQE): filtro quântico fixo com emaranhamento seguido de rede densa (43 classes). & Teste: \textbf{73,4\%} no NNQE vs. \textbf{82,2\%} na rede clássica (treino: 97,5\% vs. 96,2\%). Evidencia que a abordagem híbrida não melhora todas as tarefas e exibe sobreajuste. \\
+\textbf{FER2013} & \citeonline{alsubai2024quantumfer}: ResNet-18 combinada a mecanismo híbrido proposto para 7 expressões faciais. & Relata 98,19\% de acurácia, mas a soma da tabela de classes difere em 10 imagens do total canônico (35.887) e o protocolo requer auditoria; não usar como comparação conclusiva. \\
+\bottomrule
+\end{tabular}%
+}
+\legend{Fonte: Elaborado pelo autor (2026), a partir da auditoria das publicações originais.}
+\end{table}
+
+A análise detalhada da literatura quântica e híbrida revela contrastes metodológicos fundamentais em relação aos modelos clássicos. No \textbf{MNIST}, \citeonline{riaz2023nnqe} propõem o modelo NNQE (\textit{Neural Network with Quantum Entanglement}), que aplica um filtro quântico fixo não treinável com portas de emaranhamento sobre janelas locais da imagem antes de uma camada totalmente conectada clássica, simulado no PennyLane. Na tarefa completa de 10 classes do MNIST, o NNQE alcança 93,8\% de acurácia de teste e 95,1\% de treino, superando a rede densa clássica de referência do próprio artigo (92,0\% em teste e 93,5\% em treino), mas permanecendo substancialmente abaixo de CNNs clássicas completas (que superam 99\%). Por sua vez, \citeonline{long2025qcqcnn} avaliam a arquitetura QCQ-CNN (composta por filtro quanvolucional fixo, CNN clássica rasa e classificador variacional treinável de 2 qubits) na tarefa estritamente \textbf{binária} de separação entre os dígitos 3 e 5 do MNIST. Em dez execuções independentes (até 100 épocas, otimizador Adam e parada antecipada), a Tabela~1 daquele estudo reporta \(98{,}85 \pm 0{,}25\%\) para a QCQ-CNN contra \(98{,}79 \pm 0{,}13\%\) para a CNN clássica; contudo, além de o experimento restringir-se a duas classes e de a tabela não explicitar textualmente a partição do número reportado, o tamanho do lote foi configurado como \textit{batch size} 1 na QCQ-CNN e \textit{batch size} 4 nos modelos clássicos e QCCNN, introduzindo um fator de confusão no regime de atualização de gradientes. Ainda no MNIST, \citeonline{bokhan2022qcnn} (cuja leitura deve ser acompanhada de sua corrigenda \cite{bokhan2022corrigendum}) avaliam uma QCNN variacional restrita a quatro classes (dígitos 3, 4, 5 e 6), obtendo 85,14\% de acurácia contra 94,25\% da CNN clássica de comparação. Outros trabalhos metodológicos recentes investigam mecanismos de autoatenção com kernel quântico (QKSAN e QSAN) \cite{zhao2024qksan,shi2025qsan} e codificação em qubit único \cite{easommccaldin2024singlequbit} em subconjuntos de dígitos, além do trabalho conceitual pioneiro sobre camadas quanvolucionais de \citeonline{henderson2020quanvolutional}, que introduziu filtros quânticos aleatórios como extratores locais sem cabeça variacional treinável.
+
+No \textbf{Fashion-MNIST}, repetem-se recortes com número reduzido de categorias ou configurações específicas de filtragem. \citeonline{bokhan2022qcnn,bokhan2022corrigendum} treinam uma QCNN variacional em Cirq/TensorFlow Quantum por 50 épocas sobre apenas quatro classes (0, 1, 2 e 3), relatando 85,93\% de acurácia para o modelo quântico frente a 89,69\% da CNN clássica. Na tarefa binária (camiseta vs. calça), \citeonline{long2025qcqcnn} reportam \(99{,}41 \pm 0{,}14\%\) para a QCQ-CNN contra \(99{,}19 \pm 0{,}19\%\) para a CNN sob a mesma assimetria de tamanho de lote mencionada anteriormente. Já na formulação completa de 10 classes do Fashion-MNIST, \citeonline{song2024resourceefficient} propõem uma QCNN eficiente em recursos baseada em filtros quânticos inspirados em QAOA de 5 qubits e relatam acurácia média de 92,59\% em cinco inicializações aleatórias; todavia, a análise cuidadosa da publicação exige verificar na figura correspondente qual partição sustenta a curva apresentada antes de tratá-la como acurácia de teste padronizada.
+
+Para o \textbf{KMNIST}, o estudo de \citeonline{dong2025weightremapping} propõe uma rede neural híbrida baseada em remapeamento de pesos (\textit{weight remapping}); entretanto, a conferência do resumo confirma que o experimento conduzido na base Kuzushiji restringe-se a uma tarefa \textbf{binária}, permanecendo pendente a verificação no texto integral quanto a eventuais testes nas 10 classes originais. No \textbf{EMNIST}, \citeonline{riaz2026emnist} empregam um filtro quântico fixo de 4 qubits (composto por rotações angulares e duas portas CNOT) acoplado a uma rede totalmente conectada para classificar 47 categorias, relatando ganho de 68,9\% (rede sem filtro quântico) para 75,9\% (com filtro quântico) no conjunto de teste. Ao analisar esse artigo, identificou-se uma ambiguidade importante de rotulagem: os autores alternam no texto as denominações \textit{EMNIST Balanced} e \textit{EMNIST ByMerge}, embora os volumes informados (112.800 amostras de treino e 18.800 de teste, em 47 classes) correspondam exatamente à partição oficial \textit{Balanced}. Essa observação reforça a necessidade de auditar as contagens amostrais em vez de confiar apenas na nomenclatura declarada.
+
+Nos conjuntos RGB de imagens naturais e urbanas, as limitações de compressão e generalização dos modelos híbridos tornam-se mais visíveis. No \textbf{CIFAR-10}, o modelo NNQE de \citeonline{riaz2023nnqe} obtém apenas 36,0\% de acurácia de teste e 42,0\% de treino nas 10 classes (contra 30,5\% e 34,1\% de sua linha de base clássica sem convoluções profundas), refletindo a insuficiência de uma camada densa precedida por filtro quântico fixo para capturar texturas coloridas complexas. Em contrapartida, \citeonline{kong2026cqnas} propõem o arcabouço CQNAS (\textit{Collaborative Quantum Neural Architecture Search}), que combina redes convolucionais clássicas e busca automatizada de circuitos variacionais, divulgando no resumo 95,44\% de acurácia no CIFAR-10 e aplicação adicional na base \textbf{SVHN}; contudo, como os detalhes do particionamento, do peso relativo do \textit{backbone} clássico e do resultado numérico exato em SVHN dependem da leitura integral do artigo, esses valores não devem ser interpretados isoladamente como ganho puramente quântico. Já para o \textbf{CIFAR-100 Coarse}, não foi encontrado, em todo o material auditado, nenhum estudo quântico ou híbrido que reporte resultados confirmados especificamente nas \textbf{20 superclasses oficiais}: trabalhos que mencionam CIFAR-100 em tarefas binárias, subconjuntos ad hoc de poucas classes ou na formulação de 100 classes finas não atendem ao recorte de 20 superclasses, configurando uma lacuna empírica direta na literatura revisada.
+
+No \textbf{GTSRB} (43 classes), os resultados de \citeonline{riaz2023nnqe} oferecem um contraexemplo empírico fundamental contra afirmações genéricas de superioridade quântica: enquanto no conjunto de treinamento o modelo híbrido NNQE atingiu 97,5\% de acurácia (contra 96,2\% da rede clássica de referência), no conjunto de teste o desempenho do NNQE caiu para \textbf{73,4\%}, ficando 8,8 pontos percentuais abaixo da rede clássica (\textbf{82,2\%}). Esse descompasso acentuado entre treino e teste demonstra que a transformação quântica fixa não impediu o sobreajuste e degradou a generalização frente às 43 classes desbalanceadas de placas de trânsito. No \textbf{FER2013} (7 expressões faciais), identificou-se como candidato recente o trabalho de \citeonline{alsubai2024quantumfer}, que integra uma arquitetura ResNet-18 a um mecanismo híbrido quântico-clássico e relata 98,19\% de acurácia; todavia, a conferência preliminar constatou que a soma das amostras na tabela de distribuição de classes daquele artigo difere em 10 imagens do total canônico de 35.887 exemplos do FER2013 e que um valor acima de 98\% destoa drasticamente dos \textit{benchmarks} consolidados da literatura na base original (situados na faixa de 70\% a 75\%, como em \citeonline{li2021autofernet}), exigindo auditoria estrita de vazamento ou filtragem de dados antes de qualquer comparação. Por fim, cabe mencionar que o trabalho de \citeonline{daka2026noqcnn} (No-QCNN), embora já citado na fundamentação por discutir circuitos convolucionais quânticos sem \textit{pooling} em simulador Qiskit, avalia seu modelo exclusivamente sobre um conjunto sintético próprio de 50 imagens de linhas coloridas em 6 classes (relatando 82,05\% de acurácia de validação), não constituindo, portanto, resultado empírico em nenhuma das nove bases do TCC.
 
 \section{Síntese da lacuna de pesquisa}
+\label{sec:lacuna_pesquisa}
 
-A análise da literatura revela que, embora existam inúmeros estudos avaliando CNNs clássicas em \textit{benchmarks} isolados e propostas iniciais de modelos híbridos quântico-clássicos em versões simplificadas de dígitos manuscritos, há uma carência de estudos comparativos padronizados, reprodutíveis e multi-dataset que avaliem, sob o mesmo protocolo de engenharia e telemetria, o comportamento de arquiteturas clássicas e híbridas ao longo de múltiplos domínios visuais (abrangendo nove bases com diferentes resoluções, canais e números de classes), cruzando métricas de qualidade preditiva (Macro-F1, paridade e resíduos por classe) com análises sistemáticas de funções de ativação, varredura de tamanho de lote (\textit{batch sweep}), quantização e desempenho multiplataforma (Windows e macOS). Este trabalho preenche diretamente essa lacuna por meio do protocolo metodológico descrito no Capítulo~\ref{cap:desenvolvimento}.
+A análise conjunta dos estudos clássicos e quântico-clássicos revisados nas Seções~\ref{subsec:correlatos_classicos} e~\ref{subsec:correlatos_quanticos} permite formular a lacuna de pesquisa de maneira estritamente proporcional à evidência examinada:
+\begin{enumerate}
+    \item \textbf{Fragmentação de protocolos e recortes de classes na literatura híbrida}: no conjunto de trabalhos quânticos e híbridos levantados, predominam avaliações restritas a recortes binários (como MNIST 3 vs. 5 e Fashion-MNIST de 2 classes em \citeonline{long2025qcqcnn}, ou KMNIST binário em \citeonline{dong2025weightremapping}), subconjuntos de 4 classes \cite{bokhan2022qcnn}, conjuntos sintéticos reduzidos \cite{daka2026noqcnn} ou arquiteturas com filtros quânticos fixos não treináveis seguidos apenas de camadas densas \cite{riaz2023nnqe,riaz2026emnist}, além da ausência confirmada de resultados quânticos para as 20 superclasses oficiais do CIFAR-100 Coarse;
+    \item \textbf{Heterogeneidade de métricas e omissão do Macro-F1}: os artigos revisados reportam quase exclusivamente a acurácia global (por vezes sobre o conjunto de validação, como em \citeonline{chen2023handwritten}, ou com divergências internas entre resumo e tabelas, como em \citeonline{khanday2021filter}), métrica que não pondera igualmente categorias minoritárias em bases severamente desbalanceadas como GTSRB, FER2013 e SVHN;
+    \item \textbf{Variáveis de confusão nas comparações entre modelos}: mesmo quando um artigo compara modelos clássicos e híbridos, frequentemente ocorrem diferenças de tamanho de lote (como lote 1 vs. lote 4 em \citeonline{long2025qcqcnn}), ausência de um controle clássico com gargalo dimensional equivalente (\textit{bottleneck}) ou falta de detalhamento sobre a topologia exata dos circuitos acoplados e o tempo de simulação.
+\end{enumerate}
+
+Diante dessas constatações, este trabalho contribui ao executar e documentar uma campanha experimental padronizada sobre as nove bases de dados completas (MNIST, Fashion-MNIST, KMNIST, EMNIST Balanced, CIFAR-10, CIFAR-100 Coarse, SVHN, GTSRB e FER2013), avaliada prioritariamente por Macro-F1 e acompanhada de controle vetorial de gargalo (\texttt{Dense20}), explicitação das configurações de treinamento e registro transparente das limitações de particionamento e simulação, conforme descrito nos Capítulos~\ref{cap:desenvolvimento} e~\ref{cap:resultados}.
 
 
 % ---------------------------------------------------------------
@@ -1515,141 +1586,106 @@ A análise da literatura revela que, embora existam inúmeros estudos avaliando 
 \chapter{Desenvolvimento}
 \label{cap:desenvolvimento}
 
-Neste capítulo, apresenta-se a metodologia de desenvolvimento e a arquitetura experimental do trabalho realizado no TCC2. Diferentemente de um sistema transacional tradicional, a solução desenvolvida consiste em um \textit{pipeline} experimental unificado, auditável e reprodutível para treinamento, otimização e avaliação comparativa entre arquiteturas de aprendizado de máquina aplicadas à classificação supervisionada de imagens ao longo de nove conjuntos de dados de visão computacional (MNIST, Fashion-MNIST, KMNIST, EMNIST, CIFAR-10, CIFAR-100, SVHN, GTSRB e FER2013).
+Este trabalho caracteriza-se como uma \textbf{pesquisa aplicada}, de abordagem predominantemente \textbf{quantitativa} e objetivos \textbf{exploratórios, descritivos e comparativos}. Seu desenvolvimento combina pesquisa bibliográfica com experimentos computacionais de classificação supervisionada de imagens. A revisão identifica trabalhos de aprendizado profundo clássico e de modelos híbridos quântico-clássicos nos conjuntos de dados selecionados. Os experimentos avaliam configurações de referência e híbridas em bases públicas, por meio de métricas preditivas e de custo computacional, conforme as partições e condições descritas neste capítulo. As operações quânticas são avaliadas por simulação, e os resultados obtidos são interpretados considerando as diferenças entre arquiteturas, partições e protocolos.
 
-O desenvolvimento é conduzido como um estudo experimental comparativo, quantitativo e controlado. A proposta consiste em implementar, treinar e avaliar redes neurais convolucionais clássicas (incluindo o \textit{baseline} padrão, o controle com gargalo dimensional clássico e estudos sistemáticos de funções de ativação, tamanho de lote e quantização) e uma arquitetura híbrida quântico-clássica simulada, utilizando exatamente as mesmas nove bases de dados, o mesmo pré-processamento, as mesmas divisões estratificadas entre treino, validação e teste e o mesmo conjunto de métricas preditivas e de telemetria. Dessa forma, assegura-se uma comparação pareada entre os paradigmas, contemplando desempenho global e por classe (Macro-F1 e resíduos \(\Delta\text{F1}\)), custo computacional entre plataformas (Windows e macOS), estabilidade de convergência e limitações práticas de simulação.
+Cabe explicitar que caracterizar o desenho experimental como comparativo não significa assumir que todas as configurações diferem por um único fator isolado. Ao longo deste capítulo, detalham-se, para cada contraste avaliado, quais componentes são efetivamente compartilhados (como as partições de dados, o redimensionamento espacial e o extrator convolucional base) e quais elementos diferem entre as configurações (incluindo transformações intermediárias, quantidade de parâmetros treináveis, estrutura da cabeça de saída e sementes de otimização). Além disso, descreve-se como executado exclusivamente aquilo que consta nos artefatos da campanha auditada em 30/10/2026, apresentando-se extensões adicionais como propostas para trabalhos futuros.
 
 \section{Solução proposta}
 \label{sec:solucao}
 
-A solução proposta consiste no desenvolvimento de um \textit{pipeline} computacional completo para classificação supervisionada multiclasse nos nove conjuntos de dados do \textit{benchmark}. Esse \textit{pipeline} abrange as etapas de inventário e padronização das bases de dados, pré-processamento e normalização dos tensores de imagem, definição estratificada dos conjuntos de treino, validação e teste, implementação modular das arquiteturas, execução de campanhas controladas de treinamento, avaliação por métricas preditivas e consolidação da telemetria de execução.
+A solução desenvolvida consiste em um \textit{pipeline} computacional unificado e auditável para classificação supervisionada multiclasse nos nove conjuntos de dados do \textit{benchmark} (MNIST, Fashion-MNIST, KMNIST, EMNIST Balanced, CIFAR-10, CIFAR-100 Coarse, SVHN, GTSRB e FER2013). Esse \textit{pipeline} abrange o inventário e padronização das bases de dados, o pré-processamento e redimensionamento dos tensores de imagem, a separação em subconjuntos de treino, validação e teste, a implementação modular das arquiteturas clássicas e híbrida, a execução das campanhas de treinamento e a consolidação das métricas preditivas e de telemetria.
 
-A comparação arquitetural estrutura-se em torno de três configurações principais, complementadas por estudos de ablação e eficiência no domínio clássico:
+Na campanha experimental auditada em 30/10/2026, que totalizou \textbf{72 \textit{checkpoints}} (oito configurações por conjunto de dados ao longo das nove bases, com uma semente de otimização registrada para cada configuração), a comparação arquitetural estruturou-se em torno de três famílias principais de modelos, complementadas por variações clássicas de ativação, tamanho de lote e quantização:
 \begin{enumerate}
-    \item \textbf{CNN clássica de referência (\textit{baseline})}: arquitetura convolucional responsável pela extração hierárquica de características e classificação direta nas \(K\) classes de cada conjunto de dados, sobre a qual são conduzidos os estudos comparativos de funções de ativação, varredura de tamanho de lote (\textit{batch sweep}: 32, 64, 128 e 256) e quantização pós-treinamento;
-    \item \textbf{CNN com gargalo clássico equivalente}: variante de controle experimental que introduz uma camada compacta de mesma dimensionalidade \(n\) exigida pela entrada do circuito quântico, permitindo isolar o impacto puramente decorrente da redução dimensional (\textit{information bottleneck}) antes da camada de decisão;
-    \item \textbf{Arquitetura híbrida quântico-clássica}: composta pelo extrator convolucional clássico (\textit{backbone}), uma camada de projeção linear para \(n\) dimensões, um circuito quântico parametrizado (PQC) simulado atuando como camada variacional treinável e uma cabeça linear final de classificação para as \(K\) categorias.
+    \item \textbf{CNN clássica original (\textit{baseline})}: arquitetura convolucional responsável pela extração hierárquica de características e classificação direta nas \(K\) classes de cada conjunto de dados, servindo também de base para as análises de funções de ativação, tamanho de lote (\textit{batch size}) e quantização pós-treinamento;
+    \item \textbf{CNN com gargalo vetorial clássico de 20 dimensões (\texttt{Dense20})}: variante de controle experimental que projeta as características extraídas pelo \textit{backbone} para um vetor latente de \(n=20\) dimensões antes da camada linear de decisão, permitindo avaliar o efeito da compactação dimensional no domínio puramente clássico;
+    \item \textbf{Arquitetura híbrida quântico-clássica (\texttt{Híbrido Mac/PennyLane})}: composta pelo extrator convolucional clássico acoplado a uma cabeça híbrida formada por \textbf{quatro circuitos quânticos variacionais independentes de cinco qubits cada} (totalizando 20 entradas angulares distribuídas em 4 subcircuitos de 5 qubits simulados em PennyLane, e não um único circuito emaranhado de 20 qubits), seguida da projeção linear final para as \(K\) categorias.
 \end{enumerate}
 
-A pergunta de pesquisa que orienta o desenvolvimento pode ser sintetizada da seguinte forma: \textit{em tarefas de classificação supervisionada de imagens ao longo de nove benchmarks de visão computacional com diferentes resoluções, números de canais e quantidades de classes, arquiteturas híbridas quântico-clássicas apresentam convergência estável e desempenho competitivo em relação a CNNs clássicas quando avaliadas sob o mesmo protocolo experimental, e como escolhas de funções de ativação, tamanho de lote e quantização afetam a qualidade preditiva e a eficiência computacional desses modelos?}
+A pergunta de pesquisa que orienta o desenvolvimento pode ser sintetizada da seguinte forma: \textit{em tarefas de classificação supervisionada de imagens ao longo das nove bases do benchmark (MNIST, Fashion-MNIST, KMNIST, EMNIST Balanced, CIFAR-10, CIFAR-100 Coarse, SVHN, GTSRB e FER2013), como se comporta o desempenho em Macro-F1 da arquitetura híbrida baseada em quatro circuitos independentes de 5 qubits em comparação à CNN clássica original e ao controle vetorial \texttt{Dense20} sob as mesmas partições experimentais, e quais limites de generalização, custo computacional e protocolo emergem dessa avaliação?}
 
-\section{Tipo de pesquisa}
+\section{Tipo de pesquisa e escopo metodológico}
 
-Esta pesquisa classifica-se como de natureza aplicada, com abordagem quantitativa, objetivo exploratório-explicativo e procedimento técnico experimental e comparativo. A abordagem quantitativa fundamenta-se na mensuração rigorosa de indicadores estatísticos de classificação (Macro-F1, acurácia, precisão, revocação, especificidade e matrizes de confusão) e de desempenho computacional (tempo por época, tempo acumulado de campanha, \textit{speedup}, \textit{throughput} em imagens/segundo e latência em milissegundos). O caráter experimental decorre da manipulação controlada de variáveis independentes --- como o paradigma do classificador (clássico vs. híbrido quântico-clássico), a função de ativação, o tamanho do lote (\textit{batch size}), o regime de aumento de dados, a precisão numérica (quantização) e a plataforma de execução --- mantendo-se fixas as partições de dados e as sementes aleatórias para observar seus efeitos sobre as variáveis dependentes.
+Do ponto de vista metodológico, a natureza aplicada do trabalho decorre do desenvolvimento e avaliação empírica de um procedimento concreto para classificação supervisionada de imagens em múltiplos domínios. A abordagem quantitativa fundamenta-se na mensuração de indicadores preditivos (prioritariamente o Macro-F1 no conjunto de teste, acompanhado de acurácia, precisão, revocação, matrizes de confusão e variações por classe \(\Delta\text{F1}\)) e de indicadores operacionais (tempo de execução, \textit{throughput}, latência e recursos de simulação). Os objetivos são simultaneamente exploratórios (ao investigar o comportamento de cabeças quânticas simuladas em bases pouco exploradas na literatura, como CIFAR-100 Coarse e EMNIST Balanced), descritivos (ao documentar sistematicamente métricas, hiperparâmetros e artefatos dos 72 \textit{checkpoints}) e comparativos (ao contrastar as configurações avaliadas sob as mesmas divisões amostrais).
 
 \section{Visão geral da solução proposta}
 \label{subsec:visao_arquitetura}
 
 A arquitetura geral do \textit{pipeline} experimental organiza-se em seis etapas sequenciais e integradas:
 \begin{enumerate}
-    \item \textbf{Inventário e padronização das 9 bases de dados}: carregamento automatizado e verificação de integridade dos conjuntos MNIST, Fashion-MNIST, KMNIST, EMNIST, CIFAR-10, CIFAR-100, SVHN, GTSRB e FER2013 a partir das especificações centralizadas em \path{configs/datasets.yaml};
-    \item \textbf{Pré-processamento e particionamento estratificado}: conversão para tensores numéricos, normalização de intensidade por canal, redimensionamento padronizado quando aplicável (como no GTSRB) e separação determinística em subconjuntos de treino, validação e teste sem vazamento de dados (\textit{data leakage});
-    \item \textbf{Campanha experimental da CNN clássica}: treinamento e validação do \textit{baseline} convolucional ao longo das nove bases, contemplando a comparação entre funções de ativação, a varredura de tamanhos de lote (\textit{batch sizes} 32, 64, 128 e 256), o contraste entre regimes sem aumento e com aumento controlado de dados e a avaliação de quantização;
-    \item \textbf{Controle de redução dimensional (CNN com gargalo clássico)}: avaliação do efeito da compactação do vetor latente para a dimensão \(n\) correspondente ao número de qubits;
-    \item \textbf{Campanha experimental do modelo híbrido quântico-clássico}: acoplamento do extrator convolucional ao circuito quântico parametrizado simulado, treinamento conjunto fim a fim (\textit{end-to-end}) e diagnóstico de convergência;
-    \item \textbf{Consolidação de métricas, paridade e telemetria}: geração automatizada das tabelas comparativas de Macro-F1, matrizes de confusão, gráficos de resíduos por classe (\(\Delta\text{F1}\)) e relatórios de tempo, \textit{speedup}, \textit{throughput} e latência entre Windows e macOS.
+    \item \textbf{Inventário e padronização das 9 bases de dados}: carregamento automatizado e verificação de integridade dos conjuntos MNIST, Fashion-MNIST, KMNIST, EMNIST Balanced, CIFAR-10, CIFAR-100 Coarse, SVHN, GTSRB e FER2013 a partir das especificações centralizadas em \path{configs/datasets.yaml};
+    \item \textbf{Pré-processamento e particionamento}: conversão para tensores numéricos, normalização de intensidade por canal, redimensionamento espacial padronizado (para \(64 \times 64\) pixels na maioria das bases e \(128 \times 128\) pixels no GTSRB na campanha auditada) e separação nos subconjuntos de treino, validação e teste registrados na Tabela~\ref{tab:caracterizacao_9_datasets};
+    \item \textbf{Campanha experimental da CNN clássica}: treinamento e avaliação das configurações clássicas ao longo das nove bases, contemplando o \textit{baseline} original e variações controladas de funções de ativação, tamanhos de lote e quantização;
+    \item \textbf{Controle de redução dimensional (\texttt{Dense20})}: avaliação do modelo clássico com camada densa intermediária de 20 unidades para contrastar diretamente com a dimensão total de entrada da cabeça híbrida;
+    \item \textbf{Campanha experimental do modelo híbrido quântico-clássico}: acoplamento do extrator convolucional aos quatro circuitos variacionais independentes de 5 qubits simulados em PennyLane, com treinamento fim a fim (\textit{end-to-end});
+    \item \textbf{Consolidação e auditoria de métricas}: geração das tabelas comparativas de Macro-F1, matrizes de confusão, resíduos por classe (\(\Delta\text{F1}\)), análise de explicabilidade espacial via Grad-CAM sobre os 72 modelos e relatórios de telemetria entre ambientes Windows e macOS.
 \end{enumerate}
 
 \section{Bases de dados e definição das classes}
 
-O estudo emprega nove conjuntos de dados públicos de visão computacional que abrangem diferentes níveis de complexidade morfológica, textural e semântica, agrupados conforme suas propriedades estruturais:
+O estudo emprega nove conjuntos de dados públicos de visão computacional que abrangem diferentes níveis de complexidade morfológica, textural e semântica, conforme caracterizado na Tabela~\ref{tab:caracterizacao_9_datasets}:
 \begin{itemize}
-    \item \textbf{Bases monocromáticas \(28 \times 28 \times 1\) com 10 classes balanceadas}: MNIST (dígitos manuscritos de 0 a 9), Fashion-MNIST (10 categorias de artigos de vestuário) e KMNIST (10 classes de caracteres cursivos japoneses Kuzushiji);
-    \item \textbf{Base monocromática \(28 \times 28 \times 1\) de cardinalidade estendida}: EMNIST (caracteres manuscritos alfanuméricos, permitindo avaliar o impacto do aumento substancial do número de classes \(K\) e da ambiguidade estrutural entre letras e dígitos);
-    \item \textbf{Bases coloridas RGB \(32 \times 32 \times 3\) de objetos naturais}: CIFAR-10 (\(K=10\) classes de animais e veículos, com 6.000 amostras por classe) e CIFAR-100 (\(K=100\) classes finas, com apenas 600 amostras por classe, representando um cenário extremo de granularidade semântica);
-    \item \textbf{Bases de cenários reais com forte desbalanceamento}: SVHN (\(32 \times 32 \times 3\), \(K=10\) dígitos urbanos em fachadas), GTSRB (\(32 \times 32 \times 3\), \(K=43\) classes de placas de trânsito sob condições variadas de iluminação e perspectiva) e FER2013 (\(48 \times 48 \times 1\), \(K=7\) classes de expressões faciais humanas com alta variabilidade intraclasse e assimetria amostral).
+    \item \textbf{Bases monocromáticas originalmente \(28 \times 28 \times 1\) com 10 classes}: MNIST (dígitos manuscritos de 0 a 9, com partições auditadas de 48.999 / 10.503 / 10.498), Fashion-MNIST (10 categorias de vestuário, 49.000 / 10.500 / 10.500) e KMNIST (10 classes de caracteres cursivos japoneses Kuzushiji, 49.000 / 10.500 / 10.500);
+    \item \textbf{Base monocromática originalmente \(28 \times 28 \times 1\) de cardinalidade estendida}: \textbf{EMNIST Balanced} (\(K=47\) classes de caracteres alfanuméricos manuscritos, com 131.600 imagens totais e partições auditadas de 92.120 para treino, 19.740 para validação e 19.740 para teste);
+    \item \textbf{Bases coloridas RGB originalmente \(32 \times 32 \times 3\) de objetos naturais}: CIFAR-10 (\(K=10\) classes de animais e veículos, 42.000 / 9.000 / 9.000) e \textbf{CIFAR-100 Coarse} (\(K=20\) superclasses oficiais contendo cinco classes finas em cada superclasse, também com 42.000 amostras de treino, 9.000 de validação e 9.000 de teste);
+    \item \textbf{Bases de cenários reais com forte desbalanceamento}: SVHN (originalmente \(32 \times 32 \times 3\), \(K=10\) dígitos urbanos em fachadas, com 69.502 amostras de treino, 14.894 de validação e 14.893 de teste), GTSRB (RGB com tamanhos nativos variáveis, \(K=43\) classes de placas de trânsito, com 27.489 imagens de treino, 5.905 de validação e 5.876 de teste) e FER2013 (originalmente \(48 \times 48 \times 1\), \(K=7\) expressões faciais humanas, com 25.121 amostras de treino, 5.384 de validação e 5.382 de teste).
 \end{itemize}
 
-Em todas as bases, os rótulos originais são mapeados de forma biunívoca para inteiros consecutivos \(y \in \{0, 1, \dots, K-1\}\), garantindo compatibilidade uniforme com a função de perda de entropia cruzada categórica e com o cálculo automatizado de métricas multiclasse.
+Em todas as bases, os rótulos são mapeados de forma biunívoca para inteiros consecutivos \(y \in \{0, 1, \dots, K-1\}\), garantindo compatibilidade uniforme com a perda de entropia cruzada categórica e com o cálculo do Macro-F1.
 
 \section{Pré-processamento e preparação dos dados}
 
-O pré-processamento é mantido estritamente idêntico entre todos os modelos avaliados em uma mesma base de dados, assegurando que nenhuma diferença de desempenho decorra de variações na preparação das entradas. Inicialmente, as imagens são convertidas para tensores em ponto flutuante e reescalonadas para o intervalo \([0, 1]\) (mediante divisão por 255), seguidas de normalização padronizada por canal utilizando as estatísticas do conjunto de treinamento. No caso do conjunto GTSRB, cujas imagens brutas possuem resoluções variáveis, aplica-se interpolação bilinear para a resolução canônica de \(32 \times 32 \times 3\) pixels.
+O pré-processamento é mantido idêntico entre os modelos comparados dentro de cada base de dados. As imagens são convertidas para tensores em ponto flutuante e normalizadas por canal conforme as estatísticas do conjunto de treinamento. Na campanha auditada em 30/10/2026, aplicou-se redimensionamento espacial padronizado para \(64 \times 64\) pixels na maioria dos conjuntos de dados e para \(128 \times 128\) pixels no conjunto GTSRB, de modo a compatibilizar a grade espacial de entrada com a arquitetura dos blocos convolucionais.
 
-A divisão entre os subconjuntos de treinamento, validação e teste realiza-se de forma estratificada e determinística (controlada por semente fixa), preservando a proporção exata de cada uma das \(K\) classes. Para investigar a capacidade de regularização e prevenção de sobreajuste (\textit{overfitting}), o \textit{pipeline} suporta tanto o regime padrão sem aumento de dados quanto o regime com \textit{data augmentation} controlado por domínio (aplicado exclusivamente ao subconjunto de treinamento), respeitando as invariâncias geométricas de cada base --- por exemplo, habilitando espelhamento horizontal em CIFAR-10, CIFAR-100, Fashion-MNIST e FER2013, mas vedando-o em MNIST, KMNIST, EMNIST, SVHN e GTSRB. Em bases fortemente desbalanceadas, estratégias de amostragem ou ponderação na perda restringem-se estritamente ao treinamento, mantendo-se os subconjuntos de validação e teste intocados em sua distribuição original.
+As partições de treinamento, validação e teste preservam a proporção estratificada das \(K\) classes e são mantidas fixas para todos os 8 modelos treinados em cada base. Conforme documentado na Seção~2.3.2, registra-se como limitação auditada no GTSRB o fato de que a divisão estratificada por imagem permitiu que pelo menos 3.990 das 5.876 imagens de teste compartilhassem a mesma sequência física (\textit{track}) com amostras de treinamento, razão pela qual os resultados do GTSRB são interpretados com essa qualificação explícita e não como partição de teste oficial.
 
-\section{Modelo clássico de referência}
+\section{Modelo clássico de referência e controle vetorial (\texttt{Dense20})}
 
-A arquitetura clássica de referência consiste em uma rede neural convolucional (CNN) modular projetada para processar tensores \(H \times W \times C\) e extrair representações hierárquicas progressivamente mais abstratas. A estrutura compõe-se de blocos convolucionais sucessivos --- cada um integrando camadas convolucionais bidimensionais (\texttt{Conv2d}), normalização em lote (\texttt{BatchNorm2d}), função de ativação não linear parametrizável e redução espacial por \textit{pooling} --- seguidos de camadas densas regularizadas por \textit{dropout} que projetam o vetor de características para os \(K\) \textit{logits} de saída.
+A arquitetura clássica de referência consiste em uma rede neural convolucional (CNN) modular composta por blocos convolucionais sucessivos (\texttt{Conv2d}, \texttt{BatchNorm2d}, função de ativação não linear e redução espacial por \textit{pooling}), seguidos da cabeça de classificação para os \(K\) \textit{logits} de saída. A partir dessa estrutura, a campanha experimental de 72 modelos abrange oito configurações por conjunto de dados, contemplando a CNN clássica original, variações de funções de ativação e tamanho de lote, o modelo vetorial de controle (\texttt{Dense20}) e o modelo híbrido quântico-clássico.
 
-Sobre esse modelo clássico de referência, conduzem-se três frentes experimentais sistemáticas:
-\begin{enumerate}
-    \item \textbf{Estudo de funções de ativação}: substituição controlada da não linearidade dos blocos convolucionais e densos (comparando funções como ReLU, GELU, SiLU/Swish, ELU e LeakyReLU) ao longo das nove bases de dados, avaliando o impacto no Macro-F1 de teste, nos resíduos por classe (\(\Delta\text{F1}\)) e no tempo de execução;
-    \item \textbf{Varredura de tamanho de lote (\textit{batch sweep})}: execução de campanhas completas variando \(N \in \{32, 64, 128, 256\}\) para analisar o compromisso (\textit{trade-off}) entre estabilidade do gradiente, qualidade de generalização (Macro-F1) e eficiência de hardware (tempo por época e \textit{throughput});
-    \item \textbf{Quantização de modelos}: aplicação de técnicas de redução de precisão numérica pós-treinamento para mensurar a compressão do modelo, o ganho de \textit{throughput}, a redução de latência de inferência e a preservação do Macro-F1 em relação ao modelo em precisão total (\texttt{FP32}).
-\end{enumerate}
-
-Adicionalmente, implementa-se a variante de \textbf{CNN com gargalo clássico}, na qual a penúltima camada densa comprime a representação para exatamente \(n\) neurônios (equivalente ao número de qubits do modelo híbrido) antes da camada linear de saída, servindo como linha de base de controle para isolar o efeito da restrição dimensional.
+A variante \textbf{\texttt{Dense20 vetorial}} atua como controle metodológico para a compressão dimensional: nela, a representação convolucional é projetada para um vetor intermediário de exatamente 20 dimensões no domínio clássico antes da camada linear final para as \(K\) classes. Cabe notar que, embora compartilhe a mesma dimensão latente total (\(n=20\)) que alimenta a cabeça híbrida, a camada \texttt{Dense20} realiza uma transformação vetorial clássica com parametrização e não linearidade próprias, distinta das operações unitárias aplicadas nos subcircuitos quânticos.
 
 \section{Modelo híbrido quântico-clássico}
 
-A arquitetura híbrida quântico-clássica acopla o extrator convolucional clássico (\textit{backbone}) a um circuito quântico parametrizado (PQC) simulado, formando um grafo computacional diferenciável fim a fim. O fluxo de processamento direto (\textit{forward pass}) compreende quatro estágios:
+Enquanto a literatura de QML frequentemente ilustra conectores genéricos no ecossistema PyTorch--Qiskit \cite{ibmQuantumAerSimulation2026,qiskitMachineLearningTorchConnector2026}, a cabeça híbrida efetivamente implementada e auditada nos artefatos da campanha de 30/10/2026 foi executada utilizando integração diferenciável entre \textbf{PyTorch e PennyLane} (\texttt{Híbrido Mac/PennyLane}). Em vez de empregar um único circuito quântico de 20 qubits emaranhados --- cujo espaço de Hilbert de dimensão \(2^{20}\) imporia custo de simulação proibitivo por lote ao longo das nove bases ---, a arquitetura decompõe o gargalo latente de 20 dimensões em \textbf{quatro circuitos quânticos independentes de cinco qubits cada} (\(4 \times 5 = 20\) qubits distribuídos em subcircuitos paralelos, cada um operando em um espaço de estados de dimensão \(2^5 = 32\)):
 \begin{enumerate}
-    \item \textbf{Extração e compressão clássica}: a imagem de entrada \(x \in \mathbb{R}^{H \times W \times C}\) atravessa os blocos convolucionais \(g_{\phi}(x)\), gerando um vetor de características \(v\), que é projetado linearmente por uma camada de gargalo para um vetor latente compacto \(u = Wv + b \in \mathbb{R}^{n}\), normalizado para um intervalo angular adequado (como \([-\pi, \pi]\));
-    \item \textbf{Codificação quântica (\textit{quantum embedding})}: os \(n\) componentes de \(u\) parametrizam portas de rotação (como \(R_Y(u_j)\) ou mapas de características quânticos \(U_{\text{enc}}(u)\)) aplicadas ao estado inicial \(\ket{0}^{\otimes n}\);
-    \item \textbf{Transformação variacional (\textit{ansatz})}: aplica-se uma sequência de camadas unitárias parametrizadas \(U(\theta)\) contendo rotações treináveis e portas controladas de emaranhamento (como CNOT em topologia linear ou circular);
-    \item \textbf{Medição e classificação final}: calculam-se os valores esperados dos observáveis de Pauli-\(Z\) em cada qubit, \(z_j = \bra{\psi(u,\theta)}Z_j\ket{\psi(u,\theta)}\), compondo o vetor \(z \in [-1, 1]^n\), o qual é mapeado por uma camada linear clássica final \((W_c z + b_c)\) seguida de \textit{softmax} para obter as probabilidades das \(K\) classes.
+    \item \textbf{Extração e particionamento do vetor latente}: o extrator convolucional produz o vetor de características, que é projetado para um vetor latente \(u \in \mathbb{R}^{20}\) e subdividido em quatro subvetores \(u^{(1)}, u^{(2)}, u^{(3)}, u^{(4)} \in \mathbb{R}^{5}\);
+    \item \textbf{Codificação quântica por subcircuito}: cada subvetor \(u^{(m)} \in \mathbb{R}^{5}\) (\(m \in \{1,2,3,4\}\)) é codificado nas rotações angulares dos 5 qubits do respectivo circuito independente inicializado em \(\ket{0}^{\otimes 5}\);
+    \item \textbf{Transformação variacional (\textit{ansatz})}: em cada um dos quatro circuitos de 5 qubits, aplicam-se camadas unitárias parametrizadas \(U_m(\theta^{(m)})\) com portas de rotação treináveis e portas de emaranhamento internas ao subcircuito de 5 qubits;
+    \item \textbf{Medição e concatenação}: extraem-se os valores esperados de Pauli-\(Z\) dos 5 qubits de cada um dos 4 circuitos, concatenando-os novamente em um vetor real \(z \in [-1, 1]^{20}\), o qual alimenta a camada linear clássica final \((W_c z + b_c)\) para classificar a amostra entre as \(K\) classes.
 \end{enumerate}
 
-\section{Diagnóstico e evolução do modelo quântico}
+Essa decomposição em quatro circuitos independentes de 5 qubits viabilizou o treinamento fim a fim nas nove bases de dados com tempos de simulação tratáveis, devendo-se ressaltar na interpretação dos resultados que não há emaranhamento quântico cruzado entre os quatro subcircuitos de 5 qubits.
 
-A integração de circuitos quânticos variacionais em arquiteturas profundas está sujeita a desafios severos de otimização, tais como estagnação prematura da função de perda, saturação dos ângulos de codificação, desaparecimento de gradientes (\textit{barren plateaus}) e elevado custo de simulação por lote. Por esse motivo, o desenvolvimento contempla uma etapa específica de diagnóstico e evolução do componente quântico.
+\section{Diagnóstico e estabilidade do acoplamento híbrido}
 
-Nessa etapa, investigam-se sistematicamente: (i) o escalonamento e a normalização do vetor latente \(u\) antes da codificação por ângulo, evitando que valores extremos causem enrolamento periódico (\textit{phase wrapping}) nas portas de rotação; (ii) a escolha do número de qubits \(n\) e da profundidade \(L\) do \textit{ansatz} variacional, equilibrando expressividade e treinabilidade; (iii) a inicialização controlada dos parâmetros quânticos \(\theta\) próxima da identidade para mitigar \textit{barren plateaus} no início do treinamento; e (iv) a estabilidade do acoplamento de gradientes entre o circuito simulado e as camadas convolucionais em PyTorch, verificando a evolução da perda e do Macro-F1 ao longo das épocas nas nove bases de dados.
+Durante o desenvolvimento, monitorou-se a propagação de gradientes através dos quatro subcircuitos de 5 qubits e das camadas convolucionais clássicas, controlando o escalonamento das entradas angulares para evitar saturação periódica (\textit{phase wrapping}) e acompanhando a evolução época a época da perda e do Macro-F1 de validação até a seleção do melhor \textit{checkpoint}.
 
-\section{Protocolo experimental}
+\section{Protocolo experimental e auditoria dos artefatos}
 
-Para assegurar rigor científico e comparabilidade direta entre todos os experimentos, adota-se um protocolo experimental unificado para todas as campanhas de treinamento.
+\subsection{Configuração dos 72 checkpoints e controle de sementes}
 
-\subsection{Configuração dos experimentos}
-
-Cada experimento é definido por arquivos de configuração declarativos que especificam a base de dados (dentre as nove do \textit{benchmark}), a arquitetura avaliada (CNN clássica, CNN com gargalo ou híbrida quântico-clássica), a função de ativação, o tamanho do lote (\textit{batch size}), o otimizador, a taxa de aprendizado, o número máximo de épocas e o regime de aumento de dados. Durante o treinamento, o modelo é avaliado ao final de cada época sobre o conjunto de validação, selecionando-se o melhor \textit{checkpoint} com base no desempenho de validação para a avaliação final única no conjunto de teste.
-
-\subsection{Controle de variáveis}
-
-Em cada comparação pareada, altera-se exclusivamente o fator experimental sob análise, mantendo-se fixos todos os demais hiperparâmetros. Na comparação entre funções de ativação, mantêm-se constantes a topologia da rede, o tamanho de lote e as divisões de dados; na varredura de \textit{batch size}, preservam-se a arquitetura e o pré-processamento; e na comparação entre CNN clássica, CNN com gargalo e modelo híbrido, utilizam-se exatamente o mesmo extrator convolucional base, as mesmas partições estratificadas e as mesmas métricas de avaliação.
+A campanha principal auditada em 30/10/2026 compreende 72 \textit{checkpoints} treinados (9 bases de dados \(\times\) 8 configurações por base). Para cada par (base de dados, configuração), foi executada uma campanha de treinamento com \textbf{uma semente de otimização (\textit{seed}) registrada}, selecionando-se o \textit{checkpoint} de validação correspondente para avaliação no conjunto de teste. Como cada configuração conta com uma única execução registrada (sem repetições sob múltiplas sementes independentes), os resultados reportados no Capítulo~\ref{cap:resultados} representam realizações determinísticas pontuais daquela semente, não permitindo estimar desvio-padrão inter-sementes; por conseguinte, pequenas diferenças na segunda ou terceira casa decimal devem ser interpretadas com cautela estatística.
 
 \subsection{Ambiente computacional (Windows e macOS)}
 \label{subsec:tecnologias}
 
-O desenvolvimento e a execução das campanhas experimentais utilizam a linguagem Python e o ecossistema PyTorch para modelagem clássica, integrados a bibliotecas de simulação de circuitos quânticos parametrizados (como Qiskit, Qiskit Aer, Qiskit Machine Learning e conectores diferenciáveis compatíveis com PyTorch), além de NumPy, Pandas, Scikit-learn e Matplotlib para análise tabular, cálculo de métricas e geração de visualizações.
+Os experimentos e análises utilizam Python, PyTorch, PennyLane (na execução da cabeça híbrida de \(4 \times 5\) qubits em macOS/Apple Silicon) e ferramentas do ecossistema Qiskit para estudos de simulação, além de NumPy, Pandas, Scikit-learn e Matplotlib para cálculo de métricas, matrizes de confusão e geração de mapas de explicabilidade Grad-CAM \cite{selvaraju2020gradcam}. A execução contemplou estações \textbf{Windows} com GPU dedicada compatível com CUDA e ambiente \textbf{macOS} (Apple Silicon), registrando-se nos metadados de cada um dos 72 modelos os hiperparâmetros, partições e métricas completas.
 
-Para avaliar a portabilidade e o desempenho operacional em diferentes arquiteturas de hardware, os treinamentos e testes de telemetria são executados e comparados em duas plataformas distintas: um ambiente \textbf{Windows} (equipado com GPU dedicada compatível com aceleração CUDA) e um ambiente \textbf{macOS} (baseado em arquitetura Apple Silicon com memória unificada e aceleração via \textit{Metal Performance Shaders} -- MPS / CPU). Todos os metadados de hardware, sistema operacional, versões de pacotes e tempos de execução são registrados automaticamente nos artefatos de saída de cada campanha.
-
-\subsection{Reprodutibilidade}
-
-A reprodutibilidade integral dos experimentos é garantida pela fixação explícita de sementes pseudoaleatórias (\textit{seeds}) nos geradores do Python, NumPy e PyTorch (em CPU e GPU), pela persistência das configurações exatas de cada execução em arquivos estruturados (YAML/JSON/CSV) e pelo armazenamento sistemático dos históricos de treinamento por época, matrizes de confusão e métricas finais de teste.
-
-\section{Métricas de avaliação}
+\section{Métricas de avaliação e critérios de análise}
 \label{subsec:funcionalidades}
-
-O \textit{pipeline} experimental consolida duas famílias complementares de métricas sobre os nove conjuntos de dados:
-\begin{enumerate}
-    \item \textbf{Métricas de desempenho preditivo}: Macro-F1 (adotada como métrica primária por ponderar igualmente todas as \(K\) classes, independentemente do desbalanceamento), acurácia global, acurácia balanceada, precisão macro e por classe, revocação (\textit{recall}) macro e por classe, matrizes de confusão completas e resíduos de F1 por classe (\(\Delta\text{F1} = \text{F1}_{\text{config}} - \text{F1}_{\text{ref}}\));
-    \item \textbf{Métricas de telemetria e eficiência computacional}: tempo médio por época (em segundos), tempo total acumulado da campanha experimental, fator de aceleração (\textit{speedup}) entre configurações e entre plataformas (Windows vs. macOS), taxa de processamento (\textit{throughput}, em imagens/segundo), latência de inferência (em milissegundos) e impacto da quantização.
-\end{enumerate}
-
-\section{Critérios de validação}
 \label{subsec:criterios_validacao}
 
-A validação das hipóteses de pesquisa baseia-se em quatro critérios objetivos:
-\begin{enumerate}
-    \item \textbf{Convergência e superação do acaso}: verificar se a arquitetura híbrida quântico-clássica apresenta redução consistente da perda de treinamento e validação, superando amplamente o desempenho aleatório (\(1/K\)) nas nove bases de dados;
-    \item \textbf{Paridade e competitividade preditiva}: quantificar a diferença de Macro-F1 entre o modelo híbrido, a CNN com gargalo clássico e a CNN clássica de referência em função da complexidade visual e do número de classes \(K\);
-    \item \textbf{Sensibilidade a hiperparâmetros clássicos}: determinar estatisticamente o efeito das funções de ativação, do dimensionamento de lote (\textit{batch size}) e da quantização sobre o Macro-F1 e sobre os resíduos por classe;
-    \item \textbf{Viabilidade operacional (\textit{trade-off} preditivo vs. computacional)}: contrastar os ganhos ou perdas de Macro-F1 com o custo adicional de tempo de simulação, memória e latência em ambas as plataformas avaliadas.
-\end{enumerate}
+Adota-se o \textbf{Macro-F1 de teste} (expresso em porcentagem) como métrica primária de avaliação por atribuir peso idêntico a todas as \(K\) classes, evitando que o predomínio de categorias frequentes em bases como SVHN, GTSRB e FER2013 mascare falhas nas classes minoritárias. As comparações pareadas (\(\Delta\text{Macro-F1}\)) são calculadas a partir dos valores não arredondados antes da formatação tabular, avaliando-se: (i) se o modelo híbrido e o controle \texttt{Dense20} convergem de forma estável acima do acaso (\(1/K\)) em todas as nove bases; (ii) a magnitude das diferenças entre \texttt{CNN original}, \texttt{Dense20 vetorial Mac} e \texttt{Híbrido Mac/PennyLane}; e (iii) o comportamento das arquiteturas frente ao aumento do número de classes e à complexidade visual.
 
-A comparação entre os modelos não tem como premissa assumir superioridade prévia da abordagem híbrida. Caso o modelo híbrido apresente limitação discriminativa em bases de alta cardinalidade (como CIFAR-100 e GTSRB) ou custo de simulação substancialmente superior ao \textit{baseline} clássico, esses resultados constituem evidências empíricas centrais para delimitar a viabilidade real do aprendizado de máquina quântico no estágio tecnológico atual.
+\section{Riscos e limitações metodológicas}
 
-\section{Riscos e limitações}
-
-Entre as limitações estruturais e riscos controlados do estudo destacam-se: (i) o gargalo de compressão dimensional imposto pela redução dos mapas de características para um número reduzido de qubits (\(n\)), que pode restringir a separabilidade linear das classes na camada de saída em problemas com dezenas de categorias; (ii) o crescimento exponencial do custo de memória e tempo de CPU/GPU na simulação clássica de circuitos quânticos variacionais à medida que se ampliam o número de qubits e o volume de amostras; (iii) o forte desbalanceamento e ruído visual intrínsecos a bases coletadas em cenários reais (FER2013, GTSRB e SVHN); e (iv) a delimitação do escopo à simulação numérica exata/controlada, sem execução direta em hardware quântico físico (QPU). Todas essas limitações são explicitamente monitoradas e discutidas na análise dos resultados.
+Entre as limitações documentadas na auditoria experimental destacam-se: (i) a ausência de emaranhamento entre os quatro subcircuitos independentes de 5 qubits que compõem a cabeça híbrida de 20 dimensões; (ii) a realização de uma única semente de treinamento por configuração nos 72 \textit{checkpoints}, o que impede testes de significância baseados em variância entre múltiplas inicializações; (iii) o fato de que a comparação entre \texttt{Dense20 vetorial} e \texttt{Híbrido Mac/PennyLane} envolve parametrizações e transformações não lineares distintas, não isolando um efeito puramente quântico de um único fator; (iv) a sobreposição de sequências (\textit{tracks}) entre treino e teste identificada na partição do GTSRB (3.990 de 5.876 imagens de teste); e (v) a restrição integral à simulação clássica, sem execução em hardware quântico físico (QPU).
 
 \section{Cronograma de trabalho}
 \label{sec:cronograma}
 
-O cronograma a seguir apresenta as atividades desenvolvidas ao longo das dezesseis semanas (quatro meses) do TCC2, abrangendo a revisão e adaptação da fundamentação teórica para o escopo multi-dataset, o inventário e padronização das nove bases de dados, a implementação e execução das campanhas clássicas e híbridas, a consolidação da telemetria multiplataforma e a redação final da monografia, conforme detalhado na Tabela~\ref{tab:cronograma} e ilustrado no diagrama de Gantt da Figura~\ref{fig:gantt}.
+O cronograma a seguir apresenta as atividades desenvolvidas ao longo das dezesseis semanas (quatro meses) do TCC2, abrangendo a revisão bibliográfica por conjunto de dados, o inventário e padronização das nove bases, a implementação e execução da campanha de 72 modelos, a auditoria dos resultados e a redação final da monografia, conforme detalhado na Tabela~\ref{tab:cronograma} e ilustrado no diagrama de Gantt da Figura~\ref{fig:gantt}.
 
 \begin{table}[htb]
 \centering
@@ -1658,12 +1694,12 @@ O cronograma a seguir apresenta as atividades desenvolvidas ao longo das dezesse
 \begin{tabular}{|p{7.5cm}|c|c|c|c|}
 \hline
 \textbf{Atividade} & \textbf{Mês 1} & \textbf{Mês 2} & \textbf{Mês 3} & \textbf{Mês 4} \\ \hline
-Revisão e ajuste da fundamentação teórica & X &  &  &  \\ \hline
+Revisão bibliográfica e síntese de estudos por base & X & X &  &  \\ \hline
 Inventário e padronização das 9 bases de dados & X &  &  &  \\ \hline
 Pré-processamento e \textit{pipeline} experimental & X & X &  &  \\ \hline
-Implementação e experimentos da CNN clássica (ativações, \textit{batch} e quantização) &  & X & X &  \\ \hline
-Implementação e treinamento do modelo híbrido quântico-clássico &  & X & X &  \\ \hline
-Consolidação de métricas, paridade e telemetria multiplataforma &  &  & X & X \\ \hline
+Implementação e experimentos das configurações clássicas e \texttt{Dense20} &  & X & X &  \\ \hline
+Implementação e treinamento do modelo híbrido (\(4 \times 5\) qubits) &  & X & X &  \\ \hline
+Auditoria dos 72 \textit{checkpoints}, Grad-CAM e telemetria &  &  & X & X \\ \hline
 Análise crítica dos resultados e redação final do TCC &  &  &  & X \\ \hline
 \end{tabular}
 \legend{Fonte: Elaborado pelo autor (2026).}
@@ -1695,7 +1731,7 @@ Análise crítica dos resultados e redação final do TCC &  &  &  & X \\ \hline
         \gantttitlelist{1,...,16}{1} \\
 
         \ganttgroup{Fase 1: Revisão e planejamento}{1}{3} \\
-        \ganttbar{Ajuste da fundamentação teórica}{1}{2} \\
+        \ganttbar{Ajuste da fundamentação e revisão por base}{1}{2} \\
         \ganttbar{Definição final do protocolo multi-dataset}{2}{3} \\
         \ganttmilestone{Protocolo definido}{3} \\
 
@@ -1707,15 +1743,15 @@ Análise crítica dos resultados e redação final do TCC &  &  &  & X \\ \hline
 
         \ganttgroup{Fase 3: Implementação dos modelos}{7}{10} \\
         \ganttbar{CNN clássica (ativações, batch e quantização)}{7}{8} \\
-        \ganttbar{Implementação do baseline com gargalo}{8}{9} \\
-        \ganttbar{Implementação e diagnóstico do modelo híbrido}{9}{10} \\
+        \ganttbar{Implementação do controle Dense20}{8}{9} \\
+        \ganttbar{Implementação do modelo híbrido (4x5 qubits)}{9}{10} \\
         \ganttmilestone{Modelos implementados}{10} \\
 
-        \ganttgroup{Fase 4: Campanhas experimentais e análise}{11}{14} \\
-        \ganttbar{Treinamento nas 9 bases (Windows e macOS)}{11}{12} \\
+        \ganttgroup{Fase 4: Campanhas experimentais e auditoria}{11}{14} \\
+        \ganttbar{Treinamento dos 72 modelos nas 9 bases}{11}{12} \\
         \ganttbar{Execução dos testes de paridade e telemetria}{12}{13} \\
-        \ganttbar{Análise de Macro-F1, resíduos e matrizes}{13}{14} \\
-        \ganttmilestone{Resultados consolidados}{14} \\
+        \ganttbar{Auditoria de Macro-F1, resíduos e Grad-CAM}{13}{14} \\
+        \ganttmilestone{Resultados auditados}{14} \\
 
         \ganttgroup{Fase 5: Redação e finalização}{13}{16} \\
         \ganttbar{Redação e discussão dos resultados}{13}{15} \\
@@ -1730,10 +1766,147 @@ Análise crítica dos resultados e redação final do TCC &  &  &  & X \\ \hline
 
 
 % ---------------------------------------------------------------
+% CAPÍTULO 4 - RESULTADOS E DISCUSSÃO
+% ---------------------------------------------------------------
+\chapter{Resultados e Discussão}
+\label{cap:resultados}
+
+Neste capítulo, apresentam-se e analisam-se os resultados próprios obtidos na campanha experimental auditada em 30/10/2026 ao longo dos nove conjuntos de dados do \textit{benchmark}. Conforme estabelecido na metodologia deste trabalho, os resultados próprios são reportados em \textbf{Macro-F1 de teste (\%)} sob as partições e configurações descritas no Capítulo~\ref{cap:desenvolvimento}, mantendo-se estritamente separados das acurácias publicadas pelos artigos da revisão de literatura (Seção~\ref{sec:trabalhos_correlatos}), uma vez que diferem a métrica primária, o protocolo de redimensionamento (\(64 \times 64\) e \(128 \times 128\) no GTSRB) e as divisões de avaliação.
+
+\section{Desempenho comparativo em Macro-F1 nas nove bases de dados}
+\label{sec:resultados_macro_f1}
+
+A Tabela~\ref{tab:resultados_macro_f1_campanha} sintetiza o Macro-F1 de teste (em porcentagem) alcançado pelas três configurações centrais de comparação arquitetural da campanha de 30/10/2026: a \textbf{CNN original} (\textit{baseline} convolucional clássico), o controle vetorial clássico de 20 dimensões (\textbf{\texttt{Dense20 vetorial Mac}}) e o modelo híbrido quântico-clássico com quatro circuitos independentes de 5 qubits (\textbf{\texttt{Híbrido Mac/PennyLane}}), acompanhados das diferenças pareadas (\(\Delta\) em pontos percentuais).
+
+\begin{table}[htb]
+\centering
+\caption{Resultados próprios de Macro-F1 de teste (\%) por conjunto de dados na campanha auditada de 30/10/2026.}
+\label{tab:resultados_macro_f1_campanha}
+\begin{tabular}{lrrrrr}
+\toprule
+\textbf{Dataset} & \textbf{CNN original} & \textbf{Dense20 vetorial Mac} & \textbf{Híbrido Mac/PennyLane} & \textbf{\(\Delta\) (Híb. \(-\) CNN)} & \textbf{\(\Delta\) (Híb. \(-\) Dense20)} \\
+\midrule
+MNIST & 98,984 & 99,225 & 99,305 & \(+0{,}321\) & \(+0{,}080\) \\
+Fashion-MNIST & 91,915 & 92,050 & 91,894 & \(-0{,}021\) & \(-0{,}156\) \\
+KMNIST & 98,649 & 98,648 & 98,648 & \(-0{,}001\) & \(0{,}000\) \\
+EMNIST Balanced & 87,719 & 88,642 & 88,474 & \(+0{,}755\) & \(-0{,}168\) \\
+CIFAR-10 & 73,117 & 73,389 & 73,320 & \(+0{,}203\) & \(-0{,}069\) \\
+CIFAR-100 Coarse & 47,458 & 47,559 & 47,117 & \(-0{,}341\) & \(-0{,}442\) \\
+SVHN & 92,088 & 92,567 & 92,634 & \(+0{,}546\) & \(+0{,}067\) \\
+GTSRB* & 99,365 & 99,633 & 99,590 & \(+0{,}225\) & \(-0{,}043\) \\
+FER2013 & 48,158 & 47,899 & 48,519 & \(+0{,}361\) & \(+0{,}620\) \\
+\bottomrule
+\end{tabular}
+\legend{Fonte: Elaborado pelo autor (2026), com base no relatório de auditoria experimental de 30/10/2026. Valores expressos em Macro-F1 de teste (\%). *No GTSRB, a partição de teste apresenta sobreposição de sequências (\textit{tracks}) com o conjunto de treinamento (3.990 de 5.876 imagens) e não representa o teste oficial do \textit{benchmark}.}
+\end{table}
+
+\section{Análise crítica dos resultados por domínio e configuração}
+
+A inspeção dos resultados da Tabela~\ref{tab:resultados_macro_f1_campanha} permite extrair conclusões empíricas fundamentadas sobre a convergência, a competitividade e os limites das arquiteturas avaliadas:
+
+\begin{enumerate}
+    \item \textbf{Convergência estável e paridade aproximada nas nove bases}: em todos os nove conjuntos de dados, o modelo \texttt{Híbrido Mac/PennyLane} convergiu de forma estável e alcançou Macro-F1 de teste muito próximo ao da \texttt{CNN original} e ao do controle \texttt{Dense20 vetorial Mac}. Diferentemente de arquiteturas híbridas sem extrator convolucional profundo (como o modelo NNQE de \citeonline{riaz2023nnqe}, que obteve 36,0\% de acurácia no CIFAR-10 e 73,4\% no GTSRB), o acoplamento do \textit{backbone} convolucional aos quatro circuitos variacionais de 5 qubits preservou a capacidade discriminativa mesmo em tarefas com 20, 43 e 47 classes;
+    \item \textbf{Papel fundamental do controle vetorial \texttt{Dense20}}: a comparação isolada entre \texttt{Híbrido Mac/PennyLane} e \texttt{CNN original} sugeriria pequenos ganhos aparentes para o modelo híbrido em bases como EMNIST Balanced (\(+0{,}755\) p.p.), SVHN (\(+0{,}546\) p.p.), MNIST (\(+0{,}321\) p.p.), GTSRB (\(+0{,}225\) p.p.) e CIFAR-10 (\(+0{,}203\) p.p.). Todavia, quando se introduz o controle \texttt{Dense20 vetorial Mac}, verifica-se que grande parte dessa variação já ocorre na própria projeção vetorial clássica de 20 dimensões (que atinge 88,642\% no EMNIST Balanced, 73,389\% no CIFAR-10 e 99,633\% no GTSRB, superando ligeiramente o híbrido nessas três bases). No KMNIST, o Macro-F1 do controle \texttt{Dense20} e do modelo híbrido foi idêntico até a terceira casa decimal (98,648\%);
+    \item \textbf{Limitações de atribuição causal e semente única}: as diferenças entre \texttt{Híbrido Mac/PennyLane} e \texttt{Dense20 vetorial Mac} situam-se no intervalo de \(-0{,}442\) p.p. (no CIFAR-100 Coarse, onde o híbrido obteve 47,117\% contra 47,559\% do \texttt{Dense20}) a \(+0{,}620\) p.p. (no FER2013, onde o híbrido obteve 48,519\% contra 47,899\% do \texttt{Dense20}). Como a campanha auditada de 30/10/2026 registrou uma única semente de otimização por configuração e as cabeças \texttt{Dense20} e híbrida (\(4 \times 5\) qubits) envolvem transformações não lineares e quantidades de parâmetros distintas, essas oscilações de fração de ponto percentual não comprovam, isoladamente, vantagem ou desvantagem intrinsecamente quântica;
+    \item \textbf{Efeito da complexidade semântica e intraclasse (CIFAR-100 Coarse e FER2013)}: enquanto nas bases de dígitos e caracteres de 10 classes (MNIST, KMNIST e SVHN) e de vestuário (Fashion-MNIST) o Macro-F1 situa-se entre 91,89\% e 99,31\%, o desempenho cai para a faixa de 73,12\%--73,39\% no CIFAR-10 e para 47,12\%--47,56\% no \textbf{CIFAR-100 Coarse} (20 superclasses) e 47,90\%--48,52\% no \textbf{FER2013} (7 expressões faciais). No CIFAR-100 Coarse, cada uma das 20 superclasses agrupa cinco classes finas visualmente distintas, exigindo alta capacidade de abstração que uma CNN compacta sem conexões residuais profundas nem supervisão hierárquica (como a usada por \citeonline{guo2018cnnrnn}) captura apenas parcialmente. No FER2013, o forte desbalanceamento (escassez da classe desgosto) penaliza severamente o Macro-F1 em comparação à acurácia global reportada na literatura \cite{li2021autofernet};
+    \item \textbf{Interpretação qualificada do GTSRB}: os valores elevados de Macro-F1 observados no GTSRB (99,365\% na CNN original, 99,633\% no \texttt{Dense20} e 99,590\% no modelo híbrido) devem ser interpretados à luz da auditoria de particionamento descrita na Seção~2.3.2: a presença de pelo menos 3.990 das 5.876 imagens de teste pertencentes a sequências físicas (\textit{tracks}) já vistas no treinamento reduz a dificuldade de generalização entre quadros correlacionados. Portanto, esses números refletem a consistência interna das três arquiteturas na partição avaliada, mas requerem nova campanha com divisão estrita por sequência (\textit{track-aware split}) para estimar a generalização em placas inéditas.
+\end{enumerate}
+
+
+% ---------------------------------------------------------------
 % ELEMENTOS PÓS-TEXTUAIS
 % ---------------------------------------------------------------
 \postextual
 
 \bibliography{tcc_math}
+
+% ---------------------------------------------------------------
+% APÊNDICES
+% ---------------------------------------------------------------
+\begin{apendicesenv}
+\partapendices
+
+\chapter{Mapeamento Bibliográfico Preliminar e Lista dos Registros Levantados}
+\label{ap:matriz_revisao}
+
+Este apêndice documenta o registro do mapeamento bibliográfico preliminar mencionado na Seção~2.1 e preserva a lista integral dos 28 registros da amostra anterior (19 clássicos, rotulados de C01 a C19, e 9 quânticos/híbridos, rotulados de Q01 a Q09), acrescida dos estudos já citados no texto e dos candidatos adicionais identificados na conferência por conjunto de dados.
+
+\section{Resumo do funil preliminar automatizado}
+
+No levantamento preliminar automatizado orientado aos conjuntos de dados (recorte 2021--2026, publicações em inglês), foram registradas:
+\begin{itemize}
+    \item \textbf{Ocorrências brutas coletadas}: 5.925 registros;
+    \item \textbf{Grupos únicos após agrupamento de duplicatas}: 3.297 grupos;
+    \item \textbf{Triagem preliminar automatizada}: 1.025 grupos sinalizados automaticamente como candidatos e 2.272 grupos excluídos automaticamente (sujeitos a limitações de disponibilidade de resumos nos metadados exportados e à verificação humana de elegibilidade).
+\end{itemize}
+
+\section{Quadro de rastreabilidade dos 28 registros da amostra anterior e candidatos adicionais}
+
+O Quadro~\ref{tab:apendice_28_referencias} preserva a identificação dos 28 registros da amostra preliminar (C01--C19 e Q01--Q09) e dos candidatos complementares verificados, indicando a base de dados associada, o identificador digital (DOI) e a situação de conferência e citação neste TCC. Conforme diretriz de integridade bibliográfica, o registro \textbf{C06} não foi localizado nas bases oficiais durante a conferência e, portanto, não foi citado no corpo do texto.
+
+{\footnotesize
+\begin{longtable}{p{1.2cm}p{4.6cm}p{2.4cm}p{6.0cm}}
+\caption{Rastreabilidade dos 28 registros da amostra preliminar e dos estudos candidatos adicionais.}
+\label{tab:apendice_28_referencias} \\
+\toprule
+\textbf{ID} & \textbf{Autores, ano e título / referência} & \textbf{Base(s) associada(s)} & \textbf{DOI e situação na revisão do TCC} \\
+\midrule
+\endfirsthead
+\multicolumn{4}{c}{{\tablename\ \thetable{} -- continuação da página anterior}} \\
+\toprule
+\textbf{ID} & \textbf{Autores, ano e título / referência} & \textbf{Base(s) associada(s)} & \textbf{DOI e situação na revisão do TCC} \\
+\midrule
+\endhead
+\midrule \multicolumn{4}{r}{{Continua na próxima página}} \\ \bottomrule
+\endfoot
+\bottomrule
+\endlastfoot
+\multicolumn{4}{p{14.2cm}}{\textbf{Bloco A: Estudos clássicos da amostra preliminar (19 registros: C01--C19)}} \\
+\midrule
+C01 & Tanveer; Khan; Kyung (2021) -- \textit{Fine-tuning DARTS for image classification} \cite{tanveer2021darts} & CIFAR-10 / Geral & \path{10.1109/ICPR48806.2021.9412221}. Citado na contextualização de CIFAR-10. \\
+C02 & Khanday; Dadvandipour; Lone (2021) -- \textit{Effect of filter sizes on image classification in CNN} \cite{khanday2021filter} & Fashion-MNIST, CIFAR-10 & \path{10.11591/ijai.v10.i4.pp872-878}. Conferido e detalhado na Tabela~\ref{tab:correlatos_classicos_9_bases}. \\
+C03 & Nocentini et al. (2022) -- \textit{Image classification using multiple CNNs on Fashion-MNIST} \cite{nocentini2022fashionmnist} & Fashion-MNIST & \path{10.3390/s22239544}. Citado na análise de Fashion-MNIST. \\
+C04 & Mukhamediev et al. (2024) -- \textit{State-of-the-art results with the Fashion-MNIST dataset} \cite{mukhamediev2024fashionmnist} & Fashion-MNIST & \path{10.3390/math12203174}. Citado na análise de Fashion-MNIST. \\
+C05 & Clanuwat et al. (2018) -- \textit{Deep Learning for Classical Japanese Literature} \cite{clanuwat2018kmnist} & KMNIST & \path{10.48550/arXiv.1812.01718}. Fonte original da base KMNIST; citada. \\
+C06 & Shen; Yang; Zhang (2022) -- \textit{Sparsity wins: Replace one layer by N+1 layers} & KMNIST (amostra) & \textbf{Não localizado nesta conferência}: não citado no texto até identificação da publicação. \\
+C07 & Kabir et al. (2023) -- \textit{SpinalNet: Deep Neural Network With Gradual Input} \cite{kabir2023spinalnet} & MNIST, KMNIST, EMNIST Balanced & \path{10.1109/TAI.2022.3185179}. Conferido e detalhado na Tabela~\ref{tab:correlatos_classicos_9_bases}. \\
+C08 & Abosamra; Oqaibi (2021) -- \textit{An optimized deep residual network with a depth concatenated block} \cite{abosamra2021optimized} & EMNIST & \path{10.32604/cmc.2021.015318}. Citado na discussão de caracteres manuscritos. \\
+C09 & Chen (2023) -- \textit{Handwritten Text Classification Based on CNN} \cite{chen2023handwritten} & EMNIST Balanced & \path{10.54097/hset.v34i.5372}. Conferido (resultado de validação: 89,36\%). \\
+C10 & He et al. (2016) -- \textit{Deep Residual Learning for Image Recognition} \cite{he2016resnet} & CIFAR-10 / Geral & \path{10.1109/CVPR.2016.90}. Obra seminal já citada no TCC. \\
+C11 & Huang et al. (2017) -- \textit{Densely Connected Convolutional Networks} \cite{huang2017densenet} & SVHN, CIFAR & \path{10.1109/CVPR.2017.243}. Conferido e detalhado para SVHN na Tabela~\ref{tab:correlatos_classicos_9_bases}. \\
+C12 & Cubuk et al. (2019) -- \textit{AutoAugment: Learning Augmentation Strategies from Data} \cite{cubuk2019autoaugment} & CIFAR, SVHN & \path{10.1109/CVPR.2019.00020}. Citado na discussão de aumento de dados. \\
+C13 & Registro da amostra (2026) -- \textit{Investigating hierarchical grouping in CNNs with data-driven superclass construction} & CIFAR-100 (agrupamento próprio) & \path{10.1587/nolta.17.640}. Constrói superclasses orientadas a dados, não o protocolo oficial \textit{coarse}; pendente de leitura integral. \\
+C14 & Registro da amostra (2022) -- \textit{CDTNet: Improved Image Classification Method Using Standard, Dilated and Transposed Convolutions} & CIFAR / Geral & \path{10.3390/app12125984}. Registro preliminar pendente de conferência integral de protocolo. \\
+C15 & Registro da amostra (2022) -- \textit{ThreshNet: An Efficient DenseNet Using Threshold Mechanism to Reduce Connections} & CIFAR / SVHN & \path{10.1109/access.2022.3196492}. Registro preliminar pendente de conferência integral. \\
+C16 & An; Yang; Zhang (2024) -- \textit{A lightweight network architecture for traffic sign recognition based on enhanced LeNet-5} \cite{an2024lenet5gtsrb} & GTSRB & \path{10.3389/fnins.2024.1431033}. Conferido e detalhado na Tabela~\ref{tab:correlatos_classicos_9_bases}. \\
+C17 & Wei et al. (2024) -- \textit{A lightweight network for traffic sign recognition based on multi-scale feature and attention} \cite{wei2024lightweightgtsrb} & GTSRB & \path{10.1016/j.heliyon.2024.e26182}. Citado na discussão de GTSRB. \\
+C18 & Li et al. (2021) -- \textit{Auto-FERNet: A Facial Expression Recognition Network With Architecture Search} \cite{li2021autofernet} & FER2013 & \path{10.1109/tnse.2021.3083739}. Conferido e detalhado na Tabela~\ref{tab:correlatos_classicos_9_bases}. \\
+C19 & Registro da amostra (2021) -- \textit{Facial Expression Recognition Using Multi-deep CNN Encoders with SVMs} & FER2013 & \path{10.18178/ijmlc.2021.11.5.1059}. Registro preliminar pendente de conferência integral. \\
+\midrule
+\multicolumn{4}{p{14.2cm}}{\textbf{Bloco B: Estudos quânticos e híbridos da amostra preliminar (9 registros: Q01--Q09)}} \\
+\midrule
+Q01 & Zhao; Shi; Li (2024) -- \textit{QKSAN: A Quantum Kernel Self-Attention Network} \cite{zhao2024qksan} & MNIST (subconjuntos) & \path{10.1109/tpami.2024.3434974}. Citado na discussão de atenção quântica em dígitos. \\
+Q02 & Bokhan et al. (2022) -- \textit{Multiclass classification using QCNNs with hybrid learning} \cite{bokhan2022qcnn,bokhan2022corrigendum} & MNIST (4 classes), Fashion-MNIST (4 classes) & \path{10.3389/fphy.2022.1069985} (e corrigenda \path{10.3389/fphy.2022.1112211}). Conferido e detalhado na Tabela~\ref{tab:correlatos_quanticos_9_bases}. \\
+Q03 & Easom-McCaldin et al. (2024) -- \textit{Efficient Quantum Image Classification Using Single Qubit Encoding} \cite{easommccaldin2024singlequbit} & MNIST / Fashion-MNIST & \path{10.1109/tnnls.2022.3179354}. Citado na discussão de codificação quântica. \\
+Q04 & Registro da amostra (2022) -- \textit{Quantum Dilated Convolutional Neural Networks} & MNIST / Fashion-MNIST & \path{10.1109/access.2022.3152213}. Registro preliminar pendente de conferência integral. \\
+Q05 & Song et al. (2024) -- \textit{A resource-efficient quantum convolutional neural network} \cite{song2024resourceefficient} & Fashion-MNIST (10 classes) & \path{10.3389/fphy.2024.1362690}. Conferido e detalhado na Tabela~\ref{tab:correlatos_quanticos_9_bases}. \\
+Q06 & Registro da amostra (2025) -- \textit{An Interpretable Quantum Adjoint Convolutional Layer for Image Classification} & MNIST / Fashion-MNIST & \path{10.1109/tcyb.2025.3567090}. Registro preliminar pendente de conferência integral. \\
+Q07 & Shi et al. (2025) -- \textit{QSAN: A Near-Term Achievable Quantum Self-Attention Network} \cite{shi2025qsan} & MNIST / Fashion-MNIST & \path{10.1109/tnnls.2024.3504828}. Citado na discussão de autoatenção quântica. \\
+Q08 & Riaz et al. (2023) -- \textit{Accurate Image Multi-Class Classification Neural Network Model with Quantum Entanglement Approach} \cite{riaz2023nnqe} & MNIST, CIFAR-10, GTSRB & \path{10.3390/s23052753}. Conferido e detalhado para as 3 bases na Tabela~\ref{tab:correlatos_quanticos_9_bases}. \\
+Q09 & Dong; Wu (2025) -- \textit{Hybrid quantum neural network based on weight remapping and its applications} \cite{dong2025weightremapping} & KMNIST (binário) & \path{10.1088/1402-4896/ad9ae1}. Conferido resumo (tarefa binária); pendente texto integral. \\
+\midrule
+\multicolumn{4}{p{14.2cm}}{\textbf{Bloco C: Estudos já citados no TCC e novos candidatos identificados na conferência por base}} \\
+\midrule
+Adic.~1 & Long et al. (2025) -- \textit{Hybrid Quantum-Classical-Quantum CNNs} \cite{long2025qcqcnn} & MNIST (3 vs. 5), Fashion-MNIST (binário) & \path{10.1038/s41598-025-13417-1}. Já citado no TCC; conferida Tabela 1 e diferença de \textit{batch size} (1 vs. 4). \\
+Adic.~2 & Daka; Bhattacharyya (2026) -- \textit{A novel QCNN framework for pixelated colour images} \cite{daka2026noqcnn} & Sintético (6 classes, 50 imagens) & \path{10.1038/s41598-026-45140-w}. Já citado; delimitado como estudo sintético fora das 9 bases. \\
+Adic.~3 & Henderson et al. (2020) -- \textit{Quanvolutional Neural Networks} \cite{henderson2020quanvolutional} & MNIST (conceitual) & \path{10.1007/s42484-020-00012-y}. Fonte conceitual de filtros quanvolucionais. \\
+Adic.~4 & Guo et al. (2018) -- \textit{CNN-RNN: a large-scale hierarchical image classification framework} \cite{guo2018cnnrnn} & CIFAR-100 Coarse (20 superclasses) & \path{10.1007/s11042-017-5443-x}. Novo candidato incluído para cobrir a referência clássica nas 20 superclasses. \\
+Adic.~5 & Riaz et al. (2026) -- \textit{Quantum-Enhanced Neural Network on EMNIST} \cite{riaz2026emnist} & EMNIST (47 classes) & \path{10.47852/bonviewJDSIS52024231}. Conferido e detalhado na Tabela~\ref{tab:correlatos_quanticos_9_bases} com nota sobre \textit{Balanced/ByMerge}. \\
+Adic.~6 & Kong et al. (2026) -- \textit{CQNAS: Collaborative Quantum Neural Architecture Search} \cite{kong2026cqnas} & CIFAR-10, SVHN & \path{10.1016/j.neucom.2026.133236}. Conferido resumo; pendente extração do texto integral para SVHN. \\
+Adic.~7 & Alsubai et al. (2024) -- \textit{Quantum-enhanced ResNet-18 for facial expression recognition} \cite{alsubai2024quantumfer} & FER2013 & \path{10.3389/fncom.2024.1435956}. Candidato identificado com ressalva de auditoria de protocolo e contagem amostral. \\
+\end{longtable}
+}
+
+\end{apendicesenv}
 
 \end{document}
