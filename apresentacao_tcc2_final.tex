@@ -106,7 +106,7 @@
 \institute[SENAC Santo Amaro]{%
   SENAC --- Unidade Santo Amaro \\
   Bacharelado em Ciência da Computação \\
-  \footnotesize Orientador: Prof. Jorge Echeimberg \quad Coorientador: Prof. Thyago Quintas}
+  \footnotesize Orientador: Prof. Samuel Mendes Sanches Junior \quad Coorientador: Prof. Thyago Conchado Quintas}
 \date{São Paulo, 2026}
 
 % ===============================================================
@@ -279,31 +279,52 @@
 \end{frame}
 
 % 10 - Mapas de características (0:45)
-\begin{frame}{Mapas de características}
+\begin{frame}{Mapas de características em entradas monocromáticas ($64\times 64\times 1$)}
   \begin{columns}[c]
-    \begin{column}{0.46\textwidth}
-      \includegraphics[width=\textwidth]{feature-map-converted.png}
+    \begin{column}{0.62\textwidth}
+      \centering
+      \includegraphics[width=\textwidth,height=0.72\textheight,keepaspectratio]{fmap_03_piramide_blocos_grayscale.png}
     \end{column}
-    \begin{column}{0.48\textwidth}
-      \begin{itemize}
-        \item Camadas iniciais: bordas, texturas e contornos
-        \item Camadas profundas: padrões mais abstratos
-        \item O vetor final é o que alimenta a cabeça (densa ou quântica)
+    \begin{column}{0.36\textwidth}
+      \begin{itemize}\small
+        \item \textbf{B1--B2:} bordas e contornos locais (bota e sorriso/olhos)
+        \item \textbf{B3--B5 pré:} concentração na região semântica do objeto
+        \item \textbf{GAP $\to$ \texttt{features128}:} 62/128 ativos (Fashion-MNIST, 100,00\%) e 63/128 (FER2013, 97,40\%)
       \end{itemize}
     \end{column}
   \end{columns}
-  \fonte{TCC, Seção 2.5.2.}
+  \fonte{TCC, Seção 2.5.2 (Figura 6: \texttt{FMAP3} em entradas \(64\times 64\times 1\)).}
 \end{frame}
 
-% 11 - Aumento de dados (0:45)
-\begin{frame}{Aumento de dados e \textit{overfitting}}
+% 11 - Pipeline composto de aumento de dados (0:45)
+\begin{frame}{Aumento de dados: pipeline composto em 6 etapas (\texttt{data.py})}
   \centering
-  \includegraphics[width=0.66\textwidth]{aumento_dados_exemplos.png}
-  \begin{itemize}\small
-    \item Transformações leves que preservam o rótulo ampliam a diversidade do treino
-    \item Reduz o risco de \textit{overfitting} (ex.: CIFAR-10 em CNN simples: 94\% treino vs. 73\% teste)
-  \end{itemize}
-  \fonte{TCC, Seção 2.5.4 (Aumento de dados, regularização e \textit{overfitting}); exemplo de CIFAR-10 em Khanday et al. (2021).}
+  \textbf{\scriptsize (a) GTSRB (\(128\times 128\times 3\), classe~14 --- placa PARE)}\\[-1pt]
+  \includegraphics[width=0.92\textwidth,height=0.25\textheight,keepaspectratio]{aug_01_pipeline_etapas_gtsrb.png}\\[3pt]
+  \textbf{\scriptsize (b) CIFAR-10 (\(64\times 64\times 3\), classe navio)}\\[-1pt]
+  \includegraphics[width=0.92\textwidth,height=0.25\textheight,keepaspectratio]{aug_02_pipeline_etapas_cifar10.png}\\[2pt]
+  {\footnotesize
+    Seis etapas determinísticas (\texttt{REFLECT}, \textit{zoom}, brilho, contraste, ruído \(\sigma=0{,}005\) e \textit{cutout} \(8\%\)) com mapas \(|\Delta|\) e \(\operatorname{RMS}\) (\(\text{total}=0{,}2967\) no GTSRB e \(0{,}1084\) no CIFAR-10).
+  }
+  \fonte{TCC, Seção 2.5.4 (Figura 8: decomposição composta GTSRB e CIFAR-10).}
+\end{frame}
+
+% 12 - Preservação semântica e flip_lr=False (0:45)
+\begin{frame}{Aumento de dados, preservação semântica e \texttt{flip\_lr=False}}
+  \begin{columns}[c]
+    \begin{column}{0.60\textwidth}
+      \centering
+      \includegraphics[width=\textwidth,height=0.72\textheight,keepaspectratio]{aug_03_comparacao_flip_lr_semantico.png}
+    \end{column}
+    \begin{column}{0.38\textwidth}
+      \begin{itemize}\small
+        \item \textbf{Por que remover o \textit{flip} horizontal:} espelhamento inverte o significado em GTSRB (cl.\ 34), MNIST (``3''), EMNIST (``R'') e SVHN (``5'')
+        \item \textbf{Invariância restrita:} válido apenas em domínios naturais como CIFAR-10 (cavalo)
+        \item \textbf{Transparência:} \textit{checkpoints} \texttt{FP32} legados usaram \texttt{flip\_lr=True}; corrigido para \texttt{flip\_lr=False} no código atual (\texttt{src/data\_prep/data.py})
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \fonte{TCC, Seção 2.5.4 (Figura 7: comparação semântica \texttt{aug\_03}).}
 \end{frame}
 
 % 12 - Qubits e circuitos (1:00)
@@ -337,7 +358,7 @@
       \end{itemize}
     \end{column}
   \end{columns}
-  \fonte{TCC, Seções 2.6.3--2.6.4. Figuras ilustrativas da documentação Qiskit; o experimento foi implementado em PennyLane.}
+  \fonte{TCC, Seções 2.6.3--2.6.4. Figuras ilustrativas da documentação Qiskit; o experimento foi implementado com PennyLane e Qiskit Aer.}
 \end{frame}
 
 % 14 - Simulação e limites (1:15)
@@ -395,7 +416,7 @@
     CIFAR-10 & Khanday et al. (2021) & 73,04\% \\
     CIFAR-100 Coarse & Guo et al. (2018), CNN-RNN, tarefa conjunta & 88,23\% \\
     SVHN & Huang et al. (2017), DenseNet (usa conjunto extra) & 98,41\% \\
-    GTSRB & An et al. (2024), LeNet-5 modificada & 97,53\% \\
+    GTSRB & An et al. (2024), LeNet-5 modificada (Tab.~8: \texttt{val\_accuracy}) & 97,53\% \\
     FER2013 & Li et al. (2021), Auto-FERNet & 73,78\% \\
     \bottomrule
   \end{tabular}
@@ -415,7 +436,7 @@
         \textbf{Base} & \textbf{Recorte e resultado} \\
         \midrule
         MNIST & 3 vs. 5 binário: 98,85\% (Long, 2025); NNQE 10 classes: 93,8\% (Riaz, 2023) \\
-        Fashion-MNIST & 4 classes: 85,93\% vs. 89,69\% clássico (Bokhan, 2022) \\
+        Fashion-MNIST & 4 classes: 85,93--93,63\% vs. 89,69--97,42\% clás. (Bokhan, 2022) \\
         KMNIST & Apenas binário (Dong, 2025) \\
         EMNIST & 75,9\% com filtro quântico fixo (Riaz, 2026) \\
         CIFAR-10 & NNQE: 36,0\% (Riaz, 2023) \\
@@ -474,7 +495,7 @@
     \node[box,right=of e2] (e3) {\textbf{3. CNN clássica}\\baseline e variações};
     \node[box,below=of e1] (e4) {\textbf{4. Controle \texttt{Dense20}}\\gargalo vetorial de 20 dim.};
     \node[box,right=of e4] (e5) {\textbf{5. Híbrido}\\4 circuitos $\times$ 5 qubits, treino fim a fim};
-    \node[box,right=of e5] (e6) {\textbf{6. Auditoria}\\Macro-F1, matrizes, $\Delta$F1, Grad-CAM};
+    \node[box,right=of e5] (e6) {\textbf{6. Auditoria}\\Macro-F1, calibração, Grad-CAM e oclusão 8$\times$8};
     \draw[arr] (e1) -- (e2); \draw[arr] (e2) -- (e3);
     \draw[arr] (e3.south) -- ++(0,-0.25) -| ($(e4.north)+(0,0.25)$) -- (e4.north);
     \draw[arr] (e4) -- (e5); \draw[arr] (e5) -- (e6);
@@ -511,7 +532,7 @@
 \begin{frame}{Equilíbrio de classes: três regimes}
   \begin{columns}[c]
     \begin{column}{0.68\textwidth}
-      \includegraphics[width=\textwidth]{equilibrio_classes_9_datasets.png}
+      \includegraphics[width=\textwidth,height=0.75\textheight,keepaspectratio]{equilibrio_classes_9_datasets.png}
     \end{column}
     \begin{column}{0.30\textwidth}
       \footnotesize
@@ -523,27 +544,61 @@
       \footnotesize IR = $n_{\max}/n_{\min}$. Validação e teste mantêm a distribuição original.
     \end{column}
   \end{columns}
-  \fonte{TCC, Figura de distribuição de amostras por classe (Seção 2.3.3).}
+  \fonte{TCC, Seção 3.4 (Bases de dados, partições e auditoria de integridade).}
 \end{frame}
 
-% 23 - Pré-processamento + ressalva GTSRB (1:00)
-\begin{frame}{Pré-processamento e ressalva do GTSRB}
+% 22b - Avaliação dos modos de balanceamento e escolha de all_raw
+\begin{frame}{Modos de balanceamento e escolha de \texttt{all\_raw} (36 execuções)}
+  \begin{columns}[c]
+    \begin{column}{0.56\textwidth}
+      \centering
+      \includegraphics[width=\textwidth,height=0.39\textheight,keepaspectratio]{fig_balanceamento_macro_f1.png}\\[2pt]
+      \includegraphics[width=\textwidth,height=0.36\textheight,keepaspectratio]{fig_balanceamento_tempo_treino.png}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \scriptsize
+      {\setlength{\tabcolsep}{3.0pt}%
+      \begin{tabular}{@{}lrrr@{}}
+        \toprule
+        \textbf{Modo} & \textbf{Média} & \textbf{Mediana} & \textbf{Tempo} \\
+        \midrule
+        \textbf{\texttt{all\_raw}} & \textbf{82,464\%} & \textbf{92,010\%} & \textbf{22,46 h} \\
+        \texttt{oversample} & 82,455\% & 91,851\% & 25,85 h \\
+        \texttt{class\_weight} & 81,646\% & 91,467\% & 24,64 h \\
+        \texttt{undersample} & 78,469\% & 88,057\% & 15,90 h \\
+        \bottomrule
+      \end{tabular}}
+      \vspace{4pt}
+      \begin{itemize}
+        \item \textbf{CNN original} (\texttt{mixed\_float16}, lote~512, \texttt{zscore}, 2.486 épocas, 88,86~h)
+        \item \textbf{\texttt{undersample}:} colapso em FER2013 ($-19{,}28$ p.p.) e GTSRB ($-13{,}69$ p.p.)
+        \item \textbf{\texttt{class\_weight}:} $-6{,}12$ p.p.\ no FER2013; idêntico ao \texttt{all\_raw} nas 5 bases equilibradas
+        \item \textbf{\texttt{oversample}:} $+15{,}1\%$ de tempo (GTSRB 9,90~h vs.\ 5,20~h) e $-1{,}26$ p.p.\ no CIFAR-10
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \fonte{TCC, Seção 3.4.2 (Tabelas 4--5 e Figuras 16--17).}
+\end{frame}
+
+% 23 - Pré-processamento e auditoria de integridade (1:00)
+\begin{frame}{Pré-processamento e auditoria de integridade das partições}
   \begin{columns}[T]
     \begin{column}{0.48\textwidth}
       \textbf{Idêntico entre modelos de cada base}
       \begin{itemize}
-        \item Tensores em ponto flutuante, normalização por canal
+        \item Tensores em ponto flutuante, normalização por canal e política \texttt{all\_raw}
         \item Redimensionamento: 64$\times$64 (128$\times$128 no GTSRB)
-        \item Partição estratificada, fixa para os 8 modelos de cada base
+        \item Partição estratificada (70/15/15), fixa para os 8 modelos de cada base
       \end{itemize}
     \end{column}
     \begin{column}{0.48\textwidth}
-      \begin{alertblock}{Limitação auditada: GTSRB}
-        \textbf{3.990 das 5.876} imagens de teste compartilham a mesma sequência física (\textit{track}) com imagens de treino.\\[2pt]
-        Resultados não são o teste oficial; exigem divisão \textit{track-aware} em trabalhos futuros.
+      \begin{alertblock}{Limitações auditadas: GTSRB e FER2013}
+        \textbf{GTSRB:} \textbf{3.990 das 5.876} imagens de teste compartilham a mesma sequência física (\textit{track}) com o treino; exige divisão \textit{track-aware} em trabalhos futuros.\\[3pt]
+        \textbf{FER2013:} 378 duplicatas exatas no teste e 57 grupos com conflito de rótulo.
       \end{alertblock}
     \end{column}
   \end{columns}
+  \fonte{TCC, Seção 3.4 (Auditoria de integridade entre partições).}
 \end{frame}
 
 % 24 - Três famílias de modelos (1:00)
@@ -551,76 +606,109 @@
   \begin{columns}[T]
     \begin{column}{0.32\textwidth}
       \begin{block}{CNN original}
-        Blocos \texttt{Conv2d}, \texttt{BatchNorm2d}, ativação e \textit{pooling}; cabeça direta para os $K$ \textit{logits}.\\[2pt]\footnotesize Base das variações de ativação, lote e quantização.
+        5 blocos \texttt{SeparableConv2D}, \texttt{GroupNormalization(16)}, \texttt{SiLU} e \texttt{MaxPooling2D}; cabeça \texttt{GAP+GMP} $\to 256\to 256\to K$.\\[2pt]\footnotesize 66.905 ($C=1$) / 67.019 ($C=3$) pesos no extrator.
       \end{block}
     \end{column}
     \begin{column}{0.32\textwidth}
-      \begin{block}{CNN + \texttt{Dense20}}
-        Projeta as características para um vetor clássico de \textbf{20 dimensões} antes da camada linear.\\[2pt]\footnotesize \textbf{Controle:} isola o efeito do gargalo.
+      \begin{block}{\texttt{Dense20} (img.\ e vet.)}
+        Extrator congelado (\texttt{features128}): \texttt{D20 imagem} (\texttt{LayerNorm+ReLU}) e \texttt{Dense20 vetorial} (\texttt{128$\to$20 tanh}).\\[2pt]\footnotesize \textbf{Controle:} isola o gargalo de 20 dim.
       \end{block}
     \end{column}
     \begin{column}{0.32\textwidth}
-      \begin{block}{CNN + híbrido}
-        Mesmo gargalo de 20 dim., processado por \textbf{4 circuitos de 5 qubits} (PennyLane) e camada linear final.\\[2pt]\footnotesize Treino fim a fim.
+      \begin{block}{Híbrido $4\times 5$ qubits}
+        Mesmo gargalo de 20 dim.\ sobre \texttt{features128}, processado por \textbf{4 circuitos de 5 qubits} e camada linear final.\\[2pt]\footnotesize Simulação local (PennyLane e Qiskit Aer).
       \end{block}
     \end{column}
   \end{columns}
   \vspace{0.3cm}
   \centering\small Total: \textbf{72 \textit{checkpoints}} = 9 bases $\times$ 8 configurações
+  \fonte{TCC, Seção 3.5.}
+\end{frame}
+
+% 24b - Diagrama da arquitetura clássica
+\begin{frame}{Arquitetura clássica: origem comum e três fluxos}
+  \centering
+  \includegraphics[width=0.94\textwidth,height=0.72\textheight,keepaspectratio]{fig_arquitetura_classica_fluxos.png}
+  \fonte{TCC, Seção 3.5 (especificações de \texttt{model\_summary.txt}).}
 \end{frame}
 
 % 25 - Cabeça híbrida (1:30)
-\begin{frame}{Cabeça híbrida: 4 circuitos independentes de 5 qubits}
+\begin{frame}{Cabeça híbrida: 4 circuitos independentes de 5 qubits (\texttt{Pauli-Y})}
   \centering
-  \begin{tikzpicture}[node distance=0.35cm,
-      box/.style={draw=senacblue,rounded corners,fill=senacblue!8,font=\scriptsize,align=center,minimum height=0.9cm},
-      q/.style={draw=senacorange,rounded corners,fill=senacorange!15,font=\scriptsize,align=center,minimum height=0.55cm,minimum width=2.3cm},
-      arr/.style={-{Stealth},thick,senacblue}]
-    \node[box] (img) {Imagem};
-    \node[box,right=0.45cm of img] (cnn) {CNN\\(extrator)};
-    \node[box,right=0.45cm of cnn] (proj) {Projeção\\$u\in\mathbb{R}^{20}$};
-    \node[q,right=1.1cm of proj,yshift=1.05cm] (c1) {Circuito 1 (5 qubits)\\$u^{(1)}\in\mathbb{R}^5$};
-    \node[q,below=0.2cm of c1] (c2) {Circuito 2 (5 qubits)\\$u^{(2)}$};
-    \node[q,below=0.2cm of c2] (c3) {Circuito 3 (5 qubits)\\$u^{(3)}$};
-    \node[q,below=0.2cm of c3] (c4) {Circuito 4 (5 qubits)\\$u^{(4)}$};
-    \node[box] (z) at ($(c2.east)!0.5!(c3.east)+(2.2,0)$) {$\langle Z\rangle$ concatenados\\$z\in[-1,1]^{20}$};
-    \node[box,right=0.4cm of z] (out) {Linear\\$K$ classes};
-    \draw[arr] (img)--(cnn); \draw[arr] (cnn)--(proj);
-    \foreach \c in {c1,c2,c3,c4}{\draw[arr] (proj.east)--(\c.west); \draw[arr] (\c.east)--(z.west);}
-    \draw[arr] (z)--(out);
-    \node[font=\tiny,below=0.15cm of c4,text width=7cm,align=center,color=gray] {Codificação angular $\to$ ansatz (rotações + emaranhamento interno) $\to$ medição de Pauli-$Z$};
-  \end{tikzpicture}
-
-  \vspace{0.1cm}
-  \begin{itemize}\small
-    \item $4\times5=20$ entradas; cada circuito opera em $2^5=32$ estados (um único de 20 qubits seria intratável)
-    \item \textbf{Sem emaranhamento entre os 4 subcircuitos}
+  \includegraphics[width=0.88\textwidth,height=0.52\textheight,keepaspectratio]{fig_arquitetura_hibrida_4x5_qubits.png}
+  \vspace{0.05cm}
+  \begin{itemize}\footnotesize
+    \item \textbf{Sem emaranhamento cruzado:} $4\times 5$ qubits ($2^5 = 32$ estados/ramo); $R_X(u)$ + 3 blocos $R_Z$--$R_Y$--$R_Z$ e CNOT circular + medição \textbf{\texttt{Pauli-Y}} ($\langle Y\rangle \in [-1,1]^{20}$)
+    \item \textbf{Parâmetros e custo:} 45 pesos/ramo = 180 quânticos (19.272 + $21K$ treináveis); \textbf{404} avaliações lógicas/exemplo no treino e 4 na validação
   \end{itemize}
-  \fonte{TCC, Seção 3.7 (Modelo híbrido quântico-clássico). Diagrama elaborado pelo autor.}
+  \fonte{TCC, Seção 3.5 (especificações de \texttt{model\_summary.txt} e \texttt{circuit.txt}).}
 \end{frame}
 
-% 26 - Protocolo (1:00)
-\begin{frame}{Protocolo experimental}
+% 29 - Protocolo experimental (0:45)
+\begin{frame}{Protocolo experimental e critérios de avaliação}
   \begin{columns}[T]
-    \begin{column}{0.48\textwidth}
-      \begin{itemize}
-        \item \textbf{72 \textit{checkpoints}} (9 $\times$ 8), campanha auditada de 30/10/2026
-        \item \textbf{Uma semente} por configuração; \textit{checkpoint} escolhido pela validação e avaliado no teste
-        \item Python, PyTorch, PennyLane; Windows (GPU CUDA) e macOS (Apple Silicon)
-      \end{itemize}
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Regime de treinamento (\texttt{seed=42})}
+        \begin{itemize}\small
+          \item \textbf{72 \textit{checkpoints}} (9 bases $\times$ 8 configurações), \textbf{100 épocas}, otimizador Adam ($\eta = 3\times 10^{-4}$, cosseno + aquecimento)
+          \item Seleção pelo melhor Macro-F1 de validação; avaliação final no teste interno (\texttt{all\_raw})
+          \item Imagens: \textit{label smoothing} $0{,}05$ (lote 32/64/128); vetores \texttt{features128}: entropia cruzada padrão (lote 128)
+        \end{itemize}
+      \end{block}
     \end{column}
     \begin{column}{0.48\textwidth}
       \begin{block}{Métrica primária}
         Macro-F1 de teste (\%) e $\Delta$ pareado em pontos percentuais
       \end{block}
-      \textbf{Critérios:}
+      \vspace{4pt}
+      \textbf{Critérios de auditoria:}
       \begin{enumerate}\small
         \item Convergência estável acima do acaso ($1/K$)
-        \item Magnitude das diferenças entre os três modelos
-        \item Comportamento com mais classes e maior complexidade
+        \item Magnitude das diferenças vs.\ \texttt{Dense20}
+        \item Calibração (ECE/NLL/Brier), oclusão $8\times 8$, gradientes/ruído e telemetria
       \end{enumerate}
     \end{column}
   \end{columns}
+  \fonte{TCC, Seção 3.6 (Protocolo de treinamento, calibração, inferência bayesiana e explicabilidade).}
+\end{frame}
+
+% 30 - Ambientes computacionais e versões auditadas (1:00)
+\begin{frame}{Dois ambientes computacionais e versões auditadas}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \textbf{\scriptsize Ambiente 1 --- Estação Windows / WSL2 (Ubuntu 22.04.5 LTS)}
+      \vspace{2pt}
+      \scriptsize
+      \begin{tabular}{@{}R{1.95cm}R{4.35cm}@{}}
+        \toprule
+        \textbf{Item} & \textbf{Configuração / Versão} \\
+        \midrule
+        SO / Kernel & Ubuntu 22.04.5 LTS (WSL2), Kernel \texttt{6.18.33.2} x86-64; PQC em Windows nativo \\
+        CPU / RAM & Intel Core i7-14700K (28 lógicos, 14/soq.); $\approx 15$~GiB RAM + 4~GiB \textit{swap} \\
+        GPU / CUDA & NVIDIA RTX A2000 12GB; Driver 596.51; \texttt{nvidia-smi} 595.76 (CUDA 13.2) \\
+        DL / Dados & TF 2.21.0, Keras 3.12.4, NumPy 2.2.6, SciPy 1.15.3, scikit-learn 1.7.2, pandas 2.3.3 \\
+        Auxiliares & Matplotlib 3.10.9, Pillow 11.3.0, PyYAML 6.0.3, \texttt{psutil} 7.2.2, \texttt{nvidia-ml-py} 12.575.51 \\
+        \bottomrule
+      \end{tabular}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \textbf{\scriptsize Ambiente 2 --- iMac \texttt{Mac16,3} (Apple Silicon M4)}
+      \vspace{2pt}
+      \scriptsize
+      \begin{tabular}{@{}R{1.95cm}R{4.35cm}@{}}
+        \toprule
+        \textbf{Item} & \textbf{Configuração / Versão} \\
+        \midrule
+        SO / Hardware & macOS 15.5 (ARM64), Apple M4 (10 GPUs, Metal), 16~GB memória unificada \\
+        Python / \texttt{.venv} & Sistema 3.9.6 (incompat.); \texttt{.venv/} CPython 3.12.3 (\texttt{uv pip check}: 76 pacotes) \\
+        Ferramentas & Xcode/clang ARM64 disponível ($\approx 230$~GiB livres em disco) \\
+        DL & TensorFlow 2.18.1, \texttt{tensorflow-metal} 1.2.0, PyTorch 2.8.0 \\
+        Quântico & PennyLane 0.44.1, Qiskit 2.3.0, Qiskit Aer 0.17.2 (telemetria CPU/RSS) \\
+        \bottomrule
+      \end{tabular}
+    \end{column}
+  \end{columns}
+  \fonte{TCC, Seção 3.7 (Tabelas 6 e 7: especificações completas das duas máquinas físicas).}
 \end{frame}
 
 % ===============================================================
@@ -741,6 +829,71 @@
   \end{columns}
 \end{frame}
 
+% 31b - Explicabilidade global (73.728 oclusões)
+\begin{frame}{Explicabilidade espacial: Grad-CAM vs.\ oclusão $8\times 8$}
+  \centering
+  \includegraphics[width=0.84\textwidth,height=0.52\textheight,keepaspectratio]{fig_oclusao_trocas_globais.png}
+  \vspace{0.1cm}
+  \begin{itemize}\footnotesize
+    \item \textbf{73.728 oclusões} (9 bases $\times$ 8 imagens $\times$ 8 modelos $\times$ 64 blocos $\times$ 2 métodos): média constante provoca mais trocas que borramento (pico de 23,4\% no CIFAR-100 Coarse)
+    \item \textbf{Mediana Spearman Grad-CAM vs.\ oclusão:} $\rho = 0{,}002$ --- mapas em camadas profundas não equivalem à sensibilidade causal da entrada
+  \end{itemize}
+  \fonte{TCC, Seção 4.7.}
+\end{frame}
+
+% 37 - Painéis causais de oclusão: domínios RGB (GTSRB e CIFAR-100 Coarse)
+\begin{frame}{Painéis causais de oclusão: RGB (\texttt{gtsrb\_07} e \texttt{cifar100\_coarse\_01})}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth,height=0.58\textheight,keepaspectratio]{painel_oclusao_gtsrb_07_media.png}\\[2pt]
+      \scriptsize \textbf{\texttt{gtsrb\_07\_media} (cl.\ 3):} CNN e Vet.\ acertam cl.\ 3 ($3$--$6/64$ trocas); D20 img.\ prevê cl.\ 25 ($13/64$); Híbridos preveem cl.\ 10 ($10$--$15/64$, queda até $+9{,}02$).
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth,height=0.58\textheight,keepaspectratio]{painel_oclusao_cifar100_coarse_01_desfoque.png}\\[2pt]
+      \scriptsize \textbf{\texttt{cifar100\_coarse\_01\_desfoque} (\textit{insects}):} 8 modelos acertam; CNN/Vet.\ $0/64$ trocas; D20 img.\ $2/64$; Híbridos $3/64$ para \textit{flowers} ($+1{,}51$).
+    \end{column}
+  \end{columns}
+  \fonte{TCC, Seção 4.7 (Figuras 33 e 36; suíte completa em \texttt{dist/paineis}).}
+\end{frame}
+
+% 38 - Painéis causais de oclusão: domínios monocromáticos (Fashion-MNIST e MNIST)
+\begin{frame}{Painéis causais de oclusão: monocromáticos (\texttt{fashion\_mnist\_06} e \texttt{mnist\_06})}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth,height=0.58\textheight,keepaspectratio]{painel_oclusao_fashion_mnist_06_media.png}\\[2pt]
+      \scriptsize \textbf{\texttt{fashion\_mnist\_06\_media} (cl.\ 2, pulôver):} CNN e Vet.\ acertam cl.\ 2 ($23$--$26/64$ trocas); D20 img.\ e híbridos preveem cl.\ 6 ($16$ e $31/64$ trocas).
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth,height=0.58\textheight,keepaspectratio]{painel_oclusao_mnist_06_desfoque.png}\\[2pt]
+      \scriptsize \textbf{\texttt{mnist\_06\_desfoque} (dígito ``2''):} só D20 img.\ acerta cl.\ 2 ($17/64$, $+1{,}83$); CNN, Vet.\ e híbridos preveem ``7'' ($5$--$8/64$, até $+10{,}46$).
+    \end{column}
+  \end{columns}
+  \fonte{TCC, Seção 4.7 (Figuras 34 e 35; suíte completa em \texttt{dist/paineis}).}
+\end{frame}
+
+% 39 - Custo computacional e comparação entre ambientes/simuladores
+\begin{frame}{Custo computacional: simulação quântica vs.\ controle vetorial}
+  \begin{columns}[c]
+    \begin{column}{0.62\textwidth}
+      \centering
+      \includegraphics[width=\textwidth,height=0.73\textheight,keepaspectratio]{fig_tempos_100_epocas_comparativo.png}
+    \end{column}
+    \begin{column}{0.36\textwidth}
+      \begin{itemize}\footnotesize
+        \item \textbf{36 híbridos:} \textbf{503,66~h} ($20{,}99$ dias) vs.\ \textbf{18 vetoriais:} \textbf{558,88~s} ($9{,}31$~min) --- \textbf{778$\times$ a 2.854$\times$} mais caro
+        \item \textbf{Pico:} EMNIST no Win/Qiskit = \textbf{54,93~h} ($>30\times$ a CNN completa em lote~128, $1{,}65$~h)
+        \item \textbf{iMac M4 vs.\ Windows:} $1{,}43\times$--$3{,}18\times$ mais rápido no PennyLane ($55{,}17$ vs.\ $100{,}39$~h)
+        \item \textbf{PennyLane vs.\ Qiskit:} $2{,}64\times$--$2{,}74\times$ mais rápido no Mac
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \fonte{TCC, Seção 4.8 (telemetria das 100 épocas em lote~128).}
+\end{frame}
+
 % 32 - Síntese (0:45)
 \begin{frame}{Síntese: o que a hipótese e os dados dizem}
   \begin{tabular}{@{}rl@{}}
@@ -797,15 +950,17 @@
 % 36 - Obrigado (0:30)
 \begin{frame}[plain]
   \centering
-  \vspace{1cm}
+  \vspace{0.9cm}
   \logosenacgrande
 
-  \vspace{0.6cm}
+  \vspace{0.55cm}
   {\Large\bfseries\color{senacblue}Obrigado!\par}
   \vspace{0.2cm}
   {\normalsize Perguntas?\par}
-  \vspace{0.5cm}
-  {\footnotesize Matheus Sanchez Duda\par}
+  \vspace{0.45cm}
+  {\small\textbf{Matheus Sanchez Duda}\par}
+  \vspace{0.15cm}
+  {\footnotesize Orientador: Prof. Samuel Mendes Sanches Junior \quad Coorientador: Prof. Thyago Conchado Quintas\par}
 \end{frame}
 
 % ===============================================================
@@ -829,14 +984,70 @@
   \end{columns}
   \vspace{0.2cm}
   \begin{itemize}\small
-    \item Estratégias de dados e de algoritmo (perda ponderada) discutidas na revisão
+    \item Estratégias de dados e de algoritmo (perda ponderada) discutidas na Seção 3.4.1
     \item Validação e teste sempre mantêm a distribuição original; avaliação por Macro-F1
   \end{itemize}
-  \fonte{TCC, Seção 2.3.4; adaptado de Silva (2025).}
+  \fonte{TCC, Seção 3.4.1; adaptado de Silva (2025).}
 \end{frame}
 
-% A2 - Convolução generalizada
-\begin{frame}{Apoio A2: generalidade do operador convolucional}
+% A2 - Calibração probabilística no FER2013
+\begin{frame}{Apoio A2: calibração probabilística e confiança nos erros (FER2013)}
+  \begin{columns}[c]
+    \begin{column}{0.56\textwidth}
+      \centering
+      \includegraphics[width=\textwidth,height=0.73\textheight,keepaspectratio]{figura_28_calibracao_fer.png}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \footnotesize
+      \begin{itemize}
+        \item \textbf{CNN FP32} (\textit{label smoothing} $0{,}05$): melhor calibração ($\text{ECE}=2{,}08\%$, $\text{NLL}=1{,}281$, conf.\ nos erros $42{,}76\%$)
+        \item \textbf{D20 imagem:} $\text{ECE}=18{,}38\%$, conf.\ erros $60{,}47\%$
+        \item \textbf{Vet.\ Mac:} $\text{ECE}=31{,}43\%$, conf.\ erros $75{,}45\%$
+        \item \textbf{PQC Mac PL:} maior Macro-F1 ($48{,}519\%$), mas $\text{ECE}=36{,}62\%$, $\text{NLL}=2{,}497$ e \textbf{82,82\%} de confiança nos erros (exige \textit{temperature scaling})
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \fonte{TCC, Seção 4.5 (Figura 29).}
+\end{frame}
+
+% A3 - Diagnósticos quânticos: gradientes e ruído/shots
+\begin{frame}{Apoio A3: diagnósticos quânticos (gradientes por ramo e ruído/\textit{shots})}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth,height=0.52\textheight,keepaspectratio]{figura_19_gradientes.png}\\[3pt]
+      \scriptsize \textbf{Gradientes:} MNIST decai ($0{,}13 \to 10^{-7}$); FER2013 segue ativo ($4{,}3\times 10^{-2}$--$1{,}1\times 10^{-1}$) até a época 100.
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \centering
+      \includegraphics[width=\textwidth,height=0.52\textheight,keepaspectratio]{figura_22_ruido_shots.png}\\[3pt]
+      \scriptsize \textbf{Ruído e \textit{shots} (\texttt{Mac/PL}):} fidelidade cai a $0{,}51$ (ruído $2{,}0$), mas $\Delta$ Macro-F1 típico $<0{,}10$ p.p.\ (máx.\ $-0{,}38$ p.p.\ no CIFAR-10).
+    \end{column}
+  \end{columns}
+  \fonte{TCC, Seção 4.6 (Figuras 30 e 31).}
+\end{frame}
+
+% A4 - Fatores de aceleração e telemetria Mac
+\begin{frame}{Apoio A4: aceleração Windows vs.\ Mac e telemetria}
+  \begin{columns}[c]
+    \begin{column}{0.62\textwidth}
+      \centering
+      \includegraphics[width=\textwidth,height=0.72\textheight,keepaspectratio]{fig_fatores_aceleracao_ambientes_simuladores.png}
+    \end{column}
+    \begin{column}{0.36\textwidth}
+      \footnotesize
+      \begin{itemize}
+        \item \textbf{Aceleração iMac M4:} até $3{,}18\times$ sobre Windows no PennyLane e $1{,}79\times$ no Qiskit
+        \item \textbf{Aceleração PennyLane:} $2{,}64\times$--$2{,}74\times$ sobre Qiskit no Mac
+        \item \textbf{Telemetria \texttt{Mac/PL}:} uso estável de \textbf{383,9\%--385,0\% de CPU} ($\approx 4$ núcleos) e pico de RAM (RSS) entre \textbf{2,40 e 3,28 GiB}
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \fonte{TCC, Seção 4.8.}
+\end{frame}
+
+% A5 - Convolução generalizada
+\begin{frame}{Apoio A5: generalidade do operador convolucional}
   \centering
   \includegraphics[width=0.52\textwidth]{2plus1CNN-converted.png}
 
@@ -844,8 +1055,8 @@
   \fonte{TCC, Seção 2.5.2.}
 \end{frame}
 
-% A3 - Riscos
-\begin{frame}{Apoio A3: riscos e limitações metodológicas}
+% A6 - Riscos
+\begin{frame}{Apoio A6: riscos e limitações metodológicas}
   \begin{enumerate}\small
     \item Sem emaranhamento entre os quatro subcircuitos de 5 qubits
     \item Uma semente por configuração: sem testes de significância entre inicializações
@@ -853,29 +1064,11 @@
     \item Sobreposição de \textit{tracks} no GTSRB (3.990 de 5.876 imagens de teste)
     \item Restrição integral à simulação clássica, sem QPU
   \end{enumerate}
-  \fonte{TCC, Seção 3.11.}
+  \fonte{TCC, Seção 3.8.}
 \end{frame}
 
-% A4 - Cronograma
-\begin{frame}{Apoio A4: cronograma de 16 semanas}
-  \centering
-  \scriptsize
-  \begin{tabular}{@{}lcc@{}}
-    \toprule
-    \textbf{Fase} & \textbf{Semanas} & \textbf{Marco} \\
-    \midrule
-    1. Revisão e planejamento & 1--3 & Protocolo definido \\
-    2. Inventário e preparação das 9 bases & 4--6 & Bases preparadas \\
-    3. Implementação dos modelos & 7--10 & Modelos implementados \\
-    4. Campanhas experimentais e auditoria & 11--14 & Resultados auditados \\
-    5. Redação e finalização & 13--16 & Entrega final \\
-    \bottomrule
-  \end{tabular}
-  \fonte{TCC, Seção 3.12 (Cronograma de trabalho).}
-\end{frame}
-
-% A5 - Siglas
-\begin{frame}{Apoio A5: siglas principais}
+% A7 - Siglas
+\begin{frame}{Apoio A7: siglas principais}
   \scriptsize
   \begin{columns}[T]
     \begin{column}{0.48\textwidth}

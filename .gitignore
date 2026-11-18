@@ -38,3 +38,7 @@ arquivos/
 
 # Configurações do Claude Code
 .claude/
+
+# Python bytecode
+__pycache__/
+*.pyc
