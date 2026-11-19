@@ -101,10 +101,10 @@
 % DADOS
 % ---------------------------------------------------------------
 \title[CNNs clássicas vs. híbridas quântico-clássicas]{Classificação de imagens em múltiplos conjuntos de referência de visão computacional: CNNs clássicas vs. arquiteturas híbridas quântico-clássicas}
-\subtitle{Apresentação final --- TCC2}
+\subtitle{Apresentação final (TCC2)}
 \author[M. S. Duda]{Matheus Sanchez Duda}
 \institute[SENAC Santo Amaro]{%
-  SENAC --- Unidade Santo Amaro \\
+  SENAC, Unidade Santo Amaro \\
   Bacharelado em Ciência da Computação \\
   \footnotesize Orientador: Prof. Samuel Mendes Sanches Junior \quad Coorientador: Prof. Thyago Conchado Quintas}
 \date{São Paulo, 2026}
@@ -299,7 +299,7 @@
 % 11 - Pipeline composto de aumento de dados (0:45)
 \begin{frame}{Aumento de dados: pipeline composto em 6 etapas (\texttt{data.py})}
   \centering
-  \textbf{\scriptsize (a) GTSRB (\(128\times 128\times 3\), classe~14 --- placa PARE)}\\[-1pt]
+  \textbf{\scriptsize (a) GTSRB (\(128\times 128\times 3\), classe~14: placa PARE)}\\[-1pt]
   \includegraphics[width=0.92\textwidth,height=0.25\textheight,keepaspectratio]{aug_01_pipeline_etapas_gtsrb.png}\\[3pt]
   \textbf{\scriptsize (b) CIFAR-10 (\(64\times 64\times 3\), classe navio)}\\[-1pt]
   \includegraphics[width=0.92\textwidth,height=0.25\textheight,keepaspectratio]{aug_02_pipeline_etapas_cifar10.png}\\[2pt]
@@ -625,23 +625,64 @@
   \fonte{TCC, Seção 3.5.}
 \end{frame}
 
-% 24b - Diagrama da arquitetura clássica
-\begin{frame}{Arquitetura clássica: origem comum e três fluxos}
+% 24b - Etapa 1: CNN de origem
+\begin{frame}{Etapa 1: CNN clássica de origem (\texttt{CNN FP32})}
   \centering
-  \includegraphics[width=0.94\textwidth,height=0.72\textheight,keepaspectratio]{fig_arquitetura_classica_fluxos.png}
-  \fonte{TCC, Seção 3.5 (especificações de \texttt{model\_summary.txt}).}
-\end{frame}
-
-% 25 - Cabeça híbrida (1:30)
-\begin{frame}{Cabeça híbrida: 4 circuitos independentes de 5 qubits (\texttt{Pauli-Y})}
-  \centering
-  \includegraphics[width=0.88\textwidth,height=0.52\textheight,keepaspectratio]{fig_arquitetura_hibrida_4x5_qubits.png}
+  \includegraphics[width=0.95\textwidth,height=0.60\textheight,keepaspectratio]{fig_arq_etapa1_cnn_original.png}
   \vspace{0.05cm}
   \begin{itemize}\footnotesize
-    \item \textbf{Sem emaranhamento cruzado:} $4\times 5$ qubits ($2^5 = 32$ estados/ramo); $R_X(u)$ + 3 blocos $R_Z$--$R_Y$--$R_Z$ e CNOT circular + medição \textbf{\texttt{Pauli-Y}} ($\langle Y\rangle \in [-1,1]^{20}$)
-    \item \textbf{Parâmetros e custo:} 45 pesos/ramo = 180 quânticos (19.272 + $21K$ treináveis); \textbf{404} avaliações lógicas/exemplo no treino e 4 na validação
+    \item \textbf{Extrator:} 5 blocos \texttt{SeparableConv2D + GroupNorm(16) + SiLU + MaxPool}; entrada \(64\times 64\times C\) (\(128\times 128\times 3\) no GTSRB)
+    \item \textbf{Cabeça original:} \texttt{GAP(128) + GMP(128)} \(\to 256 \to 256 \to K\); \textbf{201 mil pesos} na cabeça (\texttt{features128} exportado após \texttt{GAP})
   \end{itemize}
-  \fonte{TCC, Seção 3.5 (especificações de \texttt{model\_summary.txt} e \texttt{circuit.txt}).}
+  \fonte{TCC, Seção 3.5.1 (Figura 18; especificações de \texttt{model\_summary.txt}).}
+\end{frame}
+
+% 24c - Etapa 2: Cabeças clássicas reduzidas (Dense20)
+\begin{frame}{Etapa 2: cabeças clássicas reduzidas (\texttt{Dense20}, extrator congelado)}
+  \centering
+  \includegraphics[width=0.95\textwidth,height=0.60\textheight,keepaspectratio]{fig_arq_etapa2_dense20_classicas.png}
+  \vspace{0.05cm}
+  \begin{itemize}\footnotesize
+    \item \textbf{Etapa 2A (\texttt{Dense20 imagem}):} mantém entrada visual e aumento de dados, acoplando \(128 \to 20\) (\texttt{LayerNorm+ReLU})
+    \item \textbf{Etapa 2B (\texttt{Dense20 vetorial}):} treina sobre \texttt{features128} congelados (\(128 \to 128 \to 20\) \texttt{tanh} \(\to K\)), isolando o gargalo de 20 dim.
+  \end{itemize}
+  \fonte{TCC, Seção 3.5.3 (Figura 22; controle dimensional clássico em Linux e macOS).}
+\end{frame}
+
+% 25 - Etapa 3: Cabeça híbrida (Senokosov et al., 2024)
+\begin{frame}{Etapa 3: cabeça híbrida \(4\times 5\) qubits (Senokosov et al., 2024)}
+  \centering
+  \includegraphics[width=0.95\textwidth,height=0.58\textheight,keepaspectratio]{fig_arq_etapa3_hibrida_4x5.png}
+  \vspace{0.05cm}
+  \begin{itemize}\footnotesize
+    \item \textbf{Arquitetura \textit{HQNN-Parallel} de Senokosov et al.\ (2024):} 4 circuitos independentes de 5 qubits (\texttt{Pauli-Y}, \(\langle Y\rangle \in [-1,1]^{20}\))
+    \item \textbf{Parâmetros:} 19.272 clássicos + \textbf{180 quânticos} (45/ramo) + \(21K\); \textbf{404} avaliações lógicas/exemplo no treino (\textit{parameter-shift})
+  \end{itemize}
+  \fonte{TCC, Seção 3.5.4 (Figura 23; implementação do circuito variacional paralelo de Senokosov et al., 2024).}
+\end{frame}
+
+% 25b - Circuito quântico de 5 qubits (Senokosov et al., 2024)
+\begin{frame}{Circuito quântico implementado (Senokosov et al., 2024)}
+  \centering
+  \includegraphics[width=0.96\textwidth,height=0.60\textheight,keepaspectratio]{fig_circuito_quantico_5qubits.png}
+  \vspace{0.05cm}
+  \begin{itemize}\footnotesize
+    \item \textbf{Por ramo (\(2^5 = 32\) amplitudes):} estado \(|0\rangle^{\otimes 5}\), codificação \(R_X(u_w)\) com \(u_w \in [-1,1]\) e 3 blocos \(R_Z\)--\(R_Y\)--\(R_Z\)
+    \item \textbf{Emaranhamento circular:} 5 portas CNOT por camada com alcance \(r\in\{1,2,3\}\) (\(w \to (w+r)\bmod 5\)) e medição \(\langle Y_w\rangle\)
+  \end{itemize}
+  \fonte{TCC, Seção 3.5.4 (Figura 24; idêntico ao circuito variacional paralelo descrito por Senokosov et al., 2024).}
+\end{frame}
+
+% 25c - Síntese comparativa: o que mudou entre as etapas
+\begin{frame}{Comparativo arquitetural: o que mudou entre as etapas}
+  \centering
+  \includegraphics[width=0.96\textwidth,height=0.62\textheight,keepaspectratio]{fig_arq_comparativo_mudancas.png}
+  \vspace{0.05cm}
+  \begin{itemize}\footnotesize
+    \item \textbf{Etapa 1 \(\to\) Etapa 2:} extrator congelado; removeu \texttt{GMP}, \texttt{Dropout} e segunda \texttt{Dense(256)}, comprimindo para 20 dimensões
+    \item \textbf{Etapa 2B \(\to\) Etapa 3:} entrada \texttt{features128} e projeção de 20 dim.\ são idênticas; \textbf{única troca} é \texttt{tanh} por \(4\times \text{PQC}\)
+  \end{itemize}
+  \fonte{TCC, Seção 3.5.5 (Figura 25; síntese comparativa das mudanças estruturais).}
 \end{frame}
 
 % 29 - Protocolo experimental (0:45)
@@ -676,7 +717,7 @@
 \begin{frame}{Dois ambientes computacionais e versões auditadas}
   \begin{columns}[T]
     \begin{column}{0.49\textwidth}
-      \textbf{\scriptsize Ambiente 1 --- Estação Windows / WSL2 (Ubuntu 22.04.5 LTS)}
+      \textbf{\scriptsize Ambiente 1: Estação Windows / WSL2 (Ubuntu 22.04.5 LTS)}
       \vspace{2pt}
       \scriptsize
       \begin{tabular}{@{}R{1.95cm}R{4.35cm}@{}}
@@ -692,7 +733,7 @@
       \end{tabular}
     \end{column}
     \begin{column}{0.49\textwidth}
-      \textbf{\scriptsize Ambiente 2 --- iMac \texttt{Mac16,3} (Apple Silicon M4)}
+      \textbf{\scriptsize Ambiente 2: iMac \texttt{Mac16,3} (Apple Silicon M4)}
       \vspace{2pt}
       \scriptsize
       \begin{tabular}{@{}R{1.95cm}R{4.35cm}@{}}
@@ -836,9 +877,9 @@
   \vspace{0.1cm}
   \begin{itemize}\footnotesize
     \item \textbf{73.728 oclusões} (9 bases $\times$ 8 imagens $\times$ 8 modelos $\times$ 64 blocos $\times$ 2 métodos): média constante provoca mais trocas que borramento (pico de 23,4\% no CIFAR-100 Coarse)
-    \item \textbf{Mediana Spearman Grad-CAM vs.\ oclusão:} $\rho = 0{,}002$ --- mapas em camadas profundas não equivalem à sensibilidade causal da entrada
+    \item \textbf{Mediana Spearman Grad-CAM vs.\ oclusão:} $\rho = 0{,}002$, confirmando que mapas em camadas profundas não equivalem à sensibilidade causal da entrada
   \end{itemize}
-  \fonte{TCC, Seção 4.7.}
+  \fonte{TCC, Seção 4.7 (Figura 35).}
 \end{frame}
 
 % 37 - Painéis causais de oclusão: domínios RGB (GTSRB e CIFAR-100 Coarse)
@@ -855,7 +896,7 @@
       \scriptsize \textbf{\texttt{cifar100\_coarse\_01\_desfoque} (\textit{insects}):} 8 modelos acertam; CNN/Vet.\ $0/64$ trocas; D20 img.\ $2/64$; Híbridos $3/64$ para \textit{flowers} ($+1{,}51$).
     \end{column}
   \end{columns}
-  \fonte{TCC, Seção 4.7 (Figuras 33 e 36; suíte completa em \texttt{dist/paineis}).}
+  \fonte{TCC, Seção 4.7 (Figuras 36 e 39; suíte completa em \texttt{dist/paineis}).}
 \end{frame}
 
 % 38 - Painéis causais de oclusão: domínios monocromáticos (Fashion-MNIST e MNIST)
@@ -872,7 +913,7 @@
       \scriptsize \textbf{\texttt{mnist\_06\_desfoque} (dígito ``2''):} só D20 img.\ acerta cl.\ 2 ($17/64$, $+1{,}83$); CNN, Vet.\ e híbridos preveem ``7'' ($5$--$8/64$, até $+10{,}46$).
     \end{column}
   \end{columns}
-  \fonte{TCC, Seção 4.7 (Figuras 34 e 35; suíte completa em \texttt{dist/paineis}).}
+  \fonte{TCC, Seção 4.7 (Figuras 37 e 38; suíte completa em \texttt{dist/paineis}).}
 \end{frame}
 
 % 39 - Custo computacional e comparação entre ambientes/simuladores
@@ -884,7 +925,7 @@
     \end{column}
     \begin{column}{0.36\textwidth}
       \begin{itemize}\footnotesize
-        \item \textbf{36 híbridos:} \textbf{503,66~h} ($20{,}99$ dias) vs.\ \textbf{18 vetoriais:} \textbf{558,88~s} ($9{,}31$~min) --- \textbf{778$\times$ a 2.854$\times$} mais caro
+        \item \textbf{36 híbridos:} \textbf{503,66~h} ($20{,}99$ dias) vs.\ \textbf{18 vetoriais:} \textbf{558,88~s} ($9{,}31$~min), razão de \textbf{778$\times$ a 2.854$\times$}
         \item \textbf{Pico:} EMNIST no Win/Qiskit = \textbf{54,93~h} ($>30\times$ a CNN completa em lote~128, $1{,}65$~h)
         \item \textbf{iMac M4 vs.\ Windows:} $1{,}43\times$--$3{,}18\times$ mais rápido no PennyLane ($55{,}17$ vs.\ $100{,}39$~h)
         \item \textbf{PennyLane vs.\ Qiskit:} $2{,}64\times$--$2{,}74\times$ mais rápido no Mac
@@ -1007,7 +1048,7 @@
       \end{itemize}
     \end{column}
   \end{columns}
-  \fonte{TCC, Seção 4.5 (Figura 29).}
+  \fonte{TCC, Seção 4.5 (Figura 32).}
 \end{frame}
 
 % A3 - Diagnósticos quânticos: gradientes e ruído/shots
@@ -1024,7 +1065,7 @@
       \scriptsize \textbf{Ruído e \textit{shots} (\texttt{Mac/PL}):} fidelidade cai a $0{,}51$ (ruído $2{,}0$), mas $\Delta$ Macro-F1 típico $<0{,}10$ p.p.\ (máx.\ $-0{,}38$ p.p.\ no CIFAR-10).
     \end{column}
   \end{columns}
-  \fonte{TCC, Seção 4.6 (Figuras 30 e 31).}
+  \fonte{TCC, Seção 4.6 (Figuras 33 e 34).}
 \end{frame}
 
 % A4 - Fatores de aceleração e telemetria Mac

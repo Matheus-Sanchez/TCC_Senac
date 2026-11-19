@@ -179,3 +179,30 @@ Esta atualização complementa a conferência de 13/11/2026 incorporando as adi�
   - **0 citações indefinidas**, **0 chaves não utilizadas** em `tcc_math.bib`, **0 warnings** no BibTeX;
   - **0 referências ou equações indefinidas (`??`)** e correspondência exata de **83/83** equações (`eq:ir_cv` [`2.1`] até `eq:speedup_operacional` [`4.1`]);
   - Restam apenas 3 warnings estruturais do próprio template `abntex2`/`babel`/`memoir` (nenhum warning matemático de `hyperref`).
+
+---
+
+## Atualização — Enriquecimento Teórico Quântico e Substituição das Figuras em 300 DPI (18/11/2026)
+
+Revisão completa dos capítulos teóricos de Computação Quântica, QML e Modelos Híbridos (`Seções 2.6, 2.7 e 2.8.2`) em `TCC_Senac/tcc2-adaptado.tex` guiada pelo Obsidian Vault e pelos artigos locais em `TCC_Senac/artigos/`, acompanhada da geração de 6 figuras didáticas inéditas (300 DPI, português) em `TCC_Senac/figuras/` via `TCC_Senac/gerar_figuras_revisao_tcc2.py`.
+
+### 1. Novas Figuras (300 DPI, Português) e Inspeção Visual
+Substituíram-se 4 capturas antigas de baixa resolução/inglês e acrescentaram-se 2 novas figuras conceituais nas Seções `2.6` e `2.7` (mantendo atualização nos nomes legados `qubit_portas_probabilidades.png`, `simulacao_qiskit_fluxo.png` e `modelo_hibrido_quantico_classico.png`):
+- `fig_conceitos_qubit_esfera_bell.png` (Figura 9, Seção `2.6.1`, substitui `ibm_visualize_circuits_latex.png`): Esfera de Bloch, circuito de Bell $|\Phi^+\rangle$ com rotações de base e contraste entre regime exato (*statevector*) e amostragem binomial por *shots* ($\propto 1/\sqrt{S}$).
+- `fig_codificacao_dados_e_qir.png` (Figura 10, Seção `2.6.3`, substitui `qiskit_ml_torch_connector_qnn_circuit.png`): *Amplitude/Angle/Data Re-uploading*, Núcleos Quânticos (QKM), Diferença Geométrica $g_{CQ}$ (`egginger2024hyperparameter`) e QIRs (QL, FRQI $\mathrm{PSNR}_m \approx 10\log_{10}(m)+9{,}94\text{ dB}$, NEQR $E_N = N H_N$ segundo `okada2025measurementlimits`).
+- `fig_vqa_ciclo_e_parameter_shift.png` (Figura 11, Seção `2.6.4`, substitui `ibm_real_amplitudes_1.png`): laço híbrido VQA com bloco *N-local*/*RealAmplitudes* e comparação geométrica da regra *parameter-shift* frente a diferenciação adjunta e diferenças finitas.
+- `fig_barren_plateaus_escalabilidade.png` (Figura 12, Seção `2.6.5`, figura nova): paisagem treinável vs. platô estéril, escalonamento da variância $\mathcal{O}(2^{-n})$ em *2-designs* vs. custos locais rasos ($n=5$) e canais de Kraus ($T_1$, $T_2$, despolarizante).
+- `fig_fluxo_simulacao_pennylane_qiskit_gpu.png` (Figura 13, Seção `2.6.6`, substitui `qiskit_aer_cuquantum_workflow_faj2023.png`): fluxo unificado PennyLane + Qiskit V2 + otimizações *gate fusion*/*cache blocking* em CPU/GPU (`cuStateVec`, `cuTensorNet`) e consumo exponencial `complex128` ($16\cdot 2^n$ bytes).
+- `fig_taxonomia_modelos_hibridos_visao.png` (Figura 14, Seção `2.7`, figura nova): taxonomia das 4 famílias arquiteturais híbridas para classificação de imagens destacando o desenho paralelo $4\times 5$ qubits de `senokosov2024qml`.
+
+### 2. Aprofundamento Conceitual e Equações (`TCC_Senac/tcc2-adaptado.tex`)
+- **Seção `2.6` e `2.6.1`**: quatro gargalos de QML (*input*, *output*, *costing*, *benchmarking*; `biamonte2017qml`), era NISQ / *entanglement frontier* / *quantum chasm* (`preskill2018nisq`), esfera de Bloch (`eq:esfera_bloch`), matriz densidade, pureza e entropia de von Neumann (`eq:matriz_densidade`), e erro estatístico por *shots* (`eq:erro_shots`).
+- **Seção `2.6.2` e `2.6.3`**: decomposição geral de Euler $\mathcal{R}(\alpha,\beta,\gamma)$ (`eq:euler_rotacao`), codificação em amplitude vs. angular e QRAM (`eq:amplitude_encoding`), núcleos RDM projetados e Diferença Geométrica $g_{CQ}$ (`eq:diferenca_geometrica`), teorema da não clonagem em *data re-uploading*, e limites de leitura QIR para FRQI (`eq:frqi_psnr`) e NEQR (`eq:neqr_cupons`).
+- **Seção `2.6.4`, `2.6.5` e `2.6.6`**: VQE, QAOA, QNG, diferenciação adjunta vs. *parameter-shift*, concentração de medida pelo lema de Lévy em *2-designs* (`eq:variancia_bp`), evolução ruidosa via operadores de Kraus (`eq:operadores_kraus`), e simulação via redes tensoriais (MPS/PEPS) vs. vetor de estado com *gate fusion* e *cache blocking*.
+- **Seção `2.7` e `2.8.2` + `tcc_math.bib`**: adicionada taxonomia das quatro famílias híbridas na Seção `2.7`; adicionada a entrada verificada `@article{xiang2024qccnn}` em `tcc_math.bib` e discutida na Seção `2.8.2` com ressalva explícita de domínio tabular clínico (GBSG, SEER, WDBC), fora das nove bases de visão computacional do TCC.
+- **Listas Pré-Textuais**: ampliada a `Lista de Abreviaturas e Siglas` (`COBYLA`, `GD`, `HQNN`, `MPS`, `PEPS`, `PSNR`, `QIR`, `QKM`, `QL`, `QNG`, `QRAM`, `RDM`, `VQA`, `VQE`) e sincronizada a `Lista de Fórmulas Matemáticas` com **93/93** equações numeradas (correspondência sequencial 1-para-1 exata e **0** blocos `\[...\]`).
+
+### 3. Verificação Final da Compilação (18/11/2026)
+- Ciclo executado: `pdflatex` → `bibtex` → `pdflatex` × 2.
+- Saída: `TCC_Senac/tcc2-adaptado.pdf` (**159 páginas**, `19.011.866` bytes), código de saída `0`.
+- Auditoria automática: **93/93** equações em ordem exata, **0** blocos `\[...\]`, **112** referências em `tcc_math.bib` + `abntex2-options` (**113** entradas citadas, **0** chaves não usadas, **0** warnings no BibTeX), **0** citações/referências indefinidas (`??`).

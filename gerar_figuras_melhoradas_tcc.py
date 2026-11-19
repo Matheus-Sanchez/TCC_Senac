@@ -21,6 +21,9 @@ CSV_TEMPOS = ROOT_OUT / "graficos-cnn-completa-batch128-vs-quantico-2026-11-16" 
 CSV_COMP_QC = ROOT_OUT / "graficos-tempos-batch128-2026-11-16" / "comparacoes_classico_quantico.csv"
 CSV_AMB_Q = ROOT_OUT / "graficos-cnn-completa-batch128-vs-quantico-2026-11-16" / "05_ambientes_quanticos.csv"
 CSV_SIM_Q = ROOT_OUT / "graficos-cnn-completa-batch128-vs-quantico-2026-11-16" / "06_simuladores_quanticos.csv"
+DIR_HW_IO = ROOT_OUT / "graficos-hardware-io-batch128-2026-11-18"
+CSV_EPOCAS = DIR_HW_IO / "dados_por_epoca.csv"
+CSV_SESSOES = DIR_HW_IO / "sessoes_e_fontes.csv"
 JSON_OCL = ROOT_OUT / "oclusao-completa-2026-11-07" / "manifesto_completo.json"
 IMG_GRADCAM = ROOT_OUT / "explicabilidade-gradcam-2026-11-05" / "paineis_comparativos" / "gtsrb" / "gtsrb_01.png"
 IMG_OCLUSAO = ROOT_OUT / "oclusao-completa-2026-11-07" / "relatorio_interativo" / "dist" / "paineis" / "gtsrb_01_media.png"
@@ -218,36 +221,37 @@ def gerar_fig_tempos_100_epocas():
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15.2, 8.2), dpi=300, sharey=True,
                                    gridspec_kw={"width_ratios": [1.15, 1.0], "wspace": 0.08})
 
-    y = np.arange(len(DATASET_ORDER))[::-1]
+    y = np.arange(len(DATASET_ORDER))[::-1].astype(float)
     ds_labels = [SHORT_NAMES[d] for d in DATASET_ORDER]
 
+    # Pequenos deslocamentos verticais entre as series quanticas para evitar sobreposicao dos triangulos
     series_a = [
-        ("Vetorial Mac (128-20)", [vet_mac[d] for d in DATASET_ORDER], "o", "#0F766E", 8.0),
-        ("Vetorial Linux (128-20)", [vet_linux[d] for d in DATASET_ORDER], "s", "#65A30D", 7.2),
-        ("CNN batch-128 (Linux, mixed_fp16)", [cnn_b128[d] for d in DATASET_ORDER], "D", "#334155", 7.2),
-        ("PQC Mac · PennyLane", [q_m_pl[d] for d in DATASET_ORDER], "^", "#7C3AED", 8.2),
-        ("PQC Windows · PennyLane", [q_w_pl[d] for d in DATASET_ORDER], "^", "#2563EB", 8.2),
-        ("PQC Mac · Qiskit", [q_m_qk[d] for d in DATASET_ORDER], "v", "#D97706", 8.2),
-        ("PQC Windows · Qiskit", [q_w_qk[d] for d in DATASET_ORDER], "v", "#B91C1C", 8.2),
+        ("Vetorial Mac (128-20)", [vet_mac[d] for d in DATASET_ORDER], "o", "#0F766E", 8.0, 0.0),
+        ("Vetorial Linux (128-20)", [vet_linux[d] for d in DATASET_ORDER], "s", "#65A30D", 7.2, 0.0),
+        ("CNN batch-128 (Linux, mixed_fp16)", [cnn_b128[d] for d in DATASET_ORDER], "D", "#334155", 7.2, 0.0),
+        ("PQC Mac · PennyLane", [q_m_pl[d] for d in DATASET_ORDER], "^", "#7C3AED", 8.2, +0.16),
+        ("PQC Windows · PennyLane", [q_w_pl[d] for d in DATASET_ORDER], "^", "#2563EB", 8.2, -0.16),
+        ("PQC Mac · Qiskit", [q_m_qk[d] for d in DATASET_ORDER], "v", "#D97706", 8.2, +0.16),
+        ("PQC Windows · Qiskit", [q_w_qk[d] for d in DATASET_ORDER], "v", "#B91C1C", 8.2, -0.16),
     ]
 
     for i, ds in enumerate(DATASET_ORDER):
         vals = [s[1][i] for s in series_a]
         ax1.hlines(y[i], min(vals), max(vals), color="#CBD5E1", linewidth=1.6, zorder=1)
-        ax1.text(vet_mac[ds] * 0.78, y[i], f"{fmt_pt(vet_mac[ds], 1)}s",
+        ax1.text(vet_mac[ds] * 0.78, y[i], f"{fmt_pt(vet_mac[ds], 1)} s",
                  ha="right", va="center", fontsize=8.4, color="#0F766E", fontweight="bold")
-        ax1.text(q_w_qk[ds] * 1.22, y[i], f"{fmt_pt(q_w_qk[ds]/3600.0, 1)}h",
+        ax1.text(q_w_qk[ds] * 1.24, y[i], f"{fmt_pt(q_w_qk[ds]/3600.0, 1)} h",
                  ha="left", va="center", fontsize=8.4, color="#991B1B", fontweight="bold")
 
-    for label, vals, marker, color, ms in series_a:
-        ax1.scatter(vals, y, label=label, marker=marker, s=ms**2, color=color, edgecolors="#FFFFFF", linewidths=0.7, zorder=4)
+    for label, vals, marker, color, ms, dy in series_a:
+        ax1.scatter(vals, y + dy, label=label, marker=marker, s=ms**2, color=color, edgecolors="#FFFFFF", linewidths=0.8, zorder=4)
 
     ax1.set_xscale("log")
     ax1.set_xlim(2.5, 9e5)
     ax1.set_yticks(y)
     ax1.set_yticklabels(ds_labels, fontsize=10.5, fontweight="bold")
-    ax1.set_xlabel("Soma das durações das 100 épocas em segundos (escala logarítmica)", fontsize=10.0)
-    ax1.set_title("A. Tempo total de 100 épocas (clássicos vs. híbridos, lote 128)", fontsize=11.3, fontweight="bold", pad=10)
+    ax1.set_xlabel("Soma das 100 épocas em segundos (escala log)", fontsize=10.0)
+    ax1.set_title("A. Tempo total de 100 épocas (lote 128)", fontsize=11.3, fontweight="bold", pad=10)
     ax1.grid(True, axis="x", which="major", alpha=0.8)
     ax1.legend(loc="upper center", bbox_to_anchor=(0.48, -0.10), fontsize=8.5, frameon=True,
                facecolor="#FFFFFF", edgecolor="#CBD5E1", ncol=2)
@@ -271,89 +275,142 @@ def gerar_fig_tempos_100_epocas():
                      f"{fmt_pt(val, 2)} h", va="center", ha="left", fontsize=8.1, color="#1E293B")
 
     ax2.set_xlim(0, 64)
-    ax2.set_xlabel("Diferença adicional de tempo: quântico − clássico vetorial (horas)", fontsize=10.0)
-    ax2.set_title("B. Custo extra da simulação quântica por campanha", fontsize=11.3, fontweight="bold", pad=10)
+    ax2.set_xlabel("Tempo extra: quântico − clássico vetorial (h)", fontsize=10.0)
+    ax2.set_title("B. Sobrecarga da simulação quântica", fontsize=11.3, fontweight="bold", pad=10)
     ax2.grid(True, axis="x", alpha=0.8)
     ax2.legend(loc="upper center", bbox_to_anchor=(0.50, -0.10), fontsize=8.5, frameon=True,
                facecolor="#FFFFFF", edgecolor="#CBD5E1", ncol=2)
     ax2.spines["top"].set_visible(False)
     ax2.spines["right"].set_visible(False)
 
-    fig.suptitle(
-        "Comparação Temporal das 100 Épocas (Lote 128): Cabeças Vetoriais, CNN e Simulações Quânticas",
-        fontsize=13.5, fontweight="bold", y=0.975
-    )
     out_path = OUT_DIR / "fig_tempos_100_epocas_comparativo.png"
-    fig.savefig(out_path, dpi=300, bbox_inches="tight", pad_inches=0.14)
+    fig.savefig(out_path, dpi=300, bbox_inches="tight", pad_inches=0.12)
     plt.close(fig)
     print("Gerado:", out_path)
 
 
 def gerar_fig_aceleracao():
+    df_ep = pd.read_csv(CSV_EPOCAS, sep=";", decimal=",", encoding="utf-8-sig")
+    df_ses = pd.read_csv(CSV_SESSOES, sep=";", decimal=",", encoding="utf-8-sig")
+    meta_runs = df_ses[["codigo", "dataset", "modelo"]].drop_duplicates(subset=["codigo"])
+    ep_sums = df_ep.groupby("codigo", as_index=False)["epoch_seconds"].sum()
+    df_runs = ep_sums.merge(meta_runs, on="codigo", how="left")
+
+    def _series_s(modelo_nome):
+        sub = df_runs[df_runs["modelo"] == modelo_nome].set_index("dataset")["epoch_seconds"]
+        return np.array([float(sub.loc[d]) for d in DATASET_ORDER], dtype=float)
+
+    t_w_pl = _series_s("PQC Windows PennyLane")
+    t_m_pl = _series_s("PQC Mac PennyLane")
+    t_w_qk = _series_s("PQC Windows Qiskit")
+    t_m_qk = _series_s("PQC Mac Qiskit")
+    t_v_lin = _series_s("Dense20 vetorial Linux")
+    t_v_mac = _series_s("Dense20 vetorial Mac")
+
+    vals_pl_wm = list(t_w_pl / t_m_pl) + [float(t_w_pl.sum() / t_m_pl.sum())]
+    vals_qk_wm = list(t_w_qk / t_m_qk) + [float(t_w_qk.sum() / t_m_qk.sum())]
+    vals_win_qp = list(t_w_qk / t_w_pl) + [float(t_w_qk.sum() / t_w_pl.sum())]
+    vals_mac_qp = list(t_m_qk / t_m_pl) + [float(t_m_qk.sum() / t_m_pl.sum())]
+
+    # Verificacao cruzada contra CSV_AMB_Q e CSV_SIM_Q
     df_amb = pd.read_csv(CSV_AMB_Q, sep=";", decimal=",")
     df_sim = pd.read_csv(CSV_SIM_Q, sep=";", decimal=",")
-
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15.0, 7.4), dpi=300, sharey=True,
-                                   gridspec_kw={"wspace": 0.14})
-
-    y = np.arange(len(DATASET_ORDER))[::-1]
-    ds_labels = [SHORT_NAMES[d] for d in DATASET_ORDER]
-    h = 0.34
-
-    pl_wm = df_amb[df_amb["backend"] == "pennylane"].set_index("dataset")
-    qk_wm = df_amb[df_amb["backend"] == "qiskit"].set_index("dataset")
-    vals_pl_wm = [float(pl_wm.loc[d, "razao_windows_dividido_mac"]) for d in DATASET_ORDER]
-    vals_qk_wm = [float(qk_wm.loc[d, "razao_windows_dividido_mac"]) for d in DATASET_ORDER]
-
-    b1 = ax1.barh(y + h/2, vals_pl_wm, height=h*0.9, color="#2563EB", label="PennyLane (Windows / Mac)")
-    b2 = ax1.barh(y - h/2, vals_qk_wm, height=h*0.9, color="#D97706", label="Qiskit (Windows / Mac)")
-    ax1.axvline(1.0, color="#0F172A", linestyle="--", linewidth=1.2, zorder=4)
-
-    for bar, v in zip(b1, vals_pl_wm):
-        ax1.text(v + 0.05, bar.get_y() + bar.get_height()/2, f"{fmt_pt(v, 2)}×", va="center", ha="left", fontsize=9.2, fontweight="bold", color="#1E40AF")
-    for bar, v in zip(b2, vals_qk_wm):
-        ax1.text(v + 0.05, bar.get_y() + bar.get_height()/2, f"{fmt_pt(v, 2)}×", va="center", ha="left", fontsize=9.2, fontweight="bold", color="#92400E")
-
-    ax1.set_xlim(0, 3.65)
-    ax1.set_yticks(y)
-    ax1.set_yticklabels(ds_labels, fontsize=10.5, fontweight="bold")
-    ax1.set_xlabel("Razão (Windows ÷ Mac) — valores > 1,0× indicam Mac mais rápido", fontsize=9.4)
-    ax1.set_title("A. Comparação entre ambientes: Windows vs. iMac M4", fontsize=11.3, fontweight="bold", pad=10)
-    ax1.grid(True, axis="x", alpha=0.8)
-    ax1.legend(loc="upper center", bbox_to_anchor=(0.50, -0.11), fontsize=9.2, frameon=True, ncol=2)
-    ax1.spines["top"].set_visible(False)
-    ax1.spines["right"].set_visible(False)
-
-    win_qp = df_sim[df_sim["ambiente"] == "Windows"].set_index("dataset")
-    mac_qp = df_sim[df_sim["ambiente"] == "Mac"].set_index("dataset")
-    vals_win_qp = [float(win_qp.loc[d, "razao_qiskit_dividido_pennylane"]) for d in DATASET_ORDER]
-    vals_mac_qp = [float(mac_qp.loc[d, "razao_qiskit_dividido_pennylane"]) for d in DATASET_ORDER]
-
-    b3 = ax2.barh(y + h/2, vals_win_qp, height=h*0.9, color="#0F766E", label="Windows (Qiskit / PennyLane)")
-    b4 = ax2.barh(y - h/2, vals_mac_qp, height=h*0.9, color="#7C3AED", label="Mac (Qiskit / PennyLane)")
-    ax2.axvline(1.0, color="#0F172A", linestyle="--", linewidth=1.2, zorder=4)
-
-    for bar, v in zip(b3, vals_win_qp):
-        ax2.text(v + 0.05, bar.get_y() + bar.get_height()/2, f"{fmt_pt(v, 2)}×", va="center", ha="left", fontsize=9.2, fontweight="bold", color="#115E59")
-    for bar, v in zip(b4, vals_mac_qp):
-        ax2.text(v + 0.05, bar.get_y() + bar.get_height()/2, f"{fmt_pt(v, 2)}×", va="center", ha="left", fontsize=9.2, fontweight="bold", color="#5B21B6")
-
-    ax2.set_xlim(0, 3.35)
-    ax2.set_xlabel("Razão (Qiskit ÷ PennyLane) — valores > 1,0× indicam PennyLane mais rápido", fontsize=9.4)
-    ax2.set_title("B. Comparação entre simuladores: PennyLane vs. Qiskit", fontsize=11.3, fontweight="bold", pad=10)
-    ax2.grid(True, axis="x", alpha=0.8)
-    ax2.legend(loc="upper center", bbox_to_anchor=(0.50, -0.11), fontsize=9.2, frameon=True, ncol=2)
-    ax2.spines["top"].set_visible(False)
-    ax2.spines["right"].set_visible(False)
-
-    fig.suptitle(
-        "Fatores de Aceleração Operacional nos Modelos Quânticos 4×5 Qubits (100 Épocas, Lote 128)",
-        fontsize=13.5, fontweight="bold", y=0.975
+    pl_wm_ref = df_amb[df_amb["backend"] == "pennylane"].set_index("dataset")
+    qk_wm_ref = df_amb[df_amb["backend"] == "qiskit"].set_index("dataset")
+    win_qp_ref = df_sim[df_sim["ambiente"] == "Windows"].set_index("dataset")
+    mac_qp_ref = df_sim[df_sim["ambiente"] == "Mac"].set_index("dataset")
+    max_diff = max(
+        float(np.max(np.abs(np.array(vals_pl_wm[:-1]) - np.array([float(pl_wm_ref.loc[d, "razao_windows_dividido_mac"]) for d in DATASET_ORDER])))),
+        float(np.max(np.abs(np.array(vals_qk_wm[:-1]) - np.array([float(qk_wm_ref.loc[d, "razao_windows_dividido_mac"]) for d in DATASET_ORDER])))),
+        float(np.max(np.abs(np.array(vals_win_qp[:-1]) - np.array([float(win_qp_ref.loc[d, "razao_qiskit_dividido_pennylane"]) for d in DATASET_ORDER])))),
+        float(np.max(np.abs(np.array(vals_mac_qp[:-1]) - np.array([float(mac_qp_ref.loc[d, "razao_qiskit_dividido_pennylane"]) for d in DATASET_ORDER])))),
     )
+    assert max_diff < 1e-6, f"Divergencia nas razoes de aceleracao: {max_diff}"
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12.6, 7.6), dpi=300, sharey=True,
+                                   gridspec_kw={"wspace": 0.14})
+    fig.subplots_adjust(top=0.81, bottom=0.13)
+
+    y = np.arange(10)[::-1]
+    ds_labels = [SHORT_NAMES[d] for d in DATASET_ORDER] + ["Total (9 bases)"]
+    h = 0.35
+
+    for ax in (ax1, ax2):
+        ax.axhline(0.5, color="#94A3B8", lw=1.1, zorder=1)
+        ax.axhspan(-0.5, 0.5, color="#F1F5F9", zorder=0)
+        ax.axvline(1.0, color="#0F172A", linestyle="--", linewidth=1.2, zorder=4)
+        ax.grid(True, axis="x", alpha=0.75, zorder=1)
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+
+    # Painel A: Ambientes
+    b1 = ax1.barh(y + h / 2, vals_pl_wm, height=h * 0.88, color="#2563EB", label="PennyLane (R_Win/Mac)", zorder=3)
+    b2 = ax1.barh(y - h / 2, vals_qk_wm, height=h * 0.88, color="#D97706", label="Qiskit (R_Win/Mac)", zorder=3)
+    for bar, v in zip(b1, vals_pl_wm):
+        ax1.text(v + 0.05, bar.get_y() + bar.get_height() / 2, f"{fmt_pt(v, 2)}×",
+                 va="center", ha="left", fontsize=9.8, fontweight="bold", color="#1E40AF")
+    for bar, v in zip(b2, vals_qk_wm):
+        ax1.text(v + 0.05, bar.get_y() + bar.get_height() / 2, f"{fmt_pt(v, 2)}×",
+                 va="center", ha="left", fontsize=9.8, fontweight="bold", color="#92400E")
+
+    ax1.set_xlim(0, 4.70)
+    ax1.set_yticks(y)
+    ax1.set_yticklabels(ds_labels, fontsize=11.0, fontweight="bold")
+    ax1.get_yticklabels()[-1].set_color("#0F172A")
+    ax1.set_xlabel(r"Razão de duração ($R_{\mathrm{Win/Mac}} = T_{\mathrm{Win}} / T_{\mathrm{Mac}}$)", fontsize=10.8, fontweight="bold")
+    ax1.set_title(r"A. Ambientes: $R_{\mathrm{Win/Mac}} = T_{\mathrm{Win}} / T_{\mathrm{Mac}}$", fontsize=12.0, fontweight="bold", pad=22)
+    ax1.text(0.5, 1.015, "Valores > 1,0× indicam iMac M4 mais rápido (18/18 pares)",
+             transform=ax1.transAxes, ha="center", va="bottom", fontsize=9.8, color="#1E40AF", fontweight="bold")
+
+    r_vec_tot = float(t_v_lin.sum() / t_v_mac.sum())
+    r_vec_min = float(np.min(t_v_lin / t_v_mac))
+    r_vec_max = float(np.max(t_v_lin / t_v_mac))
+    ax1.text(
+        0.98, 0.34,
+        f"Ref. clássica (Dense20 vetorial):\n"
+        f"R_Lin/Mac = {fmt_pt(r_vec_tot, 2)}×\n"
+        f"({fmt_pt(t_v_lin.sum(), 2)} s / {fmt_pt(t_v_mac.sum(), 2)} s)\n"
+        f"Faixa: {fmt_pt(r_vec_min, 2)}× a {fmt_pt(r_vec_max, 2)}×",
+        transform=ax1.transAxes, ha="right", va="center", fontsize=8.8, fontweight="bold", color="#0F766E",
+        bbox=dict(boxstyle="round,pad=0.35", facecolor="#ECFDF5", edgecolor="#0F766E", lw=1.0),
+        zorder=5
+    )
+    ax1.tick_params(axis="x", labelsize=10.0)
+    ax1.legend(loc="upper center", bbox_to_anchor=(0.50, -0.11), fontsize=9.8, frameon=True, ncol=2, edgecolor="#CBD5E1")
+
+    # Painel B: Simuladores
+    b3 = ax2.barh(y + h / 2, vals_win_qp, height=h * 0.88, color="#0F766E", label="Windows (R_QK/PL)", zorder=3)
+    b4 = ax2.barh(y - h / 2, vals_mac_qp, height=h * 0.88, color="#7C3AED", label="iMac M4 (R_QK/PL)", zorder=3)
+    for bar, v in zip(b3, vals_win_qp):
+        ax2.text(v + 0.05, bar.get_y() + bar.get_height() / 2, f"{fmt_pt(v, 2)}×",
+                 va="center", ha="left", fontsize=9.8, fontweight="bold", color="#115E59")
+    for bar, v in zip(b4, vals_mac_qp):
+        ax2.text(v + 0.05, bar.get_y() + bar.get_height() / 2, f"{fmt_pt(v, 2)}×",
+                 va="center", ha="left", fontsize=9.8, fontweight="bold", color="#5B21B6")
+
+    ax2.set_xlim(0, 3.45)
+    ax2.set_xlabel(r"Razão de duração ($R_{\mathrm{QK/PL}} = T_{\mathrm{QK}} / T_{\mathrm{PL}}$)", fontsize=10.8, fontweight="bold")
+    ax2.set_title(r"B. Simuladores: $R_{\mathrm{QK/PL}} = T_{\mathrm{QK}} / T_{\mathrm{PL}}$", fontsize=12.0, fontweight="bold", pad=22)
+    ax2.text(0.5, 1.015, "Valores > 1,0× indicam PennyLane mais rápido (18/18 pares)",
+             transform=ax2.transAxes, ha="center", va="bottom", fontsize=9.8, color="#5B21B6", fontweight="bold")
+    ax2.tick_params(axis="x", labelsize=10.0)
+    ax2.legend(loc="upper center", bbox_to_anchor=(0.50, -0.11), fontsize=9.8, frameon=True, ncol=2, edgecolor="#CBD5E1")
+
+    fig.suptitle("Fatores de Aceleração Operacional PQC 4×5 Qubits (100 Épocas, Lote 128)",
+                 fontsize=13.8, fontweight="bold", y=0.965)
+    fig.text(
+        0.50, 0.915,
+        f"Melhor quântico (9/9 bases): PQC Mac PennyLane ({fmt_pt(t_m_pl.sum()/3600.0, 2)} h; "
+        f"{fmt_pt(vals_pl_wm[-1], 2)}×–{fmt_pt(float(t_w_qk.sum()/t_m_pl.sum()), 2)}× mais rápido, Macro-F1 médio 82,17%)  |  "
+        f"Melhor clássico: Dense20 vetorial Mac ({fmt_pt(t_v_mac.sum(), 2)} s)",
+        ha="center", va="top", fontsize=9.8, fontweight="bold", color="#0F172A",
+        bbox=dict(boxstyle="round,pad=0.30", facecolor="#F8FAFC", edgecolor="#CBD5E1", lw=0.9)
+    )
+
     out_path = OUT_DIR / "fig_fatores_aceleracao_ambientes_simuladores.png"
-    fig.savefig(out_path, dpi=300, bbox_inches="tight", pad_inches=0.14)
+    fig.savefig(out_path, dpi=300, bbox_inches="tight", pad_inches=0.14, facecolor="#FFFFFF")
     plt.close(fig)
-    print("Gerado:", out_path)
+    print(f"Gerado: {out_path} (max_diff_csv={max_diff:.2e})")
 
 
 def gerar_fig_custo_macro_f1():
@@ -361,7 +418,7 @@ def gerar_fig_custo_macro_f1():
 
     fig, (ax0, ax1, ax2) = plt.subplots(
         1, 3, figsize=(15.5, 6.2), dpi=300,
-        gridspec_kw={"width_ratios": [0.95, 1.0, 1.0], "wspace": 0.24}
+        gridspec_kw={"width_ratios": [0.95, 1.0, 1.0], "wspace": 0.22}
     )
 
     order_cfg = [
@@ -383,39 +440,40 @@ def gerar_fig_custo_macro_f1():
     bars = ax0.barh(y0, vals_h, height=0.62, color=cols_cfg, zorder=3)
     for bar, v in zip(bars, vals_h):
         txt = f"{fmt_pt(v, 2)} h" if v >= 1.0 else f"{fmt_pt(v*3600, 1)} s"
-        ax0.text(v + 3.5, bar.get_y() + bar.get_height()/2, txt, va="center", ha="left", fontsize=9.0, fontweight="bold", color="#1E293B")
+        ax0.text(v + 4.0, bar.get_y() + bar.get_height()/2, txt, va="center", ha="left", fontsize=9.0, fontweight="bold", color="#1E293B")
 
     ax0.set_yticks(y0)
     ax0.set_yticklabels(lbls_cfg, fontsize=9.8, fontweight="bold")
-    ax0.set_xlim(0, 248)
+    ax0.set_xlim(0, 265)
     ax0.set_xlabel("Tempo acumulado das 9 bases (h)", fontsize=9.8)
-    ax0.set_title("A. Carga horária total por família", fontsize=11.0, fontweight="bold", pad=10)
+    ax0.set_title("A. Carga horária por família", fontsize=11.0, fontweight="bold", pad=10)
     ax0.grid(True, axis="x", alpha=0.8)
     ax0.spines["top"].set_visible(False)
     ax0.spines["right"].set_visible(False)
 
+    # Rotulos espacados sem linhas cruzadas nem colisao com marcadores
     offsets_win = {
-        "GTSRB": (2.8, 95.8),
-        "MNIST": (24.0, 102.2),
-        "KMNIST": (31.5, 97.6),
-        "SVHN": (33.5, 93.4),
-        "Fashion-MNIST": (12.0, 86.2),
-        "EMNIST Balanced": (38.5, 83.2),
-        "CIFAR-10": (13.0, 76.8),
-        "FER2013": (6.5, 52.8),
-        "CIFAR-100 Coarse": (15.5, 43.3),
+        "GTSRB": (6.2, 103.5),
+        "MNIST": (24.0, 103.5),
+        "KMNIST": (37.0, 98.4),
+        "SVHN": (39.5, 92.6),
+        "Fashion-MNIST": (9.8, 86.2),
+        "EMNIST Balanced": (42.5, 83.2),
+        "CIFAR-10": (13.0, 77.2),
+        "FER2013": (6.8, 53.5),
+        "CIFAR-100 Coarse": (16.5, 42.6),
     }
 
     offsets_mac = {
-        "GTSRB": (2.3, 95.8),
-        "MNIST": (13.5, 102.2),
-        "KMNIST": (22.5, 97.4),
-        "SVHN": (26.5, 92.8),
-        "Fashion-MNIST": (8.5, 85.8),
-        "EMNIST Balanced": (21.5, 83.2),
-        "CIFAR-10": (9.5, 76.8),
-        "FER2013": (5.5, 52.8),
-        "CIFAR-100 Coarse": (11.5, 43.3),
+        "GTSRB": (4.0, 103.5),
+        "MNIST": (14.5, 103.5),
+        "KMNIST": (25.5, 98.4),
+        "SVHN": (27.5, 92.8),
+        "Fashion-MNIST": (7.5, 85.8),
+        "EMNIST Balanced": (23.0, 83.2),
+        "CIFAR-10": (9.5, 77.2),
+        "FER2013": (5.5, 53.5),
+        "CIFAR-100 Coarse": (11.5, 42.6),
     }
 
     def plot_env(ax, env_label, pl_key, qk_key, c_pl, c_qk, title_str, xmax, off_map):
@@ -439,20 +497,23 @@ def gerar_fig_custo_macro_f1():
             x1 = float(pl.loc[ds, "training_hours"])
             x2 = float(qk.loc[ds, "training_hours"])
             ym = float(pl.loc[ds, "macro_f1"]) * 100.0
-            xm = 0.5 * (x1 + x2) if ds not in ("Fashion-MNIST", "KMNIST") or env_label == "Mac" else x2 if ds == "KMNIST" else x1
-            if ds == "KMNIST":
+            if ds in ("GTSRB", "Fashion-MNIST", "FER2013"):
+                xm = x1
+            elif ds in ("KMNIST", "SVHN"):
                 xm = x2
+            else:
+                xm = 0.5 * (x1 + x2)
             tx, ty = off_map[ds]
             ax.annotate(
                 SHORT_NAMES[ds], xy=(xm, ym), xytext=(tx, ty),
-                ha="center", va="center", fontsize=8.3, fontweight="bold", color="#1E293B",
+                ha="center", va="center", fontsize=8.2, fontweight="bold", color="#1E293B",
                 bbox=dict(boxstyle="round,pad=0.18", facecolor="#FFFFFF", edgecolor="#CBD5E1", alpha=0.95),
                 arrowprops=dict(arrowstyle="-", color="#64748B", lw=0.8, shrinkA=2, shrinkB=4),
                 zorder=5
             )
 
         ax.set_xlim(0, xmax)
-        ax.set_ylim(40, 105.5)
+        ax.set_ylim(39.0, 107.0)
         ax.set_xlabel("Soma das 100 épocas (horas)", fontsize=9.8)
         ax.set_ylabel("Macro-F1 de teste (%)" if env_label == "Windows" else "", fontsize=9.8)
         ax.set_title(title_str, fontsize=11.0, fontweight="bold", pad=10)
@@ -462,16 +523,12 @@ def gerar_fig_custo_macro_f1():
         ax.spines["right"].set_visible(False)
 
     plot_env(ax1, "Windows", "q_windows_pennylane", "q_windows_qiskit", "#2563EB", "#B91C1C",
-             "B. Ambiente Windows (100,4 h PL vs. 200,3 h QK)", 60.0, offsets_win)
+             "B. Windows (100,4 h PL vs. 200,3 h QK)", 64.0, offsets_win)
     plot_env(ax2, "Mac", "q_mac_pennylane", "q_mac_qiskit", "#7C3AED", "#D97706",
-             "C. Ambiente iMac M4 (55,2 h PL vs. 147,8 h QK)", 34.0, offsets_mac)
+             "C. iMac M4 (55,2 h PL vs. 147,8 h QK)", 36.0, offsets_mac)
 
-    fig.suptitle(
-        "Custo Observado de Treinamento vs. Macro-F1 de Teste entre Ambientes (Windows/Mac) e Simuladores (PennyLane/Qiskit)",
-        fontsize=13.2, fontweight="bold", y=1.01
-    )
     out_path = OUT_DIR / "fig_custo_vs_macro_f1_ambientes.png"
-    fig.savefig(out_path, dpi=300, bbox_inches="tight", pad_inches=0.14)
+    fig.savefig(out_path, dpi=300, bbox_inches="tight", pad_inches=0.12)
     plt.close(fig)
     print("Gerado:", out_path)
 
@@ -556,9 +613,7 @@ def gerar_fig_explicabilidade():
 
 
 if __name__ == "__main__":
-    gerar_fig_arquitetura()
     gerar_fig_tempos_100_epocas()
     gerar_fig_aceleracao()
     gerar_fig_custo_macro_f1()
-    gerar_fig_explicabilidade()
-    print("Todas as 5 figuras melhoradas foram geradas com sucesso!")
+    print("Todas as figuras de tempos, aceleracao e custo foram geradas com sucesso!")
