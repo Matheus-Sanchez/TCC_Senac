@@ -42,3 +42,13 @@ arquivos/
 # Python bytecode
 __pycache__/
 *.pyc
+
+# Arquivos temporários/trava do Office e cópias locais redundantes de slides
+~$*
+apresentacao_tcc2_final_atualizada.pptx
+apresentacao_tcc2_final_atualizada_backup_usuario.pptx
+
+# Arquivos temporários/trava do Office e cópias locais redundantes de slides
+~$*
+apresentacao_tcc2_final_atualizada.pptx
+apresentacao_tcc2_final_atualizada_backup_usuario.pptx
