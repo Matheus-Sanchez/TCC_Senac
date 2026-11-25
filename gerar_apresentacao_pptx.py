@@ -20,6 +20,7 @@ from pptx.dml.color import RGBColor
 from pptx.enum.chart import XL_CHART_TYPE, XL_LEGEND_POSITION, XL_LABEL_POSITION, XL_TICK_LABEL_POSITION
 from pptx.enum.shapes import MSO_SHAPE
 from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
+from pptx.oxml import parse_xml
 from pptx.oxml.xmlchemy import OxmlElement
 from pptx.util import Inches, Pt
 
@@ -562,6 +563,100 @@ def add_chrome(slide, title_text, slide_label, fonte_text=None):
         )
 
 
+def add_delayed_appear_animation(slide, shape_id: int, delay_ms: int = 1900) -> None:
+    """Insere animacao OOXML nativa 'Aparecer (Com o Anterior)' com atraso para congelar GIF 1-shot no quadro final."""
+    timing_xml = f"""
+    <p:timing xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">
+      <p:tnLst>
+        <p:par>
+          <p:cTn id="1" dur="indefinite" restart="never" nodeType="tmRoot">
+            <p:childTnLst>
+              <p:seq concurrent="1" nextAc="seek">
+                <p:cTn id="2" dur="indefinite" nodeType="mainSeq">
+                  <p:childTnLst>
+                    <p:par>
+                      <p:cTn id="3" fill="hold">
+                        <p:stCondLst>
+                          <p:cond delay="indefinite"/>
+                          <p:cond evt="onBegin" delay="0">
+                            <p:tn val="2"/>
+                          </p:cond>
+                        </p:stCondLst>
+                        <p:childTnLst>
+                          <p:par>
+                            <p:cTn id="4" fill="hold">
+                              <p:stCondLst>
+                                <p:cond delay="0"/>
+                              </p:stCondLst>
+                              <p:childTnLst>
+                                <p:par>
+                                  <p:cTn id="5" presetID="1" presetClass="entr" presetSubtype="0" fill="hold" grpId="0" nodeType="withEffect">
+                                    <p:stCondLst>
+                                      <p:cond delay="{int(delay_ms)}"/>
+                                    </p:stCondLst>
+                                    <p:childTnLst>
+                                      <p:set>
+                                        <p:cBhvr>
+                                          <p:cTn id="6" dur="1" fill="hold">
+                                            <p:stCondLst>
+                                              <p:cond delay="0"/>
+                                            </p:stCondLst>
+                                          </p:cTn>
+                                          <p:tgtEl>
+                                            <p:spTgt spid="{int(shape_id)}"/>
+                                          </p:tgtEl>
+                                          <p:attrNameLst>
+                                            <p:attrName>style.visibility</p:attrName>
+                                          </p:attrNameLst>
+                                        </p:cBhvr>
+                                        <p:to>
+                                          <p:strVal val="visible"/>
+                                        </p:to>
+                                      </p:set>
+                                    </p:childTnLst>
+                                  </p:cTn>
+                                </p:par>
+                              </p:childTnLst>
+                            </p:cTn>
+                          </p:par>
+                        </p:childTnLst>
+                      </p:cTn>
+                    </p:par>
+                  </p:childTnLst>
+                </p:cTn>
+                <p:prevCondLst>
+                  <p:cond evt="onPrev" delay="0">
+                    <p:tgtEl>
+                      <p:sldTgt/>
+                    </p:tgtEl>
+                  </p:cond>
+                </p:prevCondLst>
+                <p:nextCondLst>
+                  <p:cond evt="onNext" delay="0">
+                    <p:tgtEl>
+                      <p:sldTgt/>
+                    </p:tgtEl>
+                  </p:cond>
+                </p:nextCondLst>
+              </p:seq>
+            </p:childTnLst>
+          </p:cTn>
+        </p:par>
+      </p:tnLst>
+      <p:bldLst>
+        <p:bldP spid="{int(shape_id)}" grpId="0"/>
+      </p:bldLst>
+    </p:timing>
+    """
+    timing_el = parse_xml(timing_xml.strip())
+    sld = slide.element
+    ext_lst = sld.find("{http://schemas.openxmlformats.org/presentationml/2006/main}extLst")
+    if ext_lst is not None:
+        ext_lst.addprevious(timing_el)
+    else:
+        sld.append(timing_el)
+
+
 def new_slide(prs):
     return prs.slides.add_slide(prs.slide_layouts[6])
 
@@ -942,25 +1037,59 @@ def build_deck() -> None:
     )
 
     # ===============================================================
-    # 13. QUBITS, SUPERPOSIÇÃO E EMARANHAMENTO
+    # 13. QUBITS, SUPERPOSIÇÃO E EMARANHAMENTO (ESFERA DE BLOCH PASSO A PASSO)
     # ===============================================================
-    s = new_slide(prs)
-    add_chrome(
-        s,
-        "Qubits, superposição, emaranhamento e medição",
-        next_lbl(),
-        "Elaborado pelo autor (2026), com base em Nielsen e Chuang (2010) e IBM Quantum (2026).",
-    )
-    add_picture_fit(s, FIG_DIR / "fig_261_esfera_bloch.png", 0.45, 0.82, 6.00, 4.65)
-    add_picture_fit(s, FIG_DIR / "fig_261_circuito_bell.png", 6.65, 0.82, 6.23, 4.65)
-    add_bottom_strip(
-        s, 5.58, 1.18,
-        [
-            "Qubit na esfera de Bloch: superposição de |0⟩ e |1⟩ manipulada por rotações unitárias",
-            "Portas H e CNOT geram emaranhamento (estado de Bell); medição extrai valores esperados reais",
-        ],
-        font_size=18,
-    )
+    bloch_lbl = next_lbl()
+    bloch_steps = [
+        (
+            None,
+            GIF_DIR / "09a_bloch_passo0_init.png",
+            [("Esfera de Bloch (início): ", True, False, SENAC_BLUE), ("qubit em |0⟩ (+Z) antes das rotações unitárias", False, False, TEXT_DARK)],
+        ),
+        (
+            GIF_DIR / "09b_bloch_passo1_rx.gif",
+            GIF_DIR / "09b_bloch_passo1_rx_final.png",
+            [("Rotação R_X(π/3): ", True, False, RGBColor(220, 38, 38)), ("gira 60° em torno de X, levando |0⟩ à superposição", False, False, TEXT_DARK)],
+        ),
+        (
+            GIF_DIR / "09c_bloch_passo2_ry.gif",
+            GIF_DIR / "09c_bloch_passo2_ry_final.png",
+            [("Rotação R_Y(3π/4): ", True, False, RGBColor(5, 150, 105)), ("gira 135° em torno de Y (y fixo; altera x e z)", False, False, TEXT_DARK)],
+        ),
+        (
+            GIF_DIR / "09d_bloch_passo3_rz.gif",
+            GIF_DIR / "09d_bloch_passo3_rz_final.png",
+            [("Rotação R_Z(2π/3): ", True, False, RGBColor(124, 58, 237)), ("gira 120° em torno de Z, ajustando a fase relativa φ", False, False, TEXT_DARK)],
+        ),
+        (
+            GIF_DIR / "09e_bloch_passo4_pauli_y.gif",
+            GIF_DIR / "09e_bloch_passo4_pauli_y_final.png",
+            [("Medição Pauli-Y: ", True, False, RGBColor(15, 118, 110)), ("projeta |ψ⟩ no eixo Y → ⟨Y⟩ = +0,74 ∈ [−1, +1]", False, False, TEXT_DARK)],
+        ),
+    ]
+    for gif_path, cover_png, step_bullet in bloch_steps:
+        s = new_slide(prs)
+        add_chrome(
+            s,
+            "Qubits, superposição, emaranhamento e medição",
+            bloch_lbl,
+            "Elaborado pelo autor (2026), com base em Nielsen e Chuang (2010) e IBM Quantum (2026).",
+        )
+        if gif_path is not None:
+            add_picture_fit(s, gif_path, 0.45, 0.82, 6.12, 4.65)
+            cover_shape = add_picture_fit(s, cover_png, 0.45, 0.82, 6.12, 4.65)
+            add_delayed_appear_animation(s, cover_shape.shape_id, delay_ms=1900)
+        else:
+            add_picture_fit(s, cover_png, 0.45, 0.82, 6.12, 4.65)
+        add_picture_fit(s, FIG_DIR / "fig_261_circuito_bell.png", 6.78, 0.82, 6.07, 4.65)
+        add_bottom_strip(
+            s, 5.58, 1.18,
+            [
+                step_bullet,
+                "Portas H e CNOT geram emaranhamento (estado de Bell); medição extrai valores esperados reais",
+            ],
+            font_size=18,
+        )
 
     # ===============================================================
     # 14. CODIFICAÇÃO DE DADOS E LAÇO VQA
