@@ -1144,6 +1144,23 @@
   \fonte{Elaborado pelo autor (2026).}
 \end{frame}
 
+% 47b - TRAJETÓRIAS TEMPORAIS DE MACRO-F1 (CNN FP32 VS. PQCS - ZOOM)
+\begin{frame}{Trajetórias temporais de Macro-F1: CNN FP32 vs.\ PQCs}
+  \centering
+  \includegraphics[width=\textwidth,height=0.73\textheight,keepaspectratio]{fig_48_metricas_por_tempo_cnn_pqc.png}
+  \fonte{Elaborado pelo autor (2026). Recorte ampliado no platô superior de convergência.}
+\end{frame}
+
+% 47c - CUSTO ATÉ best.keras E PARADA ANTECIPADA (CNN FP32 VS. PQCS - ZOOM)
+\begin{frame}{Custo até \texttt{best.keras} e \textit{patience}=15: CNN FP32 vs.\ PQCs}
+  \centering
+  \includegraphics[width=\textwidth,height=0.64\textheight,keepaspectratio]{fig_48_eficiencia_melhor_epoca_patience15_cnn_pqc.png}
+  \vspace{0.05cm}
+
+  {\footnotesize\color{senacblue}\textbf{Até \texttt{best.keras}:} PQCs caem $\sim 70\%$ (16,4--58,8~h) vs.\ CNN 24,2~h ($-6\%$); \textit{patience}=15 preserva 28/36 PQCs (máx.\ 0,15~p.p.\ FER2013) frente a 8/9 CNN (até 1,16~p.p.).}
+  \fonte{Elaborado pelo autor (2026).}
+\end{frame}
+
 % 48 - SÍNTESE
 \begin{frame}{Síntese: o que a hipótese e os dados dizem}
   \footnotesize

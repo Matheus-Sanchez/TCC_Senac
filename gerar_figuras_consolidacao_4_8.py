@@ -1100,6 +1100,232 @@ def gerar_fig_48_mac_hardware_sensores_macmon(df_mac, df_proj):
     print("Gerado:", out_path)
 
 
+def gerar_fig_48_metricas_por_tempo_slides_cnn_pqc(histories):
+    """Versão ampliada para slides (widescreen 3×3): apenas CNN FP32 + 4 PQCs, zoom em X e platô superior em Y."""
+    series_cfg = [
+        ("cnn", "CNN FP32", "#1E293B"),
+        ("q_mac_pennylane", "PQC Mac PL", "#7C3AED"),
+        ("q_windows_pennylane", "PQC Win PL", "#2563EB"),
+        ("q_mac_qiskit", "PQC Mac QK", "#D97706"),
+        ("q_windows_qiskit", "PQC Win QK", "#B91C1C"),
+    ]
+    ylims_zoom = {
+        "MNIST": (97.5, 99.75),
+        "Fashion-MNIST": (89.0, 92.95),
+        "KMNIST": (95.5, 99.10),
+        "EMNIST Balanced": (83.5, 89.60),
+        "CIFAR-10": (66.0, 74.30),
+        "CIFAR-100 Coarse": (36.0, 51.20),
+        "SVHN": (87.0, 93.30),
+        "GTSRB": (88.0, 100.80),
+        "FER2013": (39.0, 51.50),
+    }
+
+    fig, axes = plt.subplots(
+        3, 3, figsize=(14.2, 6.5), dpi=300, sharex=True,
+        gridspec_kw={"hspace": 0.31, "wspace": 0.16}
+    )
+    axes_flat = axes.ravel()
+
+    for idx, ds in enumerate(DATASET_ORDER):
+        ax = axes_flat[idx]
+        for mk, _, col in series_cfg:
+            hist = histories[(ds, mk)]
+            t = hist["cum_s"]
+            f1 = hist["val_f1_pct"]
+            be = hist["best_ep"]
+
+            ax.plot(t[:be], f1[:be], color=col, lw=2.2, alpha=0.95, zorder=3)
+            if be < len(t):
+                ax.plot(t[be - 1:], f1[be - 1:], color=col, lw=1.35, ls="--", alpha=0.52, zorder=2)
+
+            ax.scatter([t[be - 1]], [f1[be - 1]], marker="*", s=155, color=col,
+                       edgecolors="#FFFFFF", linewidths=0.75, zorder=5)
+
+        ax.set_xscale("log")
+        ax.set_xlim(45.0, 2.6e5)
+        ax.set_ylim(*ylims_zoom[ds])
+        ax.set_xticks([60, 600, 3600, 36000, 180000])
+        ax.set_xticklabels(["1m", "10m", "1h", "10h", "50h"], fontsize=11.4, fontweight="bold")
+        ax.set_title(SHORT_NAMES[ds], fontsize=13.4, fontweight="bold", pad=5)
+        ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: fmt_pt(v, 0)))
+        ax.yaxis.set_major_locator(plt.MaxNLocator(4))
+        ax.tick_params(axis="y", labelsize=11.2)
+        ax.grid(True, which="major", alpha=0.72)
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+        if idx >= 6:
+            ax.set_xlabel("Tempo acumulado (escala log)", fontsize=12.0, fontweight="bold")
+        if idx % 3 == 0:
+            ax.set_ylabel("Macro-F1 val. (%)", fontsize=12.0, fontweight="bold")
+
+    handles = [
+        Line2D([0], [0], color=col, lw=2.5, marker="*", markersize=11.0,
+               markerfacecolor=col, markeredgecolor="#FFFFFF", label=lbl)
+        for _, lbl, col in series_cfg
+    ]
+    handles.extend([
+        Line2D([0], [0], color="#475569", lw=2.2, ls="-", label="Até best.keras"),
+        Line2D([0], [0], color="#475569", lw=1.6, ls="--", alpha=0.65, label="Pós-melhor (até 100 ép.)"),
+    ])
+    fig.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.50, 0.015),
+               ncol=7, fontsize=11.2, frameon=True, edgecolor="#CBD5E1", columnspacing=1.1, handletextpad=0.5)
+
+    out_path = OUT_DIR / "fig_48_metricas_por_tempo_cnn_pqc.png"
+    fig.savefig(out_path, dpi=300, bbox_inches="tight", pad_inches=0.10, facecolor="#FFFFFF")
+    plt.close(fig)
+    print("Gerado:", out_path)
+
+
+def gerar_fig_48_eficiencia_melhor_epoca_patience15_slides_cnn_pqc(df_be):
+    """Versão ampliada para slides: apenas CNN FP32 + 4 PQCs em deslocamento de custo e patience=15."""
+    fig, (ax1, ax2) = plt.subplots(
+        1, 2, figsize=(13.6, 5.8), dpi=300,
+        gridspec_kw={"width_ratios": [1.08, 1.0], "wspace": 0.22}
+    )
+
+    stage_specs = [
+        ("cnn", "CNN FP32", "#1E293B", 0.0, (25.0, 81.815), "best"),
+        ("q_mac_pennylane", "PQC Mac PL", "#7C3AED", -0.34, (22.0, 82.382), "best"),
+        ("q_windows_pennylane", "PQC Win PL", "#2563EB", 0.36, (45.0, 82.005), "best"),
+        ("q_mac_qiskit", "PQC Mac QK", "#D97706", -0.52, (98.0, 82.365), "100"),
+        ("q_windows_qiskit", "PQC Win QK", "#B91C1C", 0.54, (145.0, 81.940), "100"),
+    ]
+
+    pqc_accs = []
+    cnn_acc = None
+    for mk, lbl, col, rad, txt_pos, anchor_pt in stage_specs:
+        sub = df_be[df_be["model_key"] == mk]
+        x_100 = float(sub["tot_h"].sum())
+        x_best = float(sub["best_h"].sum())
+        y_f1 = float(sub["test_f1_pct"].mean())
+        y_acc = float(sub["test_acc_pct"].mean())
+        if mk == "cnn":
+            cnn_acc = y_acc
+        else:
+            pqc_accs.append(y_acc)
+
+        arrow_kw = dict(arrowstyle="-|>,head_length=0.58,head_width=0.31", color=col, lw=2.3)
+        if rad != 0.0:
+            arrow_kw["connectionstyle"] = f"arc3,rad={rad}"
+        ax1.annotate("", xy=(x_best, y_f1), xytext=(x_100, y_f1), arrowprops=arrow_kw, zorder=3 if rad != 0.0 else 4)
+
+        ax1.scatter([x_100], [y_f1], marker="o", s=105, facecolor="#FFFFFF", edgecolor=col, linewidths=2.3, zorder=5)
+        ax1.scatter([x_best], [y_f1], marker="*", s=240, color=col, edgecolors="#FFFFFF", linewidths=0.9, zorder=6)
+
+        ax1.plot([x_best, x_100], [y_acc, y_acc], color=col, lw=1.4, ls=":", alpha=0.65, zorder=2)
+        ax1.scatter([x_100], [y_acc], marker="s", s=58, facecolor="#FFFFFF", edgecolor=col, linewidths=1.8, alpha=0.92, zorder=5)
+        ax1.scatter([x_best], [y_acc], marker="s", s=64, color=col, alpha=0.92, zorder=5)
+
+        ax_x = x_best if anchor_pt == "best" else x_100
+        box_lbl = f"{lbl}\n({fmt_pt(x_100, 1)} → {fmt_pt(x_best, 1)} h)"
+        ax1.annotate(
+            box_lbl, xy=(ax_x, y_f1), xytext=txt_pos,
+            fontsize=10.8, fontweight="bold", color=col, ha="center", va="center",
+            bbox=dict(boxstyle="round,pad=0.20", facecolor="#FFFFFF", edgecolor=col, linewidth=0.95, alpha=0.96),
+            arrowprops=dict(arrowstyle="-", color=col, lw=1.1, alpha=0.75, shrinkB=6),
+            zorder=7
+        )
+
+    pqc_acc_mean = float(np.mean(pqc_accs))
+    ax1.text(
+        14.0, 82.545,
+        f"Acurácia média (topo): PQCs ≈ {fmt_pt(pqc_acc_mean, 2)}%  |  CNN = {fmt_pt(cnn_acc, 2)}%",
+        fontsize=10.5, fontweight="bold", color="#334155",
+        bbox=dict(boxstyle="round,pad=0.18", facecolor="#F8FAFC", edgecolor="#CBD5E1")
+    )
+    ax1.annotate(
+        f"CNN Acc ({fmt_pt(cnn_acc, 2)}%)", xy=(26.2, cnn_acc), xytext=(45.0, cnn_acc),
+        fontsize=9.6, fontweight="bold", color="#1E293B", va="center",
+        arrowprops=dict(arrowstyle="-", color="#475569", lw=0.9, shrinkB=4),
+        zorder=6
+    )
+
+    ax1.set_xscale("log")
+    xticks_h = [15, 25, 50, 100, 200]
+    ax1.set_xticks(xticks_h)
+    ax1.set_xticklabels([f"{v} h" for v in xticks_h], fontsize=12.0, fontweight="bold")
+    ax1.set_xlim(13.0, 245.0)
+    ax1.set_ylim(81.74, 82.61)
+    ax1.yaxis.set_major_formatter(FuncFormatter(lambda v, _: fmt_pt(v, 1)))
+    ax1.set_xlabel("Tempo acumulado nas 9 bases (h, escala log)", fontsize=13.0, fontweight="bold")
+    ax1.set_ylabel("Média de teste nas 9 bases (%)", fontsize=13.0, fontweight="bold")
+    ax1.set_title("A. Deslocamento: 100 ép. → best.keras (zoom)", fontsize=14.2, fontweight="bold", pad=12)
+    ax1.tick_params(axis="y", labelsize=12.0)
+    ax1.grid(True, which="major", alpha=0.75)
+    ax1.spines["top"].set_visible(False)
+    ax1.spines["right"].set_visible(False)
+
+    leg_1 = [
+        Line2D([0], [0], marker="o", color="w", markerfacecolor="#FFFFFF", markeredgecolor="#334155",
+               markeredgewidth=2.0, markersize=8.5, label="Macro-F1 (100 ép.)"),
+        Line2D([0], [0], marker="*", color="w", markerfacecolor="#334155", markersize=13, label="Macro-F1 (best.keras)"),
+        Line2D([0], [0], marker="s", color="w", markerfacecolor="#334155", markersize=7.5, label="Acurácia média (□ → ■)"),
+    ]
+    ax1.legend(handles=leg_1, loc="lower right", fontsize=10.5, frameon=True, edgecolor="#CBD5E1", facecolor="#FFFFFF")
+
+    # Painel B: patience=15 apenas CNN FP32 e 4 PQCs
+    df_p15 = df_be[df_be["model_key"].isin([s[0] for s in stage_specs])].copy()
+    df_p15["eco_pct"] = (1.0 - df_p15["p15_s"] / df_p15["tot_s"]) * 100.0
+
+    # Micro-deslocamento horizontal (±0,6%) apenas para exibir marcadores coincidentes dos 4 PQCs
+    p15_groups = [
+        ("cnn", "CNN FP32", "#1E293B", "P", 120, 0.0),
+        ("q_mac_pennylane", "PQC Mac PL", "#7C3AED", "^", 98, -0.6),
+        ("q_windows_pennylane", "PQC Win PL", "#2563EB", "v", 98, -0.2),
+        ("q_mac_qiskit", "PQC Mac QK", "#D97706", "<", 98, +0.2),
+        ("q_windows_qiskit", "PQC Win QK", "#B91C1C", ">", 98, +0.6),
+    ]
+    ax2.axhline(0.0, color="#64748B", lw=1.2, ls="--", zorder=1)
+    for mk, lbl, col, mkr, sz, dx in p15_groups:
+        sub = df_p15[df_p15["model_key"] == mk]
+        ax2.scatter(
+            sub["eco_pct"] + dx, sub["p15_f1_lost_pp"],
+            label=lbl, color=col, marker=mkr, s=sz, alpha=0.88,
+            edgecolors="#FFFFFF", linewidths=0.8, zorder=4 if mk == "cnn" else 3
+        )
+
+    fer_pqc = df_p15[(df_p15["dataset"] == "FER2013") & (df_p15["model_key"] != "cnn")]["p15_f1_lost_pp"]
+    ann_cases = [
+        ("cnn", "CIFAR-100 Coarse", (17.5, 1.07), "CNN · CIFAR-100 C."),
+        ("cnn", "EMNIST Balanced", (68.0, 0.72), "CNN · EMNIST"),
+        ("cnn", "KMNIST", (15.5, 0.38), "CNN · KMNIST"),
+        ("q_windows_pennylane", "FER2013", (54.0, 0.27), "4 PQCs · FER2013"),
+    ]
+    for mk, ds_name, (tx, ty), title_lbl in ann_cases:
+        row = df_p15[(df_p15["model_key"] == mk) & (df_p15["dataset"] == ds_name)].iloc[0]
+        rx, ry = float(row["eco_pct"]), float(row["p15_f1_lost_pp"])
+        if ds_name == "FER2013":
+            txt = f"{title_lbl}\n(perda {fmt_pt(float(fer_pqc.min()), 2)}–{fmt_pt(float(fer_pqc.max()), 2)} p.p.)"
+        else:
+            txt = f"{title_lbl}\n(perda {fmt_pt(ry, 2)} p.p.)"
+        ax2.annotate(
+            txt, xy=(rx, ry), xytext=(tx, ty),
+            fontsize=10.8, fontweight="bold", color="#0F172A", ha="center",
+            bbox=dict(boxstyle="round,pad=0.20", facecolor="#FFFFFF", edgecolor="#94A3B8", alpha=0.96),
+            arrowprops=dict(arrowstyle="-|>,head_length=0.45,head_width=0.25", color="#475569", lw=1.1, shrinkB=5),
+            zorder=6
+        )
+
+    ax2.set_xlim(-3, 88)
+    ax2.set_ylim(-0.07, 1.28)
+    ax2.xaxis.set_major_formatter(FuncFormatter(lambda v, _: fmt_pt(v, 0)))
+    ax2.yaxis.set_major_formatter(FuncFormatter(lambda v, _: fmt_pt(v, 2)))
+    ax2.set_xlabel("Economia temporal simulada (%)", fontsize=13.0, fontweight="bold")
+    ax2.set_ylabel("Perda de Macro-F1 val. (p.p.)", fontsize=13.0, fontweight="bold")
+    ax2.set_title("B. Risco da parada antecipada (patience=15)", fontsize=14.2, fontweight="bold", pad=12)
+    ax2.tick_params(labelsize=12.0)
+    ax2.grid(True, alpha=0.75)
+    ax2.legend(loc="upper right", fontsize=11.0, frameon=True, edgecolor="#CBD5E1", facecolor="#FFFFFF")
+    ax2.spines["top"].set_visible(False)
+    ax2.spines["right"].set_visible(False)
+
+    out_path = OUT_DIR / "fig_48_eficiencia_melhor_epoca_patience15_cnn_pqc.png"
+    fig.savefig(out_path, dpi=300, bbox_inches="tight", pad_inches=0.12, facecolor="#FFFFFF")
+    plt.close(fig)
+    print("Gerado:", out_path)
+
+
 if __name__ == "__main__":
     df_runs, df_ses, df_tel, df_f26 = carregar_dados_consolidados()
     df_mac, df_proj, df_tot = carregar_dados_mac_completos()
@@ -1114,4 +1340,6 @@ if __name__ == "__main__":
     gerar_fig_48_telemetria_hardware_io(df_runs, df_ses, df_tel, df_mac, df_proj)
     gerar_fig_48_mac_hardware_io_complementar(df_mac)
     gerar_fig_48_mac_hardware_sensores_macmon(df_mac, df_proj)
-    print("Todas as 9 figuras da Seção 4.8 foram geradas com sucesso!")
+    gerar_fig_48_metricas_por_tempo_slides_cnn_pqc(histories)
+    gerar_fig_48_eficiencia_melhor_epoca_patience15_slides_cnn_pqc(df_be)
+    print("Todas as figuras da Seção 4.8 (incluindo versões ampliadas para slides) foram geradas com sucesso!")
