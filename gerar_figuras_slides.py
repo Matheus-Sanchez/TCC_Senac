@@ -1197,6 +1197,120 @@ def gerar_mac_io_complementar_slide(df_mac) -> None:
     print("Gerado:", out_path.name)
 
 
+def gerar_tempo_100ep_vs_melhor_epoca_slide(df_be: pd.DataFrame) -> None:
+    """Versao otimizada para slides (fontes ampliadas) de fig_48_tempo_100ep_vs_melhor_epoca.png."""
+    order_stages = [
+        ("cnn", "CNN FP32", "#1E293B"),
+        ("image20", "Dense20 imagem", "#EA580C"),
+        ("vector_linux", "Vet. Linux", "#65A30D"),
+        ("vector_mac", "Vet. Mac", "#0F766E"),
+        ("q_mac_pennylane", "PQC Mac PL", "#7C3AED"),
+        ("q_windows_pennylane", "PQC Win PL", "#2563EB"),
+        ("q_mac_qiskit", "PQC Mac QK", "#D97706"),
+        ("q_windows_qiskit", "PQC Win QK", "#B91C1C"),
+    ]
+
+    fig, (ax1, ax2) = plt.subplots(
+        1, 2, figsize=(13.8, 5.75), dpi=300,
+        gridspec_kw={"width_ratios": [1.05, 1.15], "wspace": 0.25}
+    )
+
+    y_a = np.arange(len(order_stages))[::-1]
+    for yi, (mk, lbl, col) in zip(y_a, order_stages):
+        sub = df_be[df_be["model_key"] == mk]
+        best_s = float(sub["best_s"].sum())
+        tot_s = float(sub["tot_s"].sum())
+        best_h = best_s / 3600.0
+        tot_h = tot_s / 3600.0
+        p15_h = float(sub["p15_s"].sum()) / 3600.0
+        saved_pct = (1.0 - best_s / tot_s) * 100.0
+
+        ax1.barh(yi, best_h, height=0.64, color=col, edgecolor="#1E293B", linewidth=0.9, alpha=0.94, zorder=3)
+        ax1.barh(yi, tot_h - best_h, left=best_h, height=0.64, color="#E2E8F0",
+                 edgecolor=col, hatch="///", linewidth=0.9, alpha=0.90, zorder=3)
+        ax1.scatter([p15_h], [yi], marker="D", s=74, color="#0F172A",
+                    edgecolors="#FFFFFF", linewidths=1.0, zorder=5)
+
+        if mk in ("vector_linux", "vector_mac"):
+            txt = f"{fmt_pt(best_s, 1)} / {fmt_pt(tot_s, 1)} s (−{fmt_pt(saved_pct, 0)}%)"
+            x_txt = tot_h + 8.5
+        else:
+            txt = f"{fmt_pt(best_h, 1)} / {fmt_pt(tot_h, 1)} h (−{fmt_pt(saved_pct, 0)}%)"
+            x_txt = tot_h + 6.5
+        ax1.text(x_txt, yi, txt, va="center", ha="left", fontsize=12.0, fontweight="bold", color="#0F172A")
+
+    ax1.axhline(3.5, color="#94A3B8", ls="--", lw=1.1, zorder=2)
+    ax1.set_yticks(y_a)
+    ax1.set_yticklabels([s[1] for s in order_stages], fontsize=13.2, fontweight="bold")
+    ax1.set_xlim(0, 355)
+    ax1.xaxis.set_major_formatter(FuncFormatter(lambda v, _: fmt_pt(v, 0)))
+    ax1.set_xlabel("Tempo acumulado nas 9 bases (h)", fontsize=13.0, fontweight="bold")
+    ax1.set_title("A. Tempo: best.keras vs. 100 épocas", fontsize=15.0, fontweight="bold", pad=12)
+    ax1.tick_params(axis="x", labelsize=12.0)
+    ax1.grid(True, axis="x", alpha=0.75)
+    ax1.spines["top"].set_visible(False)
+    ax1.spines["right"].set_visible(False)
+
+    leg_a = [
+        Patch(facecolor="#475569", edgecolor="#1E293B", label="Até best.keras"),
+        Patch(facecolor="#E2E8F0", edgecolor="#475569", hatch="///", label="Pós-melhor época (até 100)"),
+        Line2D([0], [0], marker="D", color="w", markerfacecolor="#0F172A", markeredgecolor="#FFFFFF",
+               markersize=9, label="Simulação patience=15"),
+    ]
+    ax1.legend(handles=leg_a, loc="upper center", bbox_to_anchor=(0.48, -0.15),
+               ncol=2, fontsize=11.2, frameon=True, edgecolor="#CBD5E1")
+
+    heat_cols = [
+        ("cnn", "CNN"),
+        ("image20", "D20 img"),
+        ("vector_linux", "Vet Lin"),
+        ("vector_mac", "Vet Mac"),
+        ("q_windows_pennylane", "Win PL"),
+        ("q_windows_qiskit", "Win QK"),
+        ("q_mac_pennylane", "Mac PL"),
+        ("q_mac_qiskit", "Mac QK"),
+    ]
+    mat = np.zeros((len(gf48.DATASET_ORDER), len(heat_cols)), dtype=float)
+    annots = [["" for _ in heat_cols] for _ in gf48.DATASET_ORDER]
+    lookup = df_be.set_index(["dataset", "model_key"])
+
+    for i, ds in enumerate(gf48.DATASET_ORDER):
+        for j, (mk, _) in enumerate(heat_cols):
+            row = lookup.loc[(ds, mk)]
+            ep = int(row["melhor_epoca"])
+            mat[i, j] = ep
+            annots[i][j] = f"{ep}†" if bool(row["antes_plato"]) else f"{ep}"
+
+    im = ax2.imshow(mat, cmap="YlGnBu", vmin=1, vmax=100, aspect="auto")
+    for i in range(len(gf48.DATASET_ORDER)):
+        for j in range(len(heat_cols)):
+            val = mat[i, j]
+            txt_col = "#FFFFFF" if val >= 55 else "#0F172A"
+            ax2.text(j, i, annots[i][j], ha="center", va="center",
+                     fontsize=12.0, fontweight="bold", color=txt_col)
+
+    ax2.set_xticks(np.arange(len(heat_cols)))
+    ax2.set_xticklabels([c[1] for c in heat_cols], fontsize=12.2, fontweight="bold", rotation=30, ha="right")
+    ax2.set_yticks(np.arange(len(gf48.DATASET_ORDER)))
+    ax2.set_yticklabels([gf48.SHORT_NAMES[d] for d in gf48.DATASET_ORDER], fontsize=12.6, fontweight="bold")
+    ax2.set_xticks(np.arange(-0.5, len(heat_cols), 1), minor=True)
+    ax2.set_yticks(np.arange(-0.5, len(gf48.DATASET_ORDER), 1), minor=True)
+    ax2.grid(which="minor", color="#FFFFFF", linestyle="-", linewidth=1.8)
+    ax2.tick_params(which="minor", bottom=False, left=False)
+    ax2.axvline(3.5, color="#0F172A", linewidth=2.0, zorder=4)
+    ax2.set_title("B. Melhor época por base e etapa", fontsize=15.0, fontweight="bold", pad=12)
+    ax2.set_xlabel("† Melhor época anterior ao platô de treino", fontsize=11.6, fontweight="bold", labelpad=8)
+
+    cbar = fig.colorbar(im, ax=ax2, fraction=0.046, pad=0.03)
+    cbar.set_label("Época de seleção (1–100)", fontsize=12.2, fontweight="bold")
+    cbar.ax.tick_params(labelsize=11.4)
+
+    out_path = SLIDE_FIG_DIR / "fig_48_tempo_100ep_vs_melhor_epoca_slide.png"
+    fig.savefig(out_path, dpi=300, bbox_inches="tight", pad_inches=0.12, facecolor="#FFFFFF")
+    plt.close(fig)
+    print("Gerado:", out_path.name)
+
+
 def main() -> None:
     crop_all_gifs()
     gerar_metricas_slide()
@@ -1209,11 +1323,13 @@ def main() -> None:
 
     df_runs, df_ses, df_tel, df_f26 = gf48.carregar_dados_consolidados()
     df_mac, df_proj, _ = gf48.carregar_dados_mac_completos()
+    df_be, _ = gf48.carregar_dados_melhor_epoca(df_f26)
     gerar_tempos_etapas_slide(df_runs, df_f26)
     gerar_fatores_aceleracao_slide(df_runs)
     gerar_telemetria_hardware_io_slide(df_ses, df_tel, df_mac, df_proj)
     gerar_mac_sensores_macmon_slide(df_mac, df_proj)
     gerar_mac_io_complementar_slide(df_mac)
+    gerar_tempo_100ep_vs_melhor_epoca_slide(df_be)
     print("Todas as figuras e GIFs otimizados para slides foram gerados com sucesso!")
 
 

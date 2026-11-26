@@ -666,7 +666,7 @@ def build_deck() -> None:
     prs.slide_width = SLIDE_W
     prs.slide_height = SLIDE_H
 
-    MAIN_TOTAL = 56
+    MAIN_TOTAL = 57
     main_idx = 1
 
     def next_lbl() -> str:
@@ -2031,6 +2031,26 @@ def build_deck() -> None:
             [("Energia (100 ép.*): ", True, False, OK_GREEN), ("PL 0,95 kWh vs. QK 2,33 kWh (2,46× economia)", False, False, TEXT_DARK)],
         ],
         font_size=18, title_size=19, space_after=8, center_in=(0.86, 6.72),
+    )
+
+    # ===============================================================
+    # 49a. TEMPO ATÉ best.keras VS. 100 ÉPOCAS E MELHOR ÉPOCA (72 MODELOS)
+    # ===============================================================
+    s = new_slide(prs)
+    add_chrome(
+        s,
+        "Tempo até best.keras vs. 100 épocas e melhor época",
+        next_lbl(),
+        "Elaborado pelo autor (2026).",
+    )
+    add_picture_fit(s, SLIDE_FIG_DIR / "fig_48_tempo_100ep_vs_melhor_epoca_slide.png", 0.25, 0.80, 12.83, 5.05)
+    add_bottom_strip(
+        s, 5.92, 0.84,
+        [
+            [("72 modelos: ", True, False, SENAC_BLUE), ("532,9 → 177,0 h até best.keras (−66,8%; med. e* = 30)", False, False, TEXT_DARK)],
+            [("36 híbridos: ", True, False, SENAC_BLUE), ("503,7 → 150,0 h (−70,2%; med. 26,5) vs. CNN 24,2/25,8 h (−6%)", False, False, TEXT_DARK)],
+        ],
+        font_size=18,
     )
 
     # ===============================================================
