@@ -3,11 +3,11 @@
 
 Saidas geradas em TCC_Senac/figuras/gifs/:
 - 09a_bloch_passo0_init.png            : Estado inicial |0> (300 DPI)
-- 09b_bloch_passo1_rx.gif              : Animacao 1-shot de RX(pi/3) + hold final
+- 09b_bloch_passo1_rx.gif              : Animacao 1-shot de RX(-pi/4) + hold final
 - 09b_bloch_passo1_rx_final.png        : Quadro final estatico de RX (300 DPI)
-- 09c_bloch_passo2_ry.gif              : Animacao 1-shot de RY(3pi/4) + hold final
+- 09c_bloch_passo2_ry.gif              : Animacao 1-shot de RY(2pi/3) + hold final
 - 09c_bloch_passo2_ry_final.png        : Quadro final estatico de RY (300 DPI)
-- 09d_bloch_passo3_rz.gif              : Animacao 1-shot de RZ(2pi/3) + hold final
+- 09d_bloch_passo3_rz.gif              : Animacao 1-shot de RZ(pi/3) + hold final
 - 09d_bloch_passo3_rz_final.png        : Quadro final estatico de RZ (300 DPI)
 - 09e_bloch_passo4_pauli_y.gif         : Animacao 1-shot da medicao Pauli-Y <Y> in [-1, 1]
 - 09e_bloch_passo4_pauli_y_final.png   : Quadro final estatico da medicao Pauli-Y (300 DPI)
@@ -46,9 +46,9 @@ SIGMA_Y = np.array([[0.0, -1.0j], [1.0j, 0.0]], dtype=complex)
 SIGMA_Z = np.array([[1.0, 0.0], [0.0, -1.0]], dtype=complex)
 EYE2 = np.eye(2, dtype=complex)
 
-ALPHA_X = np.pi / 3.0        # 60 deg
-ALPHA_Y = 3.0 * np.pi / 4.0  # 135 deg
-ALPHA_Z = 2.0 * np.pi / 3.0  # 120 deg
+ALPHA_X = -np.pi / 4.0       # -45 deg (para frente, em direcao a +Y)
+ALPHA_Y = 2.0 * np.pi / 3.0  # +120 deg (gira amplamente na face frontal)
+ALPHA_Z = np.pi / 3.0        # +60 deg (arco e projecao Pauli-Y na face frontal)
 
 AZ = np.deg2rad(32.0)
 EL = np.deg2rad(20.0)
@@ -151,22 +151,32 @@ def _plot_3d_curve_depth(ax, pts: np.ndarray, color: str, lw_front: float, lw_ba
             color=color, lw=lw_front, ls=ls_front, alpha=alpha_front, zorder=z_front, solid_capstyle="round")
 
 
-def _draw_axis_rotation_ring(ax, axis: str, color: str):
-    """Desenha um pequeno anel 3D com seta indicando o sentido positivo (regra da mao direita) em torno do eixo."""
+def _draw_axis_rotation_ring(ax, axis: str, color: str, sign: int = 1):
+    """Desenha um pequeno anel 3D com seta indicando o sentido da rotacao em torno do eixo."""
     rad = 0.145
     pos = 0.90
     if axis == "X":
-        phi = np.linspace(0.15 * np.pi, 1.65 * np.pi, 60)
+        if sign >= 0:
+            phi = np.linspace(0.15 * np.pi, 1.65 * np.pi, 60)
+        else:
+            # Sentido negativo em torno de +X: +Z -> +Y -> -Z (seta no topo apontando para +Y)
+            phi = np.linspace(1.90 * np.pi, 0.40 * np.pi, 60)
         xs = np.full_like(phi, pos)
         ys = rad * np.cos(phi)
         zs = rad * np.sin(phi)
     elif axis == "Y":
-        phi = np.linspace(0.15 * np.pi, 1.65 * np.pi, 60)
+        if sign >= 0:
+            phi = np.linspace(0.15 * np.pi, 1.65 * np.pi, 60)
+        else:
+            phi = np.linspace(1.65 * np.pi, 0.15 * np.pi, 60)
         xs = rad * np.sin(phi)
         ys = np.full_like(phi, pos)
         zs = rad * np.cos(phi)
-    else:  # Z: termina na frente apontando da esquerda (+X) para a direita (+Y)
-        phi = np.linspace(-0.85 * np.pi, 0.55 * np.pi, 60)
+    else:  # Z: termina na frente apontando da esquerda (+X) para a direita (+Y) quando sign >= 0
+        if sign >= 0:
+            phi = np.linspace(-0.85 * np.pi, 0.55 * np.pi, 60)
+        else:
+            phi = np.linspace(0.55 * np.pi, -0.85 * np.pi, 60)
         xs = rad * np.cos(phi)
         ys = rad * np.sin(phi)
         zs = np.full_like(phi, 0.72)
@@ -205,6 +215,8 @@ def _psi_label_offset(pu: float, pv: float) -> tuple[float, float]:
         return pu - 0.16, pv + 0.14
     if pu < -0.55 and pv <= 0.25:
         return pu - 0.16, pv + 0.16
+    if pu > 0.72 and pv < -0.25:
+        return pu + 0.08, pv - 0.17
     if pu > 0.15 and pv < -0.35:
         return pu + 0.16, pv - 0.12
     return pu + 0.18 * ux, pv + 0.18 * uy
@@ -215,13 +227,14 @@ def render_frame(step: int, progress: float, dpi: int = 160) -> Image.Image:
 
     step:
       0 -> Estado inicial |0>
-      1 -> Rotacao RX(pi/3)
-      2 -> Rotacao RY(3pi/4)
-      3 -> Rotacao RZ(2pi/3)
+      1 -> Rotacao RX(-pi/4)
+      2 -> Rotacao RY(2pi/3)
+      3 -> Rotacao RZ(pi/3)
       4 -> Medicao Pauli-Y -> <Y> in [-1, +1]
     progress: float em [0, 1] (valor bruto; ease_in_out e aplicado internamente).
     """
     p = ease_in_out(progress)
+    ry_math = fmt_pt(R3[1], signed=True, decimals=2).replace(",", "{,}").replace("\u2212", "-")
 
     # Estado atual e metadados por passo
     if step == 0:
@@ -237,39 +250,41 @@ def render_frame(step: int, progress: float, dpi: int = 160) -> Image.Image:
         meas_p = 0.0
     elif step == 1:
         accent = COL_RX
-        subtitle = r"Passo 1/4: Rotação $R_X(\pi/3)$ em torno do eixo $X$"
+        subtitle = r"Passo 1/4: Rotação $R_X(-\pi/4)$ em torno do eixo $X$"
         ang = p * ALPHA_X
         psi_cur = rx_mat(ang) @ PSI_0
         r_cur = state_to_bloch(psi_cur)
         active_axis = "X"
         angle_label = r"Ângulo $R_X$"
-        angle_val = f"{np.rad2deg(ang):.0f}°  (alvo: 60° = π/3)"
-        eq_top = r"$|\psi_1\rangle = R_X(\pi/3)|0\rangle = e^{-i\frac{\pi}{6}X}|0\rangle$"
-        eq_bot = "Rotação de 60° em torno do eixo X leva o estado à superposição de |0⟩ e |1⟩"
+        deg_x = np.rad2deg(ang)
+        deg_x_str = "0°" if abs(deg_x) < 0.5 else f"\u2212{abs(deg_x):.0f}°"
+        angle_val = f"{deg_x_str}  (alvo: \u221245° = \u2212π/4)"
+        eq_top = r"$|\psi_1\rangle = R_X(-\pi/4)|0\rangle = e^{+i\frac{\pi}{8}X}|0\rangle$"
+        eq_bot = "Rotação de −45° em torno de X inclina o estado para frente (+Y), em superposição"
         meas_p = 0.0
     elif step == 2:
         accent = COL_RY
-        subtitle = r"Passo 2/4: Rotação $R_Y(3\pi/4)$ em torno do eixo $Y$"
+        subtitle = r"Passo 2/4: Rotação $R_Y(2\pi/3)$ em torno do eixo $Y$"
         ang = p * ALPHA_Y
         psi_cur = ry_mat(ang) @ PSI_1
         r_cur = state_to_bloch(psi_cur)
         active_axis = "Y"
         angle_label = r"Ângulo $R_Y$"
-        angle_val = f"{np.rad2deg(ang):.0f}°  (alvo: 135° = 3π/4)"
-        eq_top = r"$|\psi_2\rangle = R_Y(3\pi/4)|\psi_1\rangle = e^{-i\frac{3\pi}{8}Y}|\psi_1\rangle$"
-        eq_bot = "Rotação de 135° em torno do eixo Y mantém y fixo e redistribui x e z"
+        angle_val = f"{np.rad2deg(ang):.0f}°  (alvo: 120° = 2π/3)"
+        eq_top = r"$|\psi_2\rangle = R_Y(2\pi/3)|\psi_1\rangle = e^{-i\frac{\pi}{3}Y}|\psi_1\rangle$"
+        eq_bot = "Rotação de 120° em torno de Y gira na face frontal (y fixo), redistribuindo x e z"
         meas_p = 0.0
     elif step == 3:
         accent = COL_RZ
-        subtitle = r"Passo 3/4: Rotação $R_Z(2\pi/3)$ em torno do eixo $Z$"
+        subtitle = r"Passo 3/4: Rotação $R_Z(\pi/3)$ em torno do eixo $Z$"
         ang = p * ALPHA_Z
         psi_cur = rz_mat(ang) @ PSI_2
         r_cur = state_to_bloch(psi_cur)
         active_axis = "Z"
         angle_label = r"Ângulo $R_Z$"
-        angle_val = f"{np.rad2deg(ang):.0f}°  (alvo: 120° = 2π/3)"
-        eq_top = r"$|\psi_3\rangle = R_Z(2\pi/3)|\psi_2\rangle = e^{-i\frac{\pi}{3}Z}|\psi_2\rangle$"
-        eq_bot = "Rotação de 120° em torno do eixo Z ajusta a fase relativa φ sem mudar z"
+        angle_val = f"{np.rad2deg(ang):.0f}°  (alvo: 60° = π/3)"
+        eq_top = r"$|\psi_3\rangle = R_Z(\pi/3)|\psi_2\rangle = e^{-i\frac{\pi}{6}Z}|\psi_2\rangle$"
+        eq_bot = "Rotação de 60° em torno do eixo Z ajusta a fase relativa φ sem mudar z"
         meas_p = 0.0
     else:  # step == 4
         accent = COL_PY
@@ -279,7 +294,7 @@ def render_frame(step: int, progress: float, dpi: int = 160) -> Image.Image:
         active_axis = "PAULI_Y"
         angle_label = "Observável"
         angle_val = r"Pauli-$Y$ ($\lambda = \pm 1$)"
-        eq_top = r"$\langle Y \rangle = \langle \psi_3 | Y | \psi_3 \rangle = r_y = +0{,}74 \in [-1,\; +1]$"
+        eq_top = rf"$\langle Y \rangle = \langle \psi_3 | Y | \psi_3 \rangle = r_y = {ry_math} \in [-1,\; +1]$"
         eq_bot = "Projeção ortogonal no eixo Y converte o qubit em valor real contínuo em [−1, +1]"
         meas_p = p
 
@@ -442,13 +457,13 @@ def render_frame(step: int, progress: float, dpi: int = 160) -> Image.Image:
     # Guia de orbita e anel de rotacao no eixo ativo
     if active_axis == "X":
         _draw_orbit_guide(ax_in, "X", R0, COL_RX)
-        _draw_axis_rotation_ring(ax_in, "X", COL_RX)
+        _draw_axis_rotation_ring(ax_in, "X", COL_RX, sign=1 if ALPHA_X >= 0 else -1)
     elif active_axis == "Y":
         _draw_orbit_guide(ax_in, "Y", R1, COL_RY)
-        _draw_axis_rotation_ring(ax_in, "Y", COL_RY)
+        _draw_axis_rotation_ring(ax_in, "Y", COL_RY, sign=1 if ALPHA_Y >= 0 else -1)
     elif active_axis == "Z":
         _draw_orbit_guide(ax_in, "Z", R2, COL_RZ)
-        _draw_axis_rotation_ring(ax_in, "Z", COL_RZ)
+        _draw_axis_rotation_ring(ax_in, "Z", COL_RZ, sign=1 if ALPHA_Z >= 0 else -1)
 
     # Trilhas acumuladas das rotacoes anteriores (suaves) + trilha ativa (destaque)
     if step >= 2:
@@ -497,7 +512,7 @@ def render_frame(step: int, progress: float, dpi: int = 160) -> Image.Image:
             if bar_t > 0.72:
                 u_pf, v_pf, _ = proj(0.0, R3[1], 0.0)
                 ax_in.text(
-                    u_pf - 0.09, v_pf + 0.20, r"$\langle Y\rangle = +0{,}74$",
+                    u_pf - 0.14, v_pf + 0.22, rf"$\langle Y\rangle = {ry_math}$",
                     fontsize=9.6, fontweight="bold", color=COL_PY, ha="center", va="bottom",
                     bbox=dict(boxstyle="round,pad=0.18", facecolor="#FFFFFF", edgecolor=COL_PY, lw=1.0, alpha=0.96),
                     zorder=10,

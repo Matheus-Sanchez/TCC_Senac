@@ -1049,22 +1049,22 @@ def build_deck() -> None:
         (
             GIF_DIR / "09b_bloch_passo1_rx.gif",
             GIF_DIR / "09b_bloch_passo1_rx_final.png",
-            [("Rotação R_X(π/3): ", True, False, RGBColor(220, 38, 38)), ("gira 60° em torno de X, levando |0⟩ à superposição", False, False, TEXT_DARK)],
+            [("Rotação R_X(−π/4): ", True, False, RGBColor(220, 38, 38)), ("gira −45° em torno de X para frente (+Y), em superposição", False, False, TEXT_DARK)],
         ),
         (
             GIF_DIR / "09c_bloch_passo2_ry.gif",
             GIF_DIR / "09c_bloch_passo2_ry_final.png",
-            [("Rotação R_Y(3π/4): ", True, False, RGBColor(5, 150, 105)), ("gira 135° em torno de Y (y fixo; altera x e z)", False, False, TEXT_DARK)],
+            [("Rotação R_Y(2π/3): ", True, False, RGBColor(5, 150, 105)), ("gira 120° em torno de Y na face frontal (y fixo; altera x e z)", False, False, TEXT_DARK)],
         ),
         (
             GIF_DIR / "09d_bloch_passo3_rz.gif",
             GIF_DIR / "09d_bloch_passo3_rz_final.png",
-            [("Rotação R_Z(2π/3): ", True, False, RGBColor(124, 58, 237)), ("gira 120° em torno de Z, ajustando a fase relativa φ", False, False, TEXT_DARK)],
+            [("Rotação R_Z(π/3): ", True, False, RGBColor(124, 58, 237)), ("gira 60° em torno de Z, ajustando a fase relativa φ", False, False, TEXT_DARK)],
         ),
         (
             GIF_DIR / "09e_bloch_passo4_pauli_y.gif",
             GIF_DIR / "09e_bloch_passo4_pauli_y_final.png",
-            [("Medição Pauli-Y: ", True, False, RGBColor(15, 118, 110)), ("projeta |ψ⟩ no eixo Y → ⟨Y⟩ = +0,74 ∈ [−1, +1]", False, False, TEXT_DARK)],
+            [("Medição Pauli-Y: ", True, False, RGBColor(15, 118, 110)), ("projeta |ψ⟩ no eixo Y → ⟨Y⟩ = +0,88 ∈ [−1, +1]", False, False, TEXT_DARK)],
         ),
     ]
     for gif_path, cover_png, step_bullet in bloch_steps:
