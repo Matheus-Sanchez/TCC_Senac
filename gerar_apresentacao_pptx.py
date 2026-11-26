@@ -666,7 +666,7 @@ def build_deck() -> None:
     prs.slide_width = SLIDE_W
     prs.slide_height = SLIDE_H
 
-    MAIN_TOTAL = 54
+    MAIN_TOTAL = 56
     main_idx = 1
 
     def next_lbl() -> str:
@@ -2031,6 +2031,38 @@ def build_deck() -> None:
             [("Energia (100 ép.*): ", True, False, OK_GREEN), ("PL 0,95 kWh vs. QK 2,33 kWh (2,46× economia)", False, False, TEXT_DARK)],
         ],
         font_size=18, title_size=19, space_after=8, center_in=(0.86, 6.72),
+    )
+
+    # ===============================================================
+    # 49b. TRAJETÓRIAS TEMPORAIS DE MACRO-F1 (CNN FP32 VS. PQCs - ZOOM)
+    # ===============================================================
+    s = new_slide(prs)
+    add_chrome(
+        s,
+        "Trajetórias temporais de Macro-F1: CNN FP32 vs. PQCs",
+        next_lbl(),
+        "Elaborado pelo autor (2026). Recorte ampliado no platô superior de convergência.",
+    )
+    add_picture_fit(s, FIG_DIR / "fig_48_metricas_por_tempo_cnn_pqc.png", 0.25, 0.80, 12.83, 5.95)
+
+    # ===============================================================
+    # 49c. CUSTO ATÉ best.keras E PARADA ANTECIPADA (CNN FP32 VS. PQCs - ZOOM)
+    # ===============================================================
+    s = new_slide(prs)
+    add_chrome(
+        s,
+        "Custo até best.keras e parada antecipada: CNN FP32 vs. PQCs",
+        next_lbl(),
+        "Elaborado pelo autor (2026).",
+    )
+    add_picture_fit(s, FIG_DIR / "fig_48_eficiencia_melhor_epoca_patience15_cnn_pqc.png", 0.25, 0.80, 12.83, 5.05)
+    add_bottom_strip(
+        s, 5.92, 0.84,
+        [
+            [("Até best.keras: ", True, False, SENAC_BLUE), ("PQCs caem ~70% (16,4–58,8 h) vs. CNN 24,2 h (−6%)", False, False, TEXT_DARK)],
+            [("patience=15: ", True, False, SENAC_BLUE), ("28/36 PQCs sem perda (máx. 0,15 p.p. FER2013) vs. 8/9 CNN (até 1,16 p.p.)", False, False, TEXT_DARK)],
+        ],
+        font_size=18,
     )
 
     # ===============================================================

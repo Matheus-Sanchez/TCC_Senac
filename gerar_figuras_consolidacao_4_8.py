@@ -1110,7 +1110,7 @@ def gerar_fig_48_metricas_por_tempo_slides_cnn_pqc(histories):
         ("q_windows_qiskit", "PQC Win QK", "#B91C1C"),
     ]
     ylims_zoom = {
-        "MNIST": (97.5, 99.75),
+        "MNIST": (97.6, 100.15),
         "Fashion-MNIST": (89.0, 92.95),
         "KMNIST": (95.5, 99.10),
         "EMNIST Balanced": (83.5, 89.60),
@@ -1149,7 +1149,7 @@ def gerar_fig_48_metricas_por_tempo_slides_cnn_pqc(histories):
         ax.set_xticklabels(["1m", "10m", "1h", "10h", "50h"], fontsize=11.4, fontweight="bold")
         ax.set_title(SHORT_NAMES[ds], fontsize=13.4, fontweight="bold", pad=5)
         ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: fmt_pt(v, 0)))
-        ax.yaxis.set_major_locator(plt.MaxNLocator(4))
+        ax.yaxis.set_major_locator(plt.MaxNLocator(4, integer=True))
         ax.tick_params(axis="y", labelsize=11.2)
         ax.grid(True, which="major", alpha=0.72)
         ax.spines["top"].set_visible(False)
